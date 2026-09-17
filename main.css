@@ -1,17 +1,78 @@
+/* Full Body */
 body {
     margin: 0;
     padding: 0;
-    background-color: black;
     color: white;
+    background-color: black;
+    font-family: Tahoma, Verdana, sans-serif;
 }
 
+/* Navigation Bar */
 nav {
     display: flex;
     flex-direction: row;
     align-items: center; 
-    justify-content: right;
+    justify-content: space-between;
     padding: 0.5em 1em;
-    background-color: red;
     color: white;
+    background-color: red;
 }
 
+.nav-bar-home-button {
+    margin: 0;
+    padding: 0;
+    border: none;
+    background-color: transparent;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.search-input {
+    font-size: 1.1em;
+    padding: 0 0 0 5px;
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+i {
+    position: absolute;
+    top: 0.7em;
+    right: 1.5em;
+    color: black;
+}
+
+/* Homepage Body */
+.homepage-body {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 0.5em;
+}
+
+/* Homepage Movie Section */
+.homepage-movie-section {
+    width: 100%;
+}
+
+.movie-poster-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1em;
+}
+.movie-poster {
+    height: 15em;
+    border: 1px solid white;
+}
+
+/* Homeapge Filter Section */
+.homepage-filter-section {
+    position: absolute;
+    top: 25%;
+    right: 10px;
+    width: 20%;
+    border-left: 1px solid white;
+    padding: 0 0.5em;
+}

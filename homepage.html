@@ -11,34 +11,51 @@
     <nav class="nav-bar">
         <button class="nav-bar-home-button">CES</button>
         <div class="nav-bar-search-area">
-            <input class="search-input" />
-            <span class="search-text">Search by Title</span>
+            <input class="search-input" type="text" placeholder="Search by Title" />
             <i class="fa-solid fa-magnifying-glass"></i>
         </div>
     </nav>
     <div class="homepage-body">
         <div class="homepage-movie-section">
-            <h1 class="homepage-movie-section-title">Current Movies</h1>
-            <div class="homepage-posters-section">
-                <div class="movie-poster-section">
-                    <image class="movie-poster"></image>
-                    <button class="movie-showtimes-button">Showtimes</button>
+            <div class="homepage-movie-current-section">
+                <h1 class="homepage-movie-section-title current">Current Movies</h1>
+                <div class="homepage-posters-section current">
+                    <div class="movie-poster-section">
+                        <image class="movie-poster" src="images/moviePoster2.jpg"></image>
+                        <button class="movie-showtimes-button">Showtimes</button>
+                    </div>
                 </div>
             </div>
-            <h1 class="homepage-movie-section-title">Upcoming Movies</h1>
-            <div class="homepage-posters-section">
-                <div class="movie-poster-section">
-                    <image class="movie-poster"></image>
-                    <label class="movie-release-date">12/24/26</label>
+            <div class="homepage-movie-upcoming-section">
+                <h1 class="homepage-movie-section-title upcoming">Upcoming Movies</h1>
+                <div class="homepage-posters-section upcoming">
+                    <div class="movie-poster-section">
+                        <image class="movie-poster" src="images/moviePoster2.jpg"></image>
+                        <label class="movie-release-date">12/24/26</label>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="homepage-filter-section">
             <h2 class="homepage-filter-section-title">Filters</h2>
-            <div class="homepage-filter-section">
+            <div class="homepage-filter-genre-section">
                 <h3 class="filter-section-title">Genre</h3>
                 <div class="filter-section-tag">
                     <label class="filter-name">Comedy</label>
+                    <label class="filter-name">Horror</label>
+                    <label class="filter-name">Thriller</label>
+                    <label class="filter-name">Rom-Com</label>
+                    <label class="filter-name">Romance</label>
+                </div>
+            </div>
+            <div class="homepage-filter-date-section">
+                <h3 class="filter-section-title">Showing Date</h3>
+                <div class="filter-section-tag">
+                    <label class="filter-name">Tomorrow</label>
+                    <label class="filter-name">2 Days from Now</label>
+                    <label class="filter-name">Next 5 Days</label>
+                    <label class="filter-name">Rom-Com</label>
+                    <label class="filter-name">Romance</label>
                 </div>
             </div>
         </div>
