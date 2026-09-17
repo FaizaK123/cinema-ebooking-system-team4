@@ -8,11 +8,41 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <nav class="navigation-bar">
-        <i class="fa-solid fa-magnifying-glass"></i>
+    <nav class="nav-bar">
+        <button class="nav-bar-home-button">CES</button>
+        <div class="nav-bar-search-area">
+            <input class="search-input" />
+            <span class="search-text">Search by Title</span>
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
     </nav>
-    <header class="homepage-title">
-        <h1>Movies with Cinema E-Booking</h1>
-    </header>
+    <div class="homepage-body">
+        <div class="homepage-movie-section">
+            <h1 class="homepage-movie-section-title">Current Movies</h1>
+            <div class="homepage-posters-section">
+                <div class="movie-poster-section">
+                    <image class="movie-poster"></image>
+                    <button class="movie-showtimes-button">Showtimes</button>
+                </div>
+            </div>
+            <h1 class="homepage-movie-section-title">Upcoming Movies</h1>
+            <div class="homepage-posters-section">
+                <div class="movie-poster-section">
+                    <image class="movie-poster"></image>
+                    <label class="movie-release-date">12/24/26</label>
+                </div>
+            </div>
+        </div>
+        <div class="homepage-filter-section">
+            <h2 class="homepage-filter-section-title">Filters</h2>
+            <div class="homepage-filter-section">
+                <h3 class="filter-section-title">Genre</h3>
+                <div class="filter-section-tag">
+                    <label class="filter-name">Comedy</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    
 </body>
 </html>
