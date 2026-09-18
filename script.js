@@ -9,10 +9,10 @@ const upcomingMovies = [
     { title: "Dune", poster: "images/moviePoster3.jpg", releaseDate: "01/05/27" }
 ];
 
+/* Movie Poster Handling */
 function renderMovieSection(movieCond, movies, showtimes = {}) {
     const container = document.querySelector(movieCond);
     const template = container ? container.querySelector(".movie-card") : null;
-
     if (!container || !template) return;
 
     container.innerHTML = "";
@@ -58,3 +58,41 @@ renderMovieSection(".homepage-posters-section.upcoming", upcomingMovies, { showS
 function getShowtimes(movieId) {
     console.log(`Showing showtimes for movie ID: ${movieId}`);
 }
+
+/* Filter Handling */
+const genres = [
+    "Comedy",
+    "Horror",
+    "Adventure",
+    "Rom-Com",
+    "Thriller"
+];
+
+function renderGenreFilters(genres, selector) {
+    const container = document.querySelector(selector);
+    if (!container) return;
+
+    const input = container.querySelector("input[type='checkbox']");
+    const name = container.querySelector("label");
+    if (!input || !name) return;
+
+    container.innerHTML = "";
+    genres.forEach((genre) => {
+        const checkbox = input.cloneNode(true);
+        const label = name.cloneNode(true);
+        const id = `genre-${genre.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+
+        checkbox.id = id;
+        checkbox.checked = false;
+        checkbox.name = "genre";
+        checkbox.value = genre;
+
+        label.setAttribute("for", id);
+        label.textContent = genre;
+
+        container.appendChild(checkbox);
+        container.appendChild(label);
+    });
+}
+
+renderGenreFilters(genres, ".filter-list");
