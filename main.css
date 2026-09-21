@@ -119,6 +119,7 @@ i {
 
 .homepage-filter-section-title {
     margin-top: 0px;
+    padding-bottom: 0.25em;
     border-bottom: 1px solid white;
 }
 
@@ -126,3 +127,22 @@ i {
     margin: 10px 0 5px 0;
 }
 
+.homepage-filter-genre-section,
+.homepage-filter-date-section {
+    margin-left: 0.5em;
+}
+
+.filter-list {
+    margin-left: 0.75em;
+}
+
+/* Movie_Page CSS */
+.moviepage-body {
+    margin: 0 1em;
+}
+
+.moviepage-info-showtimes-rating-section {
+    display: flex;
+    flex-direction: row;
+    gap: 0.25em;
+}
