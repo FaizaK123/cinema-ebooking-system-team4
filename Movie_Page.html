@@ -20,9 +20,22 @@
                 <p>|</p>
                 <p class="moviepage-info-movie-rating" id="movie-rating"></p>
             </div>
+            <div class="moviepage-info-buttons-section">
+                <button class="moviepage-info-movie-trailer" id="trailer-button"><i class="fa-solid fa-play"></i> Trailer</button>
+                <button class="moviepage-info-favorite-movie" id="favorite-button"><i class="fa-regular fa-heart"></i> Favorite</button>
+            </div>
+            <img class="moviepage-info-movie-poster" id="moviepage-movie-poster" src="" alt="" />
         </div>
         <div class="moviepage-showtimes-section">
             <h3 class="moviepage-showtimes-section-title">Showtimes</h3>
+            <div class="moviepage-showtimes-picker-section">
+                <label for="showtime-date-select" class="moviepage-showtime-selection-label">Select a date</label>
+                <select id="showtime-date-select" class="moviepage-showtime-date-select" aria-label="Choose a showtime date">
+                    <option id="showtime-date-selected" value="">Choose a date</option>
+                </select>
+                <button type="button" id="showtime-search-button" class="moviepage-showtime-search-button">Search</button>
+            </div>
+            <div id="showtime-times-list" class="moviepage-showtimes-list"></div>
         </div>
     </div>
 </body>

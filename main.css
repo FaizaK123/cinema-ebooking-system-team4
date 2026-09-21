@@ -7,7 +7,7 @@ body {
     font-family: Tahoma, Verdana, sans-serif;
 }
 
-/* homepage.html */
+/* Home_Page.html CSS */
 
 /* Navigation Bar */
 nav {
@@ -36,7 +36,7 @@ nav {
     border-radius: 10px;
 }
 
-i {
+.fa-solid.fa-magnifying-glass {
     position: absolute;
     top: 0.7em;
     right: 1.5em;
@@ -136,13 +136,103 @@ i {
     margin-left: 0.75em;
 }
 
-/* Movie_Page CSS */
+/* Movie_Page.html CSS */
 .moviepage-body {
     margin: 0 1em;
+}
+
+.moviepage-info-section {
+    width: 85%;
+    padding-bottom: 1.5em;
+    border-bottom: 1px solid white;
+}
+
+.moviepage-info-section-title {
+    margin-bottom: 0;
+    padding-bottom: 0;
 }
 
 .moviepage-info-showtimes-rating-section {
     display: flex;
     flex-direction: row;
     gap: 0.25em;
+}
+
+.moviepage-info-movie-trailer, 
+.moviepage-info-favorite-movie {
+    background-color: red;
+    color: black;
+    border: 1px solid white;
+    border-radius: 8px;
+    padding: 0.45em 0.8em;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.moviepage-info-movie-poster {
+    position: absolute;
+    right: 3%;
+    top: 12%;
+    height: 12em;
+    flex-shrink: 0;
+    border: 1px solid white;
+}
+
+.moviepage-showtimes-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75em;
+    margin-top: 1.5em;
+    max-width: 40em;
+}
+
+.moviepage-showtimes-section-title {
+    margin: 0;
+}
+
+.moviepage-showtimes-picker-section {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75em;
+}
+
+.moviepage-showtime-date-select {
+    min-width: 12em;
+    padding: 0.55em 0.75em;
+    border: 1px solid white;
+    border-radius: 8px;
+    background-color: black;
+    color: white;
+}
+
+.moviepage-showtime-search-button {
+    background-color: red;
+    color: black;
+    border: 1px solid white;
+    border-radius: 8px;
+    padding: 0.55em 0.9em;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.moviepage-showtimes-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em;
+}
+
+.moviepage-showtime-button {
+    background-color: red;
+    color: black;
+    border: 1px solid white;
+    border-radius: 8px;
+    padding: 0.45em 0.8em;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.moviepage-showtimes-empty-state {
+    margin: 0;
+    color: #d0d0d0;
 }

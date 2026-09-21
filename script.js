@@ -1,3 +1,4 @@
+/* Home Button handling */
 const homeBtn = document.getElementById("nav-bar-home-btn");
 if (homeBtn) {
     homeBtn.addEventListener("click", function () {
@@ -5,18 +6,92 @@ if (homeBtn) {
     });
 }
 
-/* Home_Page JS */
-/* - Movie Poster Handling */
-const currentMovies = [
-    { title: "Jaws", poster: "images/moviePoster1.jpg", id: 101 },
-    { title: "The Silence of the Lambs", poster: "images/moviePoster2.jpg", id: 102 },
-    { title: "The Odyssey", poster: "images/moviePoster3.jpg", id: 103 }
-];
+/* Future Dates Handling */
+function getNextTwoWeekDates() {
+    const dates = [];
+    const today = new Date();
 
-const upcomingMovies = [
-    { title: "Arrival", poster: "images/moviePoster2.jpg", releaseDate: "12/24/26" },
-    { title: "Dune", poster: "images/moviePoster3.jpg", releaseDate: "01/05/27" }
-];
+    for (let i = 0; i < 14; i += 1) {
+        const date = new Date(today);
+        date.setDate(today.getDate() + i);
+
+        dates.push({
+            value: date.toISOString().slice(0, 10),
+            label: date.toLocaleDateString("en-US", {
+                weekday: "short",
+                month: "short",
+                day: "numeric"
+            })
+        });
+    }
+
+    return dates;
+}
+const nextTwoWeekDates = getNextTwoWeekDates();
+
+/* Shared Movie Catalog */
+const movieCatalog = {
+    101: {
+        id: 101,
+        title: "Jaws",
+        poster: "images/moviePoster1.jpg",
+        rating: "PG",
+        runtime: "2 hr 4 min",
+        isCurrent: true,
+        showtimes: {
+            [nextTwoWeekDates[0].value]: ["6:30 PM", "8:45 PM"],
+            [nextTwoWeekDates[1].value]: ["2:15 PM"],
+            [nextTwoWeekDates[3].value]: ["7:00 PM"],
+            [nextTwoWeekDates[5].value]: ["4:30 PM"]
+        }
+    },
+    102: {
+        id: 102,
+        title: "The Silence of the Lambs",
+        poster: "images/moviePoster2.jpg",
+        rating: "R",
+        runtime: "1 hr 58 min",
+        isCurrent: true,
+        showtimes: {
+            [nextTwoWeekDates[0].value]: ["5:00 PM", "9:30 PM"],
+            [nextTwoWeekDates[1].value]: ["1:45 PM"],
+            [nextTwoWeekDates[4].value]: ["7:15 PM"]
+        }
+    },
+    103: {
+        id: 103,
+        title: "The Odyssey",
+        poster: "images/moviePoster3.jpg",
+        rating: "R",
+        runtime: "2 hr 19 min",
+        isCurrent: true,
+        showtimes: {
+            [nextTwoWeekDates[0].value]: ["1:00 PM"],
+            [nextTwoWeekDates[1].value]: ["4:45 PM"],
+            [nextTwoWeekDates[6].value]: ["6:00 PM"]
+        }
+    },
+    201: {
+        id: 201,
+        title: "Arrival",
+        poster: "images/moviePoster2.jpg",
+        releaseDate: "12/24/26",
+        isCurrent: false
+    },
+    202: {
+        id: 202,
+        title: "Dune",
+        poster: "images/moviePoster3.jpg",
+        releaseDate: "01/05/27",
+        isCurrent: false
+    }
+};
+
+/* Home_Page Handling */
+
+/* - Movie Poster Section Handling */
+const currentMovies = Object.values(movieCatalog).filter(movie => movie.isCurrent);
+const upcomingMovies = Object.values(movieCatalog).filter(movie => !movie.isCurrent);
 
 function renderMovieSection(movieCond, movies, showtimes = {}) {
     const container = document.querySelector(movieCond);
@@ -67,7 +142,7 @@ function getShowtimes(movieId) {
     window.location.href = `Movie_Page.html?id=${movieId}`;
 }
 
-/* - Filter Handling */
+/* - Filter Section Handling */
 const genres = [
     "Comedy",
     "Horror",
@@ -119,27 +194,41 @@ renderFilterOptions(genres, ".homepage-filter-genre-section .filter-list", "genr
 renderFilterOptions(showtimeOptions, ".homepage-filter-date-section .filter-list", "showtime");
 
 /* Movie_Page Handling */
-const movieDatabase = {
-    101: {
-        title: "Jaws",
-        rating: "PG",
-        runtime: "2 hr 4 min",
-        showtimes: ["Today • 6:30 PM", "Today • 8:45 PM", "Tomorrow • 2:15 PM"]
-    },
-    102: {
-        title: "The Silence of the Lambs",
-        rating: "R",
-        runtime: "1 hr 58 min",
-        showtimes: ["Today • 5:00 PM", "Today • 9:30 PM", "Saturday • 7:15 PM"]
-    },
-    103: {
-        title: "The Odyssey",
-        genre: "R",
-        runtime: "2 hr 19 min",
-        showtimes: ["Today • 1:00 PM", "Tomorrow • 4:45 PM", "Sunday • 6:00 PM"]
-    }
-};
 
+/* - Showtimes Section Handling */
+const movieDatabase = movieCatalog;
+
+function renderMovieShowtimes(showtimesContainer, movie) {
+    const dateSelect = showtimesContainer.querySelector("#showtime-date-select");
+    const searchButton = showtimesContainer.querySelector("#showtime-search-button");
+    const timesList = showtimesContainer.querySelector("#showtime-times-list");
+
+    if (!dateSelect || !searchButton || !timesList) return;
+
+    const initialDate = nextTwoWeekDates.find((option) => movie.showtimes[option.value]) || nextTwoWeekDates[0];
+
+    dateSelect.innerHTML = nextTwoWeekDates
+        .map((option) => `
+            <option value="${option.value}" ${option.value === initialDate.value ? "selected" : ""}>
+                ${option.label}
+            </option>
+        `)
+        .join("");
+
+    function loadTimesForSelectedDate() {
+        const selectedDate = dateSelect.value;
+        const times = movie.showtimes[selectedDate] || [];
+
+        timesList.innerHTML = times.length
+            ? times.map((time) => `<button type="button" class="moviepage-showtime-button">${time}</button>`).join("")
+            : '<p class="moviepage-showtimes-empty-state">No showtimes available for this date.</p>';
+    }
+
+    searchButton.addEventListener("click", loadTimesForSelectedDate);
+    loadTimesForSelectedDate();
+}
+
+/* - Rendering Movie Handling */
 function renderMoviePage() {
     const title = document.getElementById("movie-title");
     const showtimesContainer = document.querySelector(".moviepage-showtimes-section");
@@ -151,23 +240,23 @@ function renderMoviePage() {
 
     if (!movie) {
         title.textContent = "Movie not found";
+        showtimesContainer.innerHTML = "";
         return;
     }
 
     const runtime = document.getElementById("movie-runtime");
     const rating = document.getElementById("movie-rating");
-    if (!runtime || !rating) return;
+    const poster = document.getElementById("moviepage-movie-poster");
+    if (!runtime || !rating || !poster) return;
+
     title.textContent = movie.title;
     runtime.textContent = movie.runtime;
     rating.textContent = movie.rating;
-    showtimesContainer.innerHTML = `
-        <h3 class="moviepage-showtimes-section-title">Showtimes</h3>
-        <div class="showtimes-list">
-            ${movie.showtimes.map((time) => `<button type="button" class="showtime-button">${time}</button>`).join("")}
-        </div>
-    `;
+    poster.src = movie.poster;
+
+    renderMovieShowtimes(showtimesContainer, movie);
 }
 
-if (document.querySelector("#movie-title")) {
+if (document.getElementById("movie-title")) {
     renderMoviePage();
 }
