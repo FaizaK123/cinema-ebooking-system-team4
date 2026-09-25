@@ -90,19 +90,29 @@ const movieCatalog = {
 /* Home_Page Handling */
 
 /* - Movie Poster Section Handling */
+const cardTemplates = {};
 function renderMovieSection(movieCond, movies, showtimes = {}) {
     const container = document.querySelector(movieCond);
-    const template = container ? container.querySelector(".movie-card") : null;
+    if (container && !cardTemplates[movieCond]) {
+        cardTemplates[movieCond] = container.querySelector(".movie-card");
+    }
+    const template = cardTemplates[movieCond];
     if (!container || !template) return;
 
     container.innerHTML = "";
+
+    if (movies.length === 0) {
+        container.innerHTML = '<p class="no-movies-message">No movies found.</p>';
+        return;
+    }
+
     movies.forEach(movie => {
         container.appendChild(createMovieCard(movie, template, showtimes));
     });
 }
 
-async function loadHomeMovies() {
-    const response = await fetch("/api/movies");
+async function loadHomeMovies(title = "") {
+    const response = await fetch(`/api/movies?title=${encodeURIComponent(title)}`);
     const movies = await response.json();
 
     const currentMovies = movies.filter(movie => movie.isCurrent);
@@ -113,6 +123,16 @@ async function loadHomeMovies() {
 }
 
 loadHomeMovies()
+
+const searchInput = document.querySelector(".search-input");
+if (searchInput) {
+    searchInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+            loadHomeMovies(searchInput.value.trim());
+        }
+    });
+}
+
 
 function createMovieCard(movie, templateCard, options = {}) {
     const card = templateCard.cloneNode(true);

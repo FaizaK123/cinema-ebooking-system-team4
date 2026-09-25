@@ -1,5 +1,5 @@
 import os
-from flask import Flask, send_from_directory, jsonify
+from flask import Flask, send_from_directory, jsonify, request
 import sqlite3
 from datetime import date, timedelta
 
@@ -45,7 +45,13 @@ def home():
 def get_movies_json():
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM movies")
+
+    title = request.args.get("title")
+    if title:
+        cursor.execute("SELECT * FROM movies WHERE title LIKE ?", (f"%{title}%",))
+    else:
+        cursor.execute("SELECT * FROM movies")
+
     rows = cursor.fetchall()
     movies = [row_to_movie(row) for row in rows]
     conn.close()
