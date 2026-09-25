@@ -29,7 +29,7 @@ function getNextTwoWeekDates() {
 }
 const nextTwoWeekDates = getNextTwoWeekDates();
 
-/* Shared Movie Catalog */
+/* Shared Movie Catalog - TEMPORARY */
 const movieCatalog = {
     101: {
         id: 101,
@@ -90,9 +90,6 @@ const movieCatalog = {
 /* Home_Page Handling */
 
 /* - Movie Poster Section Handling */
-const currentMovies = Object.values(movieCatalog).filter(movie => movie.isCurrent);
-const upcomingMovies = Object.values(movieCatalog).filter(movie => !movie.isCurrent);
-
 function renderMovieSection(movieCond, movies, showtimes = {}) {
     const container = document.querySelector(movieCond);
     const template = container ? container.querySelector(".movie-card") : null;
@@ -103,6 +100,19 @@ function renderMovieSection(movieCond, movies, showtimes = {}) {
         container.appendChild(createMovieCard(movie, template, showtimes));
     });
 }
+
+async function loadHomeMovies() {
+    const response = await fetch("/api/movies");
+    const movies = await response.json();
+
+    const currentMovies = movies.filter(movie => movie.isCurrent);
+    const upcomingMovies = movies.filter(movie => !movie.isCurrent);
+
+    renderMovieSection(".homepage-posters-section.current", currentMovies, {showShowtimes: true});
+    renderMovieSection(".homepage-posters-section.upcoming", upcomingMovies, {showShowtimes: false});
+}
+
+loadHomeMovies()
 
 function createMovieCard(movie, templateCard, options = {}) {
     const card = templateCard.cloneNode(true);
@@ -134,9 +144,6 @@ function createMovieCard(movie, templateCard, options = {}) {
 
     return card;
 }
-
-renderMovieSection(".homepage-posters-section.current", currentMovies, { showShowtimes: true });
-renderMovieSection(".homepage-posters-section.upcoming", upcomingMovies, { showShowtimes: false });
 
 function getShowtimes(movieId) {
     window.location.href = `Movie_Page.html?id=${movieId}`;
