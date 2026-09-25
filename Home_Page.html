@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinema E-Booking System</title>
+    <link rel="stylesheet" href="main.css" />
+    <script src="script.js" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav class="nav-bar">
+        <button class="nav-bar-home-button" id="nav-bar-home-btn">CES</button>
+        <div class="nav-bar-search-area">
+            <input class="search-input" type="text" placeholder="Search by Title" />
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
+    </nav>
+    <div class="homepage-body">
+        <div class="homepage-movie-section">
+            <div class="homepage-movie-current-section">
+                <h1 class="homepage-movie-section-title current">Current Movies</h1>
+                <div class="homepage-posters-section current">
+                    <div class="movie-card">
+                        <img class="movie-poster" src="" alt="" />
+                        <h3 class="movie-title"></h3>
+                        <button class="movie-showtimes-button">Showtimes</button>
+                    </div>
+                </div>
+            </div>
+            <div class="homepage-movie-upcoming-section">
+                <h1 class="homepage-movie-section-title upcoming">Upcoming Movies</h1>
+                <div class="homepage-posters-section upcoming">
+                    <div class="movie-card">
+                        <img class="movie-poster" src="" alt="" />
+                        <h3 class="movie-title"></h3>
+                        <label class="movie-release-date"></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="homepage-filter-section">
+            <h2 class="homepage-filter-section-title">Filters</h2>
+            <div class="homepage-filter-genre-section">
+                <h3 class="filter-section-title">Genre</h3>
+                <div class="filter-list">
+                    <div class="filter-tag">
+                        <input type="checkbox" id="genre" />
+                        <label for="genre"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="homepage-filter-date-section">
+                <h3 class="filter-section-title">Showing Date</h3>
+                <div class="filter-list">
+                    <div class="filter-tag">
+                        <input type="checkbox" id="dates" />
+                        <label for="dates"></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

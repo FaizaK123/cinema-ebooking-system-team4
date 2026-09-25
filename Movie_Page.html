@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinema E-Booking System</title>
+    <link rel="stylesheet" href="main.css" />
+    <script src="script.js" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav class="nav-bar">
+        <button class="nav-bar-home-button" id="nav-bar-home-btn">CES</button>
+    </nav>
+    <div class="moviepage-body">
+        <div class="moviepage-info-section">
+            <h1 class="moviepage-info-section-title" id="movie-title"></h1>
+            <div class="moviepage-info-showtimes-rating-section">
+                <p class="moviepage-info-movie-runtime" id="movie-runtime"></p>
+                <p>|</p>
+                <p class="moviepage-info-movie-rating" id="movie-rating"></p>
+            </div>
+            <div class="moviepage-info-buttons-section">
+                <button class="moviepage-info-movie-trailer" id="trailer-button"><i class="fa-solid fa-play"></i> Trailer</button>
+                <button class="moviepage-info-favorite-movie" id="favorite-button"><i class="fa-regular fa-heart"></i> Favorite</button>
+            </div>
+            <img class="moviepage-info-movie-poster" id="moviepage-movie-poster" src="" alt="" />
+        </div>
+        <div class="moviepage-showtimes-section">
+            <h3 class="moviepage-showtimes-section-title">Showtimes</h3>
+            <div class="moviepage-showtimes-picker-section">
+                <label for="showtime-date-select" class="moviepage-showtime-selection-label">Select a date</label>
+                <select id="showtime-date-select" class="moviepage-showtime-date-select" aria-label="Choose a showtime date">
+                    <option id="showtime-date-selected" value="">Choose a date</option>
+                </select>
+                <button type="button" id="showtime-search-button" class="moviepage-showtime-search-button">Search</button>
+            </div>
+            <div id="showtime-times-list" class="moviepage-showtimes-list"></div>
+        </div>
+    </div>
+</body>
+</html>

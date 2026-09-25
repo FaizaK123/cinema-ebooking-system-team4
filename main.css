@@ -1,0 +1,238 @@
+/* Full Body */
+body {
+    margin: 0;
+    padding: 0;
+    color: white;
+    background-color: black;
+    font-family: Tahoma, Verdana, sans-serif;
+}
+
+/* Home_Page.html CSS */
+
+/* Navigation Bar */
+nav {
+    display: flex;
+    flex-direction: row;
+    align-items: center; 
+    justify-content: space-between;
+    padding: 0.5em 1em;
+    color: white;
+    background-color: red;
+}
+
+.nav-bar-home-button {
+    margin: 0;
+    padding: 0;
+    border: none;
+    background-color: transparent;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.search-input {
+    font-size: 1.1em;
+    padding: 0 0 0 5px;
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+.fa-solid.fa-magnifying-glass {
+    position: absolute;
+    top: 0.7em;
+    right: 1.5em;
+    color: black;
+}
+
+/* Homepage Body */
+.homepage-body {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 1em;
+}
+
+/* Homepage Movie Section */
+.homepage-movie-section {
+    width: 100%;
+}
+
+.homepage-posters-section {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+}
+
+.movie-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 21em;
+    gap: 0.75em;
+}
+
+.movie-poster {
+    flex-shrink: 0;
+    height: 15em;
+    border: 1px solid white;
+}
+
+.movie-title {
+    width: 80%;
+    margin: 0;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.4;
+    word-wrap: break-word;
+    overflow-wrap: anywhere;
+}
+
+.movie-showtimes-button {
+    background-color: red;
+    color: black;
+    border: 1px solid white;
+    border-radius: 10px;
+    font-weight: bold;
+    padding: 3px 8px;
+}
+
+.movie-showtimes-button:hover {
+    cursor: pointer;
+    color: white;
+}
+
+.movie-release-date {
+    font-size: 14px;
+    text-decoration: underline red;
+}
+
+/* Homeapge Filter Section */
+.homepage-filter-section {
+    width: 20%;
+    position: absolute;
+    top: 20%;
+    right: 10px;
+    padding: 0 0.5em;
+    border-left: 1px solid white;
+}
+
+.homepage-filter-section-title {
+    margin-top: 0px;
+    padding-bottom: 0.25em;
+    border-bottom: 1px solid white;
+}
+
+.filter-section-title {
+    margin: 10px 0 5px 0;
+}
+
+.homepage-filter-genre-section,
+.homepage-filter-date-section {
+    margin-left: 0.5em;
+}
+
+.filter-list {
+    margin-left: 0.75em;
+}
+
+/* Movie_Page.html CSS */
+.moviepage-body {
+    margin: 0 1em;
+}
+
+.moviepage-info-section {
+    width: 85%;
+    padding-bottom: 1.5em;
+    border-bottom: 1px solid white;
+}
+
+.moviepage-info-section-title {
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.moviepage-info-showtimes-rating-section {
+    display: flex;
+    flex-direction: row;
+    gap: 0.25em;
+}
+
+.moviepage-info-movie-trailer, 
+.moviepage-info-favorite-movie {
+    background-color: red;
+    color: black;
+    border: 1px solid white;
+    border-radius: 8px;
+    padding: 0.45em 0.8em;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.moviepage-info-movie-poster {
+    position: absolute;
+    right: 3%;
+    top: 12%;
+    height: 12em;
+    flex-shrink: 0;
+    border: 1px solid white;
+}
+
+.moviepage-showtimes-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75em;
+    margin-top: 1.5em;
+    max-width: 40em;
+}
+
+.moviepage-showtimes-section-title {
+    margin: 0;
+}
+
+.moviepage-showtimes-picker-section {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75em;
+}
+
+.moviepage-showtime-date-select {
+    min-width: 12em;
+    padding: 0.55em 0.75em;
+    border: 1px solid white;
+    border-radius: 8px;
+    background-color: black;
+    color: white;
+}
+
+.moviepage-showtime-search-button {
+    background-color: red;
+    color: black;
+    border: 1px solid white;
+    border-radius: 8px;
+    padding: 0.55em 0.9em;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.moviepage-showtimes-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em;
+}
+
+.moviepage-showtime-button {
+    background-color: red;
+    color: black;
+    border: 1px solid white;
+    border-radius: 8px;
+    padding: 0.45em 0.8em;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.moviepage-showtimes-empty-state {
+    margin: 0;
+    color: #d0d0d0;
+}
