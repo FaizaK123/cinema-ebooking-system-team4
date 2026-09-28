@@ -181,14 +181,14 @@ function getShowtimes(movieId) {
 }
 
 /* - Filter Section Handling */
-const genres = [
-    "Comedy",
-    "Horror",
-    "Adventure",
-    "Rom-Com",
-    "Thriller",
-    "Sci-Fi"
-];
+// const genres = [
+//     "Comedy",
+//     "Horror",
+//     "Adventure",
+//     "Rom-Com",
+//     "Thriller",
+//     "Sci-Fi"
+// ];
 
 const showtimeOptions = [
     { label: "Today", value: "today" },
@@ -229,7 +229,18 @@ function renderFilterOptions(options, selector, groupName = "genre") {
     });
 }
 
-renderFilterOptions(genres, ".homepage-filter-genre-section .filter-list", "genre");
+async function loadGenreFilters() {
+    try {
+        const response = await fetch("/api/genres");
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const genres = await response.json();
+        renderFilterOptions(genres, ".homepage-filter-genre-section .filter-list", "genre");
+    } catch (err) {
+        console.error("Couldn't load genres:", err);
+    }
+}
+
+loadGenreFilters();
 renderFilterOptions(showtimeOptions, ".homepage-filter-date-section .filter-list", "showtime");
 
 const genreSection = document.querySelector(".homepage-filter-genre-section");

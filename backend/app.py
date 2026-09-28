@@ -81,8 +81,16 @@ def get_movie_by_id(movie_id):
     
     return jsonify(row_to_movie(row))
 
-
-                         
+@app.route("/api/genres")
+def get_genres():
+    conn = get_db_connection()
+    rows = conn.execute(
+        "SELECT DISTINCT genre FROM movies "
+        "WHERE genre IS NOT NULL AND genre != '' "
+        "ORDER BY genre"
+    ).fetchall()
+    conn.close()
+    return jsonify([row["genre"] for row in rows])
 
 
 if __name__ == "__main__":
