@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Cinema E-Booking System</title>
+
+    <link rel="stylesheet" href="css/main.css" />
+    <script src="js/script.js" defer></script>
+</head>
+
+<body>
+
+    <nav class="nav-bar">
+        <button class="nav-bar-home-button" id="nav-bar-home-btn">CES</button>
+    </nav>
+
+    <div class="booking-page-body">
+
+        <h1>Book Tickets</h1>
+
+        <div class="booking-movie-section">
+            <h2 id="booking-movie-title">Movie</h2>
+
+            <p>
+                <strong>Date:</strong>
+                <span id="booking-date"></span>
+            </p>
+
+            <p>
+                <strong>Showtime:</strong>
+                <span id="booking-showtime"></span>
+            </p>
+        </div>
+
+        <div class="booking-ticket-section">
+
+            <h2>Ticket Selection</h2>
+
+            <div class="booking-ticket-option">
+                <div>
+                    <strong>Adult</strong>
+                    <p>$12.00</p>
+                </div>
+
+                <input type="number" id="adult-ticket" min="0" value="0" />
+            </div>
+
+            <div class="booking-ticket-option">
+                <div>
+                    <strong>Child</strong>
+                    <p>$8.00</p>
+                </div>
+
+                <input type="number" id="child-ticket" min="0" value="0" />
+            </div>
+
+            <div class="booking-ticket-option">
+                <div>
+                    <strong>Senior</strong>
+                    <p>$9.00</p>
+                </div>
+
+                <input type="number" id="senior-ticket" min="0" value="0" />
+            </div>
+
+        </div>
+
+        <div class="booking-seat-section">
+
+            <h2>Select Seats</h2>
+
+            <div class="booking-screen">
+                SCREEN
+            </div>
+
+            <div class="booking-seat-layout" id="seat-layout">
+            </div>
+
+        </div>
+
+        <div class="booking-summary-section">
+
+            <h2>Booking Summary</h2>
+
+            <p>
+                Selected Seats:
+                <span id="selected-seats">None</span>
+            </p>
+
+            <p>
+                Tickets:
+                <span id="ticket-count">0</span>
+            </p>
+
+            <p>
+                <strong>
+                    Total: $<span id="booking-total">0.00</span>
+                </strong>
+            </p>
+
+            <button type="button" class="booking-continue-button">
+                Continue
+            </button>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

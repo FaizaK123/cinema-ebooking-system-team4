@@ -245,3 +245,107 @@ nav {
     margin: 0;
     color: #d0d0d0;
 }
+
+/* Booking_Page.html CSS */
+
+.booking-page-body {
+    width: 80%;
+    max-width: 900px;
+    margin: 2em auto;
+}
+
+.booking-movie-section,
+.booking-ticket-section,
+.booking-seat-section,
+.booking-summary-section {
+    border: 1px solid white;
+    border-radius: 10px;
+    padding: 1.25em;
+    margin-bottom: 1.5em;
+}
+
+.booking-movie-section h2,
+.booking-ticket-section h2,
+.booking-seat-section h2,
+.booking-summary-section h2 {
+    margin-top: 0;
+}
+
+.booking-ticket-option {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75em 0;
+    border-bottom: 1px solid #444;
+}
+
+.booking-ticket-option p {
+    margin: 0.25em 0;
+}
+
+.booking-ticket-option input {
+    width: 60px;
+    padding: 0.4em;
+    background-color: black;
+    color: white;
+    border: 1px solid white;
+    border-radius: 5px;
+}
+
+.booking-screen {
+    width: 75%;
+    margin: 1em auto 2em auto;
+    padding: 0.75em;
+    background-color: white;
+    color: black;
+    text-align: center;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.booking-seat-layout {
+    display: grid;
+    grid-template-columns: repeat(8, 45px);
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 1.5em;
+}
+
+.booking-seat {
+    width: 45px;
+    height: 40px;
+    background-color: white;
+    color: black;
+    border: 2px solid gray;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.booking-seat:hover {
+    border-color: red;
+}
+
+.booking-seat.selected {
+    background-color: red;
+    color: white;
+}
+
+.booking-summary-section p {
+    font-size: 1.05em;
+}
+
+.booking-continue-button {
+    background-color: red;
+    color: black;
+    border: 1px solid white;
+    border-radius: 8px;
+    padding: 0.7em 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.booking-continue-button:hover {
+    color: white;
+}

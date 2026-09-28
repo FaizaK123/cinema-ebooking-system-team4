@@ -393,4 +393,108 @@ function setUpTrailer(movie) {
 
 if (document.getElementById("movie-title")) {
     renderMoviePage();
+}}/* Booking_Page Handling */
+
+async function renderBookingPage() {
+    const title = document.getElementById("booking-movie-title");
+
+    if (!title) return;
+
+    const params = new URLSearchParams(window.location.search);
+
+    const movieId = Number(params.get("id"));
+    const selectedDate = params.get("date");
+    const selectedTime = params.get("time");
+
+    const response = await fetch("/api/movies");
+    const movies = await response.json();
+
+    const movie = movies.find(movie => movie.id === movieId);
+
+    if (!movie) {
+        title.textContent = "Movie not found";
+        return;
+    }
+
+    title.textContent = movie.title;
+
+    document.getElementById("booking-date").textContent =
+        selectedDate || "Not selected";
+
+    document.getElementById("booking-showtime").textContent =
+        selectedTime || "Not selected";
+
+    const seatLayout = document.getElementById("seat-layout");
+    const rows = ["A", "B", "C", "D", "E"];
+
+    rows.forEach(function (row) {
+        for (let number = 1; number <= 8; number += 1) {
+            const seat = document.createElement("button");
+
+            seat.type = "button";
+            seat.className = "booking-seat";
+            seat.textContent = row + number;
+
+            seat.addEventListener("click", function () {
+                seat.classList.toggle("selected");
+                updateBookingSummary();
+            });
+
+            seatLayout.appendChild(seat);
+        }
+    });
+
+    const ticketInputs = [
+        document.getElementById("adult-ticket"),
+        document.getElementById("child-ticket"),
+        document.getElementById("senior-ticket")
+    ];
+
+    ticketInputs.forEach(function (input) {
+        input.addEventListener("input", updateBookingSummary);
+    });
+
+    updateBookingSummary();
+}
+
+function updateBookingSummary() {
+    const adult =
+        Number(document.getElementById("adult-ticket").value) || 0;
+
+    const child =
+        Number(document.getElementById("child-ticket").value) || 0;
+
+    const senior =
+        Number(document.getElementById("senior-ticket").value) || 0;
+
+    const ticketCount =
+        adult + child + senior;
+
+    const total =
+        (adult * 12) +
+        (child * 8) +
+        (senior * 9);
+
+    const selectedSeatElements =
+        document.querySelectorAll(".booking-seat.selected");
+
+    const selectedSeats =
+        Array.from(selectedSeatElements).map(function (seat) {
+            return seat.textContent;
+        });
+
+    document.getElementById("ticket-count").textContent =
+        ticketCount;
+
+    document.getElementById("booking-total").textContent =
+        total.toFixed(2);
+
+    document.getElementById("selected-seats").textContent =
+        selectedSeats.length > 0
+            ? selectedSeats.join(", ")
+            : "None";
+}
+
+if (document.getElementById("booking-movie-title")) {
+    renderBookingPage();
 }
