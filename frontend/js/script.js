@@ -111,8 +111,19 @@ function renderMovieSection(movieCond, movies, showtimes = {}) {
     });
 }
 
-async function loadHomeMovies(title = "") {
-    const response = await fetch(`/api/movies?title=${encodeURIComponent(title)}`);
+async function loadHomeMovies() {
+    const params = new URLSearchParams();
+
+    const searchInput = document.querySelector(".search-input");
+    const title = searchInput ? searchInput.value.trim() : "";
+    if (title) {
+        params.append("title", title);
+    }
+
+    const checkedGenres = document.querySelectorAll(".homepage-filter-genre-section input:checked");
+    checkedGenres.forEach(box => params.append("genre", box.value));
+
+    const response = await fetch(`/api/movies?${params}`);
     const movies = await response.json();
 
     const currentMovies = movies.filter(movie => movie.isCurrent);
@@ -128,7 +139,7 @@ const searchInput = document.querySelector(".search-input");
 if (searchInput) {
     searchInput.addEventListener("keydown", (event) => {
         if (event.key === "Enter") {
-            loadHomeMovies(searchInput.value.trim());
+            loadHomeMovies();
         }
     });
 }
@@ -175,7 +186,8 @@ const genres = [
     "Horror",
     "Adventure",
     "Rom-Com",
-    "Thriller"
+    "Thriller",
+    "Sci-Fi"
 ];
 
 const showtimeOptions = [
@@ -219,6 +231,11 @@ function renderFilterOptions(options, selector, groupName = "genre") {
 
 renderFilterOptions(genres, ".homepage-filter-genre-section .filter-list", "genre");
 renderFilterOptions(showtimeOptions, ".homepage-filter-date-section .filter-list", "showtime");
+
+const genreSection = document.querySelector(".homepage-filter-genre-section");
+if (genreSection) {
+    genreSection.addEventListener("change", () => loadHomeMovies());
+}
 
 /* Movie_Page Handling */
 

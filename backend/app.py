@@ -46,12 +46,25 @@ def get_movies_json():
     conn = get_db_connection()
     cursor = conn.cursor()
 
+    conditions = []
+    params = []
+
     title = request.args.get("title")
     if title:
-        cursor.execute("SELECT * FROM movies WHERE title LIKE ?", (f"%{title}%",))
-    else:
-        cursor.execute("SELECT * FROM movies")
+        conditions.append("title LIKE ?")
+        params.append(f"%{title}%")
 
+    genres = request.args.getlist("genre")
+    if genres:
+        placeholders = ", ".join("?" for _ in genres)
+        conditions.append(f"LOWER(genre) IN ({placeholders})")
+        params.extend(g.lower() for g in genres)
+
+    query = "SELECT * FROM movies"
+    if conditions:
+        query += " WHERE " + " AND ".join(conditions)
+
+    cursor.execute(query, params)
     rows = cursor.fetchall()
     movies = [row_to_movie(row) for row in rows]
     conn.close()
