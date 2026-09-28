@@ -70,6 +70,20 @@ def get_movies_json():
     conn.close()
     return jsonify(movies)                
 
+@app.route("/api/movies/<int:movie_id>")
+def get_movie_by_id(movie_id):
+    conn = get_db_connection()
+    row = conn.execution("SELECT * FROM movies WHERE id = ?", ( movie_id,)).fetchone()
+    conn.close()
+
+    if row is None:
+        return jsonify({"error": f"Movie {movie_id} not found"})
+    
+    return jsonify(row_to_movie(row))
+
+
+                         
+
 
 if __name__ == "__main__":
     app.run(debug=True)
