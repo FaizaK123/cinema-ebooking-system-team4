@@ -50,6 +50,8 @@ def get_movies_json():
     params = []
 
     title = request.args.get("title")
+    genre = request.args.get("genre")
+
     if title:
         conditions.append("title LIKE ?")
         params.append(f"%{title}%")
