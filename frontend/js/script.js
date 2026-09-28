@@ -363,11 +363,32 @@ async function renderMoviePage() {
         poster.src = movie.poster;
         poster.alt = movie.title;
 
+        setUpTrailer(movie);
         renderMovieShowtimes(showtimesContainer, movie);
     } catch (err) {
         console.error(err);
         showError("Couldnt load this movie. Try again");
     }
+}
+
+/* - Trailer Handling */
+function setUpTrailer(movie) {
+    const trailerButton = document.getElementById("trailer-button");
+    const trailerBox = document.getElementById("movie-trailer");
+    if (!trailerButton || !trailerBox || !movie.trailer) return;
+
+    trailerButton.addEventListener("click", () => {
+        if (trailerBox.hidden) {
+            trailerBox.innerHTML = `
+                <iframe src="${movie.trailer}?autoplay=1" title="${movie.title} trailer"
+                    allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen
+                    referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
+            trailerBox.hidden = false;
+        } else {
+            trailerBox.innerHTML = "";
+            trailerBox.hidden = true;
+        }
+    });
 }
 
 if (document.getElementById("movie-title")) {
