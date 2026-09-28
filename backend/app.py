@@ -47,8 +47,18 @@ def get_movies_json():
     cursor = conn.cursor()
 
     title = request.args.get("title")
+    genre = request.args.get("genre")
+
     if title:
-        cursor.execute("SELECT * FROM movies WHERE title LIKE ?", (f"%{title}%",))
+        cursor.execute(
+            "SELECT * FROM movies WHERE title LIKE ?",
+            (f"%{title}%",)
+        )
+    elif genre:
+        cursor.execute(
+            "SELECT * FROM movies WHERE genre = ?",
+            (genre,)
+        )
     else:
         cursor.execute("SELECT * FROM movies")
 
