@@ -29,63 +29,63 @@ function getNextTwoWeekDates() {
 }
 const nextTwoWeekDates = getNextTwoWeekDates();
 
-/* Shared Movie Catalog - TEMPORARY */
-const movieCatalog = {
-    101: {
-        id: 101,
-        title: "Jaws",
-        poster: "images/moviePoster1.jpg",
-        rating: "PG",
-        runtime: "2 hr 4 min",
-        isCurrent: true,
-        showtimes: {
-            [nextTwoWeekDates[0].value]: ["6:30 PM", "8:45 PM"],
-            [nextTwoWeekDates[1].value]: ["2:15 PM"],
-            [nextTwoWeekDates[3].value]: ["7:00 PM"],
-            [nextTwoWeekDates[5].value]: ["4:30 PM"]
-        }
-    },
-    102: {
-        id: 102,
-        title: "The Silence of the Lambs",
-        poster: "images/moviePoster2.jpg",
-        rating: "R",
-        runtime: "1 hr 58 min",
-        isCurrent: true,
-        showtimes: {
-            [nextTwoWeekDates[0].value]: ["5:00 PM", "9:30 PM"],
-            [nextTwoWeekDates[1].value]: ["1:45 PM"],
-            [nextTwoWeekDates[4].value]: ["7:15 PM"]
-        }
-    },
-    103: {
-        id: 103,
-        title: "The Odyssey",
-        poster: "images/moviePoster3.jpg",
-        rating: "R",
-        runtime: "2 hr 19 min",
-        isCurrent: true,
-        showtimes: {
-            [nextTwoWeekDates[0].value]: ["1:00 PM"],
-            [nextTwoWeekDates[1].value]: ["4:45 PM"],
-            [nextTwoWeekDates[6].value]: ["6:00 PM"]
-        }
-    },
-    201: {
-        id: 201,
-        title: "Arrival",
-        poster: "images/moviePoster2.jpg",
-        releaseDate: "12/24/26",
-        isCurrent: false
-    },
-    202: {
-        id: 202,
-        title: "Dune",
-        poster: "images/moviePoster3.jpg",
-        releaseDate: "01/05/27",
-        isCurrent: false
-    }
-};
+// /* Shared Movie Catalog - TEMPORARY */
+// const movieCatalog = {
+//     101: {
+//         id: 101,
+//         title: "Jaws",
+//         poster: "images/moviePoster1.jpg",
+//         rating: "PG",
+//         runtime: "2 hr 4 min",
+//         isCurrent: true,
+//         showtimes: {
+//             [nextTwoWeekDates[0].value]: ["6:30 PM", "8:45 PM"],
+//             [nextTwoWeekDates[1].value]: ["2:15 PM"],
+//             [nextTwoWeekDates[3].value]: ["7:00 PM"],
+//             [nextTwoWeekDates[5].value]: ["4:30 PM"]
+//         }
+//     },
+//     102: {
+//         id: 102,
+//         title: "The Silence of the Lambs",
+//         poster: "images/moviePoster2.jpg",
+//         rating: "R",
+//         runtime: "1 hr 58 min",
+//         isCurrent: true,
+//         showtimes: {
+//             [nextTwoWeekDates[0].value]: ["5:00 PM", "9:30 PM"],
+//             [nextTwoWeekDates[1].value]: ["1:45 PM"],
+//             [nextTwoWeekDates[4].value]: ["7:15 PM"]
+//         }
+//     },
+//     103: {
+//         id: 103,
+//         title: "The Odyssey",
+//         poster: "images/moviePoster3.jpg",
+//         rating: "R",
+//         runtime: "2 hr 19 min",
+//         isCurrent: true,
+//         showtimes: {
+//             [nextTwoWeekDates[0].value]: ["1:00 PM"],
+//             [nextTwoWeekDates[1].value]: ["4:45 PM"],
+//             [nextTwoWeekDates[6].value]: ["6:00 PM"]
+//         }
+//     },
+//     201: {
+//         id: 201,
+//         title: "Arrival",
+//         poster: "images/moviePoster2.jpg",
+//         releaseDate: "12/24/26",
+//         isCurrent: false
+//     },
+//     202: {
+//         id: 202,
+//         title: "Dune",
+//         poster: "images/moviePoster3.jpg",
+//         releaseDate: "01/05/27",
+//         isCurrent: false
+//     }
+// };
 
 /* Home_Page Handling */
 
@@ -111,8 +111,19 @@ function renderMovieSection(movieCond, movies, showtimes = {}) {
     });
 }
 
-async function loadHomeMovies(title = "") {
-    const response = await fetch(`/api/movies?title=${encodeURIComponent(title)}`);
+async function loadHomeMovies() {
+    const params = new URLSearchParams();
+
+    const searchInput = document.querySelector(".search-input");
+    const title = searchInput ? searchInput.value.trim() : "";
+    if (title) {
+        params.append("title", title);
+    }
+
+    const checkedGenres = document.querySelectorAll(".homepage-filter-genre-section input:checked");
+    checkedGenres.forEach(box => params.append("genre", box.value));
+
+    const response = await fetch(`/api/movies?${params}`);
     const movies = await response.json();
 
     const currentMovies = movies.filter(movie => movie.isCurrent);
@@ -128,7 +139,7 @@ const searchInput = document.querySelector(".search-input");
 if (searchInput) {
     searchInput.addEventListener("keydown", (event) => {
         if (event.key === "Enter") {
-            loadHomeMovies(searchInput.value.trim());
+            loadHomeMovies();
         }
     });
 }
@@ -170,13 +181,14 @@ function getShowtimes(movieId) {
 }
 
 /* - Filter Section Handling */
-const genres = [
-    "Comedy",
-    "Horror",
-    "Adventure",
-    "Rom-Com",
-    "Thriller"
-];
+// const genres = [
+//     "Comedy",
+//     "Horror",
+//     "Adventure",
+//     "Rom-Com",
+//     "Thriller",
+//     "Sci-Fi"
+// ];
 
 const showtimeOptions = [
     { label: "Today", value: "today" },
@@ -217,13 +229,39 @@ function renderFilterOptions(options, selector, groupName = "genre") {
     });
 }
 
-renderFilterOptions(genres, ".homepage-filter-genre-section .filter-list", "genre");
+async function loadGenreFilters() {
+    try {
+        const response = await fetch("/api/genres");
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const genres = await response.json();
+        renderFilterOptions(genres, ".homepage-filter-genre-section .filter-list", "genre");
+    } catch (err) {
+        console.error("Couldn't load genres:", err);
+    }
+}
+
+loadGenreFilters();
 renderFilterOptions(showtimeOptions, ".homepage-filter-date-section .filter-list", "showtime");
+
+const genreSection = document.querySelector(".homepage-filter-genre-section");
+if (genreSection) {
+    genreSection.addEventListener("change", () => loadHomeMovies());
+}
 
 /* Movie_Page Handling */
 
 /* - Showtimes Section Handling */
-const movieDatabase = movieCatalog;
+// const movieDatabase = movieCatalog;
+
+function formatDateLabel(isoDate) {
+    // parse as local time; new date("YYYY-MM-DD")
+    const [year, month, day] = isoDate.split("-").map(Number);
+    return new Date(year, month - 1, day).toLocaleDateString("en-US", {
+        weekday: "short",
+        month: "short",
+        day: "numeric"
+    });
+}
 
 function renderMovieShowtimes(showtimesContainer, movie) {
     const dateSelect = showtimesContainer.querySelector("#showtime-date-select");
@@ -232,18 +270,35 @@ function renderMovieShowtimes(showtimesContainer, movie) {
 
     if (!dateSelect || !searchButton || !timesList) return;
 
-    const initialDate = nextTwoWeekDates.find((option) => movie.showtimes[option.value]) || nextTwoWeekDates[0];
+    const dates = Object.keys(movie.showtimes || {}).sort();
 
-    dateSelect.innerHTML = nextTwoWeekDates
-        .map((option) => `
-            <option value="${option.value}" ${option.value === initialDate.value ? "selected" : ""}>
-                ${option.label}
+    if (dates.length === 0){
+        showtimesContainer.innerHTML =
+            '<p class="moviepage-showtimes-empty-state">No showtimes available.</p>';
+        return;
+    }
+
+    dateSelect.innerHTML = dates
+        .map((date, i) => `
+            <option value="${date}" ${i === 0 ? "selected" : ""}>
+                ${formatDateLabel(date)}
             </option>
         `)
         .join("");
 
+
+
+    // const initialDate = nextTwoWeekDates.find((option) => movie.showtimes[option.value]) || nextTwoWeekDates[0];
+
+    // dateSelect.innerHTML = nextTwoWeekDates
+    //     .map((option) => `
+    //         <option value="${option.value}" ${option.value === initialDate.value ? "selected" : ""}>
+    //             ${option.label}
+    //         </option>
+    //     `)
+    //     .join("");
+
     function loadTimesForSelectedDate() {
-        const selectedDate = dateSelect.value;
         const times = movie.showtimes[selectedDate] || [];
 
         timesList.innerHTML = times.length
@@ -256,34 +311,64 @@ function renderMovieShowtimes(showtimesContainer, movie) {
 }
 
 /* - Rendering Movie Handling */
-function renderMoviePage() {
+async function renderMoviePage() {
     const title = document.getElementById("movie-title");
     const showtimesContainer = document.querySelector(".moviepage-showtimes-section");
     if (!title || !showtimesContainer) return;
 
-    const params = new URLSearchParams(window.location.search);
-    const movieId = Number(params.get("id"));
-    const movie = movieDatabase[movieId];
+    const movieId = new URLSearchParams(window.location.search).get("id")
 
-    if (!movie) {
-        title.textContent = "Movie not found";
+    function showError(message) {
+        title.textContent = message;
         showtimesContainer.innerHTML = "";
+    }
+
+    if (!movieId) {
+        showError("Movie not found!");
         return;
     }
 
-    const runtime = document.getElementById("movie-runtime");
-    const rating = document.getElementById("movie-rating");
-    const poster = document.getElementById("moviepage-movie-poster");
-    if (!runtime || !rating || !poster) return;
 
-    title.textContent = movie.title;
-    runtime.textContent = movie.runtime;
-    rating.textContent = movie.rating;
-    poster.src = movie.poster;
 
-    renderMovieShowtimes(showtimesContainer, movie);
-}
+//     const params = new URLSearchParams(window.location.search);
+//     const movieId = Number(params.get("id"));
+//     const movie = movieDatabase[movieId];
 
-if (document.getElementById("movie-title")) {
-    renderMoviePage();
+//     if (!movie) {
+//         title.textContent = "Movie not found";
+//         showtimesContainer.innerHTML = "";
+//         return;
+//     }
+
+    try {
+        const response = await fetch(`/api/movies/${encodeURIComponent(movieId)}`);
+        if (response.status === 404) {
+            showError("Movie not found");
+            return;
+        }
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const movie = await response.json();
+
+
+        const runtime = document.getElementById("movie-runtime");
+        const rating = document.getElementById("movie-rating");
+        const poster = document.getElementById("moviepage-movie-poster");
+        if (!runtime || !rating || !poster) return;
+
+        title.textContent = movie.title;
+        runtime.textContent = movie.runtime;
+        rating.textContent = movie.rating;
+        poster.src = movie.poster;
+        poster.alt = movie.title;
+
+        renderMovieShowtimes(showtimesContainer, movie);
+    } catch (err) {
+        console.error(err)
+        console.showError("Couldnt load this movie. Try again");
+    }
+
+    if (document.getElementById("movie-title")) {
+        renderMoviePage();
+    }
 }

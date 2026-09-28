@@ -46,26 +46,53 @@ def get_movies_json():
     conn = get_db_connection()
     cursor = conn.cursor()
 
+    conditions = []
+    params = []
+
     title = request.args.get("title")
     genre = request.args.get("genre")
 
     if title:
-        cursor.execute(
-            "SELECT * FROM movies WHERE title LIKE ?",
-            (f"%{title}%",)
-        )
-    elif genre:
-        cursor.execute(
-            "SELECT * FROM movies WHERE genre = ?",
-            (genre,)
-        )
-    else:
-        cursor.execute("SELECT * FROM movies")
+        conditions.append("title LIKE ?")
+        params.append(f"%{title}%")
 
+    genres = request.args.getlist("genre")
+    if genres:
+        placeholders = ", ".join("?" for _ in genres)
+        conditions.append(f"LOWER(genre) IN ({placeholders})")
+        params.extend(g.lower() for g in genres)
+
+    query = "SELECT * FROM movies"
+    if conditions:
+        query += " WHERE " + " AND ".join(conditions)
+
+    cursor.execute(query, params)
     rows = cursor.fetchall()
     movies = [row_to_movie(row) for row in rows]
     conn.close()
     return jsonify(movies)                
+
+@app.route("/api/movies/<int:movie_id>")
+def get_movie_by_id(movie_id):
+    conn = get_db_connection()
+    row = conn.execution("SELECT * FROM movies WHERE id = ?", ( movie_id,)).fetchone()
+    conn.close()
+
+    if row is None:
+        return jsonify({"error": f"Movie {movie_id} not found"})
+    
+    return jsonify(row_to_movie(row))
+
+@app.route("/api/genres")
+def get_genres():
+    conn = get_db_connection()
+    rows = conn.execute(
+        "SELECT DISTINCT genre FROM movies "
+        "WHERE genre IS NOT NULL AND genre != '' "
+        "ORDER BY genre"
+    ).fetchall()
+    conn.close()
+    return jsonify([row["genre"] for row in rows])
 
 
 if __name__ == "__main__":
