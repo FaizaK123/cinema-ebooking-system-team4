@@ -75,7 +75,7 @@ def get_movies_json():
 @app.route("/api/movies/<int:movie_id>")
 def get_movie_by_id(movie_id):
     conn = get_db_connection()
-    row = conn.execution("SELECT * FROM movies WHERE id = ?", ( movie_id,)).fetchone()
+    row = conn.execute("SELECT * FROM movies WHERE id = ?", ( movie_id,)).fetchone()
     conn.close()
 
     if row is None:

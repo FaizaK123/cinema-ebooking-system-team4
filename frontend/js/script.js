@@ -299,6 +299,7 @@ function renderMovieShowtimes(showtimesContainer, movie) {
     //     .join("");
 
     function loadTimesForSelectedDate() {
+        const selectedDate = dateSelect.value;
         const times = movie.showtimes[selectedDate] || [];
 
         timesList.innerHTML = times.length
@@ -364,11 +365,11 @@ async function renderMoviePage() {
 
         renderMovieShowtimes(showtimesContainer, movie);
     } catch (err) {
-        console.error(err)
-        console.showError("Couldnt load this movie. Try again");
+        console.error(err);
+        showError("Couldnt load this movie. Try again");
     }
+}
 
-    if (document.getElementById("movie-title")) {
-        renderMoviePage();
-    }
+if (document.getElementById("movie-title")) {
+    renderMoviePage();
 }
