@@ -305,6 +305,13 @@ function renderMovieShowtimes(showtimesContainer, movie) {
         timesList.innerHTML = times.length
             ? times.map((time) => `<button type="button" class="moviepage-showtime-button">${time}</button>`).join("")
             : '<p class="moviepage-showtimes-empty-state">No showtimes available for this date.</p>';
+
+        timesList.querySelectorAll(".moviepage-showtime-button").forEach((button) => {
+            button.addEventListener("click", () => {
+                const params = new URLSearchParams({ id: movie.id, date: selectedDate, time: button.textContent });
+                window.location.href = `Booking_Page.html?${params}`;
+            });
+        });
     }
 
     searchButton.addEventListener("click", loadTimesForSelectedDate);
@@ -393,7 +400,9 @@ function setUpTrailer(movie) {
 
 if (document.getElementById("movie-title")) {
     renderMoviePage();
-}}/* Booking_Page Handling */
+}
+
+/* Booking_Page Handling */
 
 async function renderBookingPage() {
     const title = document.getElementById("booking-movie-title");
