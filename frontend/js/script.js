@@ -164,11 +164,10 @@ function createMovieCard(movie, templateCard, options = {}) {
         releaseDate.textContent = movie.releaseDate;
     }
 
-    const button = card.querySelector(".movie-showtimes-button");
+    const button = card.querySelector(".movie-showtimes-button, .movie-trailer-button");
     if (button) {
-        if (options.showShowtimes === false) {
-            button.remove();
-        } else if (movie.id) {
+        button.textContent = options.showShowtimes === false ? "Details" : "Showtimes";
+        if (movie.id) {
             button.addEventListener("click", () => getShowtimes(movie.id));
         }
     }
@@ -362,13 +361,15 @@ async function renderMoviePage() {
         const runtime = document.getElementById("movie-runtime");
         const rating = document.getElementById("movie-rating");
         const poster = document.getElementById("moviepage-movie-poster");
-        if (!runtime || !rating || !poster) return;
+        const desc = document.getElementById("movie-description");
+        if (!runtime || !rating || !poster || !desc) return;
 
         title.textContent = movie.title;
         runtime.textContent = movie.runtime;
         rating.textContent = movie.rating;
         poster.src = movie.poster;
         poster.alt = movie.title;
+        desc.textContent = movie.description;
 
         setUpTrailer(movie);
         renderMovieShowtimes(showtimesContainer, movie);
