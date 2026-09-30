@@ -39,7 +39,7 @@ cursor.execute(table_creation_query)
 
 movie_rows = [
     ("The Odyssey", "Adventure", "R", "Odysseus faces a dangerous journey home after the Trojan War.", "images/odyssey.jpg", "https://www.youtube.com/embed/vyCVVjA28fo", "CURRENTLY_RUNNING", "2026-07-17", "2 hr 52 min"),
-    ("Jaws", "Horror", "PG", "A shark terrorizes a beach town.", "images/jaws.jpg", "https://www.youtube.com/embed/U1fu_sA7XhE", "CURRENTLY_RUNNING", "1975-06-20", "2 hr 4 min"),
+    ("Jaw", "Horror", "PG", "A shark terrorizes a beach town.", "images/jaws.jpg", "https://www.youtube.com/embed/U1fu_sA7XhE", "CURRENTLY_RUNNING", "1975-06-20", "2 hr 4 min"),
     ("The Silence of the Lambs", "Thriller", "R", "An FBI trainee seeks help from an imprisoned killer.", "images/silenceOfTheLambs.jpg", "https://www.youtube.com/embed/6iB21hsprAQ", "CURRENTLY_RUNNING", "1991-02-14", "1 hr 58 min"),
     ("Dune: Part Two", "Sci-Fi", "PG-13", "Paul Atreides unites with Chani and the Fremen while seeking revenge for his family.", "images/dunePartTwo.jpg", "https://www.youtube.com/embed/Way9Dexny3w", "CURRENTLY_RUNNING", "2024-03-01", "2 hr 46 min"),
     ("Oppenheimer", "Drama", "R", "The story of physicist J. Robert Oppenheimer and the creation of the atomic bomb.", "images/oppenheimer.jpg", "https://www.youtube.com/embed/bK6ldnjE3Y0", "CURRENTLY_RUNNING", "2023-07-21", "3 hr"),
