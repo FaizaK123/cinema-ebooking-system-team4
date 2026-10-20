@@ -11,9 +11,14 @@
 <body>
     <nav class="nav-bar">
         <button class="nav-bar-home-button" id="nav-bar-home-btn">CES</button>
-        <div class="nav-bar-search-area">
-            <input class="search-input" type="text" placeholder="Search by Title" />
-            <i class="fa-solid fa-magnifying-glass"></i>
+        <div class="nav-bar-search-login">
+            <div class="nav-bar-search-area">
+                <input class="search-input" type="text" placeholder="Search by Title" />
+            </div>
+            <div class="nav-bar-login">
+                <button class="nav-bar-login-button" id="nav-bar-login-btn" aria-label="Open login" aria-expanded="false"><i class="fa-solid fa-circle-user"></i></button>
+                <div id="login-popup" class="popup" hidden></div>
+            </div>
         </div>
     </nav>
     <div class="homepage-body">
@@ -61,5 +66,6 @@
             </div>
         </div>
     </div>
+    <script src="components/Login_Popup.js"></script>
 </body>
 </html>
