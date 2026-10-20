@@ -454,6 +454,15 @@ nav {
     height: 100vh;
 }
 
+.login-page-content.forgot-password {
+    height: 50vh;
+}
+
+.login-page-descr {
+    color: red;
+    margin: 0 0 1.5em 0;
+}
+
 .login-form {
     display: flex;
     flex-direction: column;
@@ -466,6 +475,22 @@ nav {
     margin-top: 1.5em;
     border: 2px dashed white;
     border-radius: 1em;
+}
+
+.login-form.forgot-password {
+    gap: 2em;
+}
+
+.forgot-password-error {
+    margin: 0;
+    color: #ff6b6b;
+    text-align: center;
+}
+
+.forgot-password-success {
+    margin: 0;
+    color: #75d98b;
+    text-align: center;
 }
 
 .login-form-section {
@@ -481,7 +506,10 @@ nav {
 }
 
 #user,
-#password {
+#password,
+#fp-email,
+#new-password,
+#confirm-password {
     width: 20vw;
     height: 1.5em;
     background-color: white;
@@ -490,11 +518,22 @@ nav {
     padding-left: 0.5em;
 }
 
+.login-form-forgot-password {
+    font-size: 16px;
+    border: none;
+    color: red;
+    background-color: transparent;
+}
+
+.login-form-forgot-password:hover {
+    text-decoration: underline;
+}
+
 .login-form-button {
-    width: 12vw; 
+    width: 15vw; 
     padding: 0.5em 0.75em;
     text-align: center;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 750;
     color: black;
     background-color: red;
@@ -505,4 +544,13 @@ nav {
 .login-form-button:hover {
     color: white;
     border: 2px dashed white;
+}
+
+.login-form-return-btn {
+    color: white;
+    text-decoration: underline;
+}
+
+.login-form-return-btn:hover {
+    color: red;
 }

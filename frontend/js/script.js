@@ -508,3 +508,59 @@ function updateBookingSummary() {
 if (document.getElementById("booking-movie-title")) {
     renderBookingPage();
 }
+
+/* Login_Page Handling */
+
+/* forgot password handling */
+const forgotPasswordForm = document.getElementById("forgot-password-form");
+function showForgotPasswordError() {
+    const errorMessage = document.getElementById("forgot-password-error");
+    if (errorMessage) {
+        errorMessage.hidden = false;
+    }
+}
+
+if (forgotPasswordForm) {
+    const errorMessage = document.getElementById("forgot-password-error");
+
+    forgotPasswordForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        errorMessage.hidden = true;
+        sessionStorage.setItem("passwordResetEmail", document.getElementById("fp-email").value.trim());
+        sessionStorage.setItem("passwordResetApproved", "true");
+        window.location.href = "Forgot_Password.html";
+    });
+}
+
+const resetPasswordForm = document.getElementById("reset-password-form");
+if (resetPasswordForm) {
+    if (sessionStorage.getItem("passwordResetApproved") !== "true") {
+        window.location.replace("Forgot_Password_Request.html");
+    } else {
+        const newPassword = document.getElementById("new-password");
+        const confirmPassword = document.getElementById("confirm-password");
+        const errorMessage = document.getElementById("reset-password-error");
+        const successMessage = document.getElementById("reset-password-success");
+
+        resetPasswordForm.addEventListener("submit", function (event) {
+            event.preventDefault();
+            errorMessage.hidden = true;
+            successMessage.hidden = true;
+
+            if (newPassword.value !== confirmPassword.value) {
+                errorMessage.textContent = "The passwords do not match. Please try again.";
+                errorMessage.hidden = false;
+                confirmPassword.focus();
+                return;
+            }
+
+            sessionStorage.removeItem("passwordResetApproved");
+            sessionStorage.removeItem("passwordResetEmail");
+            resetPasswordForm.querySelectorAll("input").forEach(function (input) {
+                input.disabled = true;
+            });
+            resetPasswordForm.querySelector("button[type='submit']").disabled = true;
+            successMessage.hidden = false;
+        });
+    }
+}
