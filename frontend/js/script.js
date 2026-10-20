@@ -564,3 +564,17 @@ if (resetPasswordForm) {
         });
     }
 }
+
+/* Signup_Page Handling */ 
+
+/* show password handling */
+const passwordInput = document.getElementById("password");
+const passwordToggle = document.getElementById("toggle-password");
+if (passwordInput && passwordToggle) {
+    passwordToggle.addEventListener("click", function () {
+        const isVisible = passwordInput.type === "text";
+        passwordInput.type = isVisible ? "password" : "text";
+        passwordToggle.textContent = isVisible ? "Show password" : "Hide password";
+        passwordToggle.setAttribute("aria-pressed", String(!isVisible));
+    });
+}

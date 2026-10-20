@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinema E-Booking System</title>
+    <script src="js/script.js" defer></script>
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav class="nav-bar">
+        <button class="nav-bar-home-button" id="nav-bar-home-btn">CES</button>
+    </nav>
+    <div class="signup-page-content">
+        <h1 class="signup-page-title">Sign Up</h1>
+        <h4 class="signup-page-descr">Enter information to create account.</h4>
+        <form class="signup-form">
+            <div class="signup-form-section name">
+                <label class="signup-form-label name">Name *</label>
+                <input type="text" id="name" required />
+            </div>
+            <div class="signup-form-section email">
+                <label class="signup-form-label email">Email Address *</label>
+                <input type="text" id="email" required />
+            </div>
+            <div class="signup-form-section phone">
+                <label class="signup-form-label phone">Phone Number *</label>
+                <input type="tel" id="phone" required />
+            </div>
+            <div class="signup-form-section password">
+                <label class="signup-form-label name" for="password">Password *</label>
+                <div class="signup-password-controls">
+                    <input type="password" id="pswd" required />
+                    <button class="signup-password-toggle" id="toggle-password" type="button" aria-controls="password" aria-pressed="false"><i class="fa-solid fa-eye fa-1x"></i></button>
+                </div>
+            </div>
+            <div class="signup-form-section optional">
+                <button class="signup-form-add-button address">Add Address</button>
+                <button class="signup-form-add-button payment">Add Payment Info</button>
+            </div>
+            <button class="signup-form-button">Create Account</button>
+        </form>
+    </div>
+</body>

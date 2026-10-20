@@ -554,3 +554,122 @@ nav {
 .login-form-return-btn:hover {
     color: red;
 }
+
+/* Signup_Page.html CSS */
+.signup-page-content {
+    display: flex; 
+    flex-direction: column;
+    align-items: center;
+    height: 80vh;
+}
+
+.signup-page-descr {
+    color: red;
+    margin: 0 0 1.5em 0;
+}
+
+.signup-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5em;
+    max-width: 60%;
+    padding: 1.5em 2.5em;
+    margin-top: 1em;
+    border: 2px dashed white;
+    border-radius: 1em;
+}
+
+.signup-form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25em;
+}
+
+.signup-form-section.password {
+    width: 21vw;
+}
+
+.signup-form-section.optional {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5em;
+    margin: 0.5em 0;
+}
+
+.signup-form-label {
+    color: red;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+#name, 
+#email, 
+#phone,
+#pswd {
+    width: 20vw;
+    height: 1.5em;
+    background-color: white;
+    border: 2px solid red; 
+    border-radius: 1em;
+    padding-left: 0.5em;
+}
+
+#pswd {
+    width: 100%;
+}
+
+.signup-password-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.25em;
+}
+
+.signup-password-toggle {
+    padding: 0.25em 0.5em;
+    color: red;
+    background-color: black;
+    border: 1px solid red;
+    border-radius: 1em;
+    cursor: pointer;
+}
+
+.signup-password-toggle:hover {
+    color: red;
+    background-color: white;
+}
+
+.signup-form-add-button {
+    color: red;
+    background-color: black;
+    font-size: 14px;
+    font-weight: bold;
+    border: 2px solid white;
+    border-radius: 1em;
+    padding: 0.25em 0.75em;
+}
+
+.signup-form-add-button:hover {
+    color: red;
+    background-color: white;
+    border: 2px solid red;
+}
+
+.signup-form-button {
+    width: 15vw; 
+    padding: 0.5em 0.75em;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 750;
+    color: black;
+    background-color: red;
+    border: 2px solid white;
+    border-radius: 1em;
+}
+
+.signup-form-button:hover {
+    color: white;
+    border: 2px dashed white;
+}
