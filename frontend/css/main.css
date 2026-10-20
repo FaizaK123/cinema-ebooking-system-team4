@@ -560,7 +560,6 @@ nav {
     display: flex; 
     flex-direction: column;
     align-items: center;
-    height: 80vh;
 }
 
 .signup-page-descr {
@@ -576,7 +575,7 @@ nav {
     gap: 0.5em;
     max-width: 60%;
     padding: 1.5em 2.5em;
-    margin-top: 1em;
+    margin: 1em auto;
     border: 2px dashed white;
     border-radius: 1em;
 }
@@ -588,7 +587,7 @@ nav {
 }
 
 .signup-form-section.password {
-    width: 21vw;
+    width: 26vw;
 }
 
 .signup-form-section.optional {
@@ -608,8 +607,8 @@ nav {
 #name, 
 #email, 
 #phone,
-#pswd {
-    width: 20vw;
+#password {
+    width: 25vw;
     height: 1.5em;
     background-color: white;
     border: 2px solid red; 
@@ -617,7 +616,7 @@ nav {
     padding-left: 0.5em;
 }
 
-#pswd {
+#signup-form #password {
     width: 100%;
 }
 
@@ -672,4 +671,224 @@ nav {
 .signup-form-button:hover {
     color: white;
     border: 2px dashed white;
+}
+
+.signup-optional-summary {
+    width: 100%;
+    padding: 0.5em;
+    margin-top: 0.25em;
+    border: 1px solid white;
+    border-radius: 0.5em;
+    text-align: left;
+}
+
+.signup-optional-summary h4 {
+    color: red;
+}
+
+.signup-optional-summary h4,
+.signup-optional-summary p {
+    margin: 0 0 0.25em;
+}
+
+.signup-optional-summary ul {
+    margin: 0;
+    padding-left: 1.25em;
+}
+
+.signup-form-message {
+    margin: 0;
+    color: #75d98b;
+    text-align: center;
+}
+
+.signup-form-message.error {
+    color: #ff6b6b;
+}
+
+/* Address_Info_Page.html CSS */
+.address-info-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 80vh;
+}
+
+.address-page-descr {
+    color: red;
+    margin: 0 0 1.5em 0;
+}
+
+.address-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5em;
+    max-width: 60%;
+    padding: 1.5em 2.5em;
+    margin-top: 1em;
+    border: 2px dashed white;
+    border-radius: 1em;
+}
+
+.address-form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25em;
+}
+
+.address-form-message {
+    margin: 0;
+    color: #ff6b6b;
+    text-align: center;
+}
+
+.address-form-label {
+    color: red;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+#street,
+#city,
+#state,
+#zip {
+    width: 22vw;
+    height: 1.5em;
+    background-color: white;
+    border: 2px solid red;
+    border-radius: 1em;
+    padding-left: 0.5em;
+}
+
+#state,
+#zip {
+    width: 10vw;
+}
+
+.address-form-state-zip {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5em;
+}
+
+.address-form-button {
+    width: 15vw;
+    padding: 0.5em 0.75em;
+    margin-top: 0.5em;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 750;
+    color: black;
+    background-color: red;
+    border: 2px solid white;
+    border-radius: 1em;
+}
+
+.address-form-button:hover {
+    color: white;
+    border: 2px dashed white;
+}
+
+.address-form-return-btn {
+    margin-top: 0.5em;
+    color: white;
+    text-decoration: underline;
+}
+
+.address-form-return-btn:hover {
+    color: red;
+}
+
+/* Payment_Info_Page.html CSS */
+.payment-info-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 80vh;
+}
+
+.payment-page-descr {
+    color: red;
+    margin: 0 0 1.5em 0;
+}
+
+.payment-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5em;
+    max-width: 60%;
+    padding: 1.5em 2.5em;
+    margin-top: 1em;
+    border: 2px dashed white;
+    border-radius: 1em;
+}
+
+.payment-form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25em;
+}
+
+.payment-form-label {
+    color: red;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.payment-form-note,
+.payment-form-message {
+    margin: 0;
+    text-align: center;
+}
+
+.payment-form-note {
+    color: white;
+    font-size: 0.85em;
+}
+
+.payment-form-message {
+    color: #ff6b6b;
+}
+
+#card-num,
+#expire,
+#cvv {
+    width: 20vw;
+    height: 1.5em;
+    background-color: white;
+    border: 2px solid red;
+    border-radius: 1em;
+    padding-left: 0.5em;
+}
+
+.payment-form-button {
+    width: 15vw;
+    padding: 0.5em 0.75em;
+    margin-top: 0.5em;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 750;
+    color: black;
+    background-color: red;
+    border: 2px solid white;
+    border-radius: 1em;
+}
+
+.payment-form-button:hover {
+    color: white;
+    border: 2px dashed white;
+}
+
+.payment-form-return-btn {
+    margin-top: 0.5em;
+    color: white;
+    text-decoration: underline;
+}
+
+.payment-form-return-btn:hover {
+    color: red;
 }

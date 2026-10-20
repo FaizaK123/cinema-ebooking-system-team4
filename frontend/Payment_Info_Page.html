@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Info Page - Cinema E-Booking System</title>
+    <script src="js/script.js" defer></script>
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav class="nav-bar">
+        <button class="nav-bar-home-button" id="nav-bar-home-btn">CES</button>
+    </nav>
+    <div class="payment-info-content">
+        <h1 class="payment-page-title">Payment Info</h1>
+        <h4 class="payment-page-descr">Enter payment information to add it to your demo account.</h4>
+        <form class="payment-form" id="payment-form">
+            <div class="payment-form-section card-num">
+                <label class="payment-form-label card-num" for="card-num">Card Number *</label>
+                <input type="text" id="card-num" name="card-num" inputmode="numeric" autocomplete="cc-number" pattern="[0-9 ]{12,23}" maxlength="23" required />
+            </div>
+            <div class="payment-form-section expire">
+                <label class="payment-form-label expire" for="expire">Expiration Date *</label>
+                <input type="month" id="expire" name="expire" autocomplete="cc-exp" required />
+            </div>
+            <div class="payment-form-section cvv">
+                <label class="payment-form-label cvv" for="cvv">CVV/CVC *</label>
+                <input type="password" id="cvv" name="cvv" inputmode="numeric" autocomplete="off" pattern="[0-9]{3,4}" maxlength="4" required />
+            </div>
+            <p class="payment-form-note">Demo only: full card number and security code are not saved.</p>
+            <p class="payment-form-message" id="payment-form-message" role="alert" hidden></p>
+            <button class="payment-form-button" type="submit">Add Payment Card</button>
+            <a class="payment-form-return-btn" href="Signup_Page.html"><i class="fa-solid fa-chevron-left"></i>Return to Signup</a>
+        </form>
+    </div>
+</body>

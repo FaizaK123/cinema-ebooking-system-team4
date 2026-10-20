@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Address Info Page - Cinema E-Booking System</title>
+    <script src="js/script.js" defer></script>
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav class="nav-bar">
+        <button class="nav-bar-home-button" id="nav-bar-home-btn">CES</button>
+    </nav>
+    <div class="address-info-content">
+        <h1 class="address-page-title">Address Info</h1>
+        <h4 class="address-page-descr">Enter address information to save to account.</h4>
+        <form class="address-form" id="address-form">
+            <div class="address-form-section street">
+                <label class="address-form-label street" for="street">Street *</label>
+                <input type="text" id="street" name="street" required />
+            </div>
+            <div class="address-form-section city">
+                <label class="address-form-label city" for="city">City *</label>
+                <input type="text" id="city" name="city" required />
+            </div>
+            <div class="address-form-state-zip">
+                <div class="address-form-section state">
+                    <label class="address-form-label state" for="state">State *</label>
+                    <input type="text" id="state" name="state" required />
+                </div>
+                <div class="address-form-section zip">
+                    <label class="address-form-label zip" for="zip">Zip Code *</label>
+                    <input type="text" id="zip" name="zip" inputmode="numeric" required />
+                </div>
+            </div>
+            <p class="address-form-message" id="address-form-message" role="alert" hidden></p>
+            <button class="address-form-button" type="submit">Add Address</button>
+            <a class="address-form-return-btn" href="Signup_Page.html"><i class="fa-solid fa-chevron-left"></i>Return to Signup</a>
+        </form>
+    </div>
+</body>

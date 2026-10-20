@@ -29,64 +29,6 @@ function getNextTwoWeekDates() {
 }
 const nextTwoWeekDates = getNextTwoWeekDates();
 
-// /* Shared Movie Catalog - TEMPORARY */
-// const movieCatalog = {
-//     101: {
-//         id: 101,
-//         title: "Jaws",
-//         poster: "images/moviePoster1.jpg",
-//         rating: "PG",
-//         runtime: "2 hr 4 min",
-//         isCurrent: true,
-//         showtimes: {
-//             [nextTwoWeekDates[0].value]: ["6:30 PM", "8:45 PM"],
-//             [nextTwoWeekDates[1].value]: ["2:15 PM"],
-//             [nextTwoWeekDates[3].value]: ["7:00 PM"],
-//             [nextTwoWeekDates[5].value]: ["4:30 PM"]
-//         }
-//     },
-//     102: {
-//         id: 102,
-//         title: "The Silence of the Lambs",
-//         poster: "images/moviePoster2.jpg",
-//         rating: "R",
-//         runtime: "1 hr 58 min",
-//         isCurrent: true,
-//         showtimes: {
-//             [nextTwoWeekDates[0].value]: ["5:00 PM", "9:30 PM"],
-//             [nextTwoWeekDates[1].value]: ["1:45 PM"],
-//             [nextTwoWeekDates[4].value]: ["7:15 PM"]
-//         }
-//     },
-//     103: {
-//         id: 103,
-//         title: "The Odyssey",
-//         poster: "images/moviePoster3.jpg",
-//         rating: "R",
-//         runtime: "2 hr 19 min",
-//         isCurrent: true,
-//         showtimes: {
-//             [nextTwoWeekDates[0].value]: ["1:00 PM"],
-//             [nextTwoWeekDates[1].value]: ["4:45 PM"],
-//             [nextTwoWeekDates[6].value]: ["6:00 PM"]
-//         }
-//     },
-//     201: {
-//         id: 201,
-//         title: "Arrival",
-//         poster: "images/moviePoster2.jpg",
-//         releaseDate: "12/24/26",
-//         isCurrent: false
-//     },
-//     202: {
-//         id: 202,
-//         title: "Dune",
-//         poster: "images/moviePoster3.jpg",
-//         releaseDate: "01/05/27",
-//         isCurrent: false
-//     }
-// };
-
 /* Home_Page Handling */
 
 /* - Movie Poster Section Handling */
@@ -574,7 +516,252 @@ if (passwordInput && passwordToggle) {
     passwordToggle.addEventListener("click", function () {
         const isVisible = passwordInput.type === "text";
         passwordInput.type = isVisible ? "password" : "text";
-        passwordToggle.textContent = isVisible ? "Show password" : "Hide password";
+        passwordToggle.setAttribute("aria-label", isVisible ? "Show password" : "Hide password");
         passwordToggle.setAttribute("aria-pressed", String(!isVisible));
+        passwordToggle.querySelector("i").classList.toggle("fa-eye", isVisible);
+        passwordToggle.querySelector("i").classList.toggle("fa-eye-slash", !isVisible);
+    });
+}
+
+const signupForm = document.getElementById("signup-form");
+const signupDraftKey = "cinemaSignupDraft";
+
+function readSignupDraft() {
+    const savedDraft = sessionStorage.getItem(signupDraftKey);
+    return savedDraft ? JSON.parse(savedDraft) : {};
+}
+
+function showSignupMessage(message, isError) {
+    const messageElement = document.getElementById("signup-form-message");
+    if (messageElement) {
+        messageElement.textContent = message;
+        messageElement.classList.toggle("error", isError);
+        messageElement.hidden = false;
+    }
+}
+
+/* address and payment summary handling */
+
+function updateAddressSummary(address) {
+    const summary = document.getElementById("signup-address-summary");
+    const addressText = document.getElementById("signup-address-text");
+    if (!summary || !addressText || !address) return;
+
+    addressText.textContent = [
+        address.street,
+        `${address.city}, ${address.state} ${address.zip}`
+    ].join(", ");
+    summary.hidden = false;
+    document.getElementById("address").textContent = "Edit Address";
+}
+
+function updatePaymentSummary(payment) {
+    const summary = document.getElementById("signup-payment-summary");
+    const paymentList = document.getElementById("signup-payment-list");
+    const addPaymentButton = document.getElementById("payment");
+    if (!summary || !paymentList) return;
+
+    const payments = Array.isArray(payment) ? payment : payment ? [payment] : [];
+
+    paymentList.replaceChildren();
+    payments.forEach(function (card, index) {
+        const listItem = document.createElement("li");
+        listItem.textContent = `Card ${index + 1}: ending in ${card.last4}, expires ${card.expiration}`;
+        paymentList.appendChild(listItem);
+    });
+    summary.hidden = payments.length === 0;
+
+    if (addPaymentButton) {
+        const cardLimitReached = payments.length >= 3;
+        addPaymentButton.disabled = cardLimitReached;
+        addPaymentButton.textContent = cardLimitReached
+            ? "Maximum of 3 cards added"
+            : payments.length > 0 ? "Add Another Payment Card" : "Add Payment Info";
+    }
+}
+
+if (signupForm) {
+    let signupDraft = {};
+    try {
+        signupDraft = readSignupDraft();
+        signupForm.querySelectorAll("[name]").forEach(function (input) {
+            if (signupDraft[input.name] !== undefined) {
+                input.value = signupDraft[input.name];
+            }
+        });
+        updateAddressSummary(signupDraft.address);
+        updatePaymentSummary(signupDraft.payment);
+    } catch (error) {
+        console.error("Could not restore signup information:", error);
+        showSignupMessage("Saved signup information could not be restored.", true);
+    }
+
+    signupForm.addEventListener("input", function () {
+        try {
+            signupDraft = readSignupDraft();
+            signupForm.querySelectorAll("[name]").forEach(function (input) {
+                signupDraft[input.name] = input.value;
+            });
+            sessionStorage.setItem(signupDraftKey, JSON.stringify(signupDraft));
+        } catch (error) {
+            console.error("Could not save signup information:", error);
+            showSignupMessage("Signup information could not be saved in this browser.", true);
+        }
+    });
+
+    const addAddressButton = document.getElementById("address");
+    const editAddressButton = document.getElementById("edit-address");
+    [addAddressButton, editAddressButton].forEach(function (button) {
+        if (button) {
+            button.addEventListener("click", function () {
+                try {
+                    signupDraft = readSignupDraft();
+                    signupForm.querySelectorAll("[name]").forEach(function (input) {
+                        signupDraft[input.name] = input.value;
+                    });
+                    sessionStorage.setItem(signupDraftKey, JSON.stringify(signupDraft));
+                    window.location.href = "Address_Info_Page.html";
+                } catch (error) {
+                    console.error("Could not save signup information:", error);
+                    showSignupMessage("Could not save your information before opening the address form.", true);
+                }
+            });
+        }
+    });
+
+    signupForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        try {
+            signupDraft = readSignupDraft();
+            signupForm.querySelectorAll("[name]").forEach(function (input) {
+                signupDraft[input.name] = input.value;
+            });
+
+            const demoAccount = {
+                name: signupDraft.name,
+                email: signupDraft.email,
+                phone: signupDraft.phone,
+                password: signupDraft.password,
+                address: signupDraft.address || null,
+                payment: Array.isArray(signupDraft.payment) ? signupDraft.payment : []
+            };
+            localStorage.setItem("cinemaDemoAccount", JSON.stringify(demoAccount));
+            sessionStorage.removeItem(signupDraftKey);
+            showSignupMessage("Demo account saved in this browser. Connect a backend before using real accounts.", false);
+        } catch (error) {
+            console.error("Could not save demo account:", error);
+            showSignupMessage("The demo account could not be saved in this browser.", true);
+        }
+    });
+}
+
+const addressForm = document.getElementById("address-form");
+if (addressForm) {
+    const addressMessage = document.getElementById("address-form-message");
+    try {
+        const savedAddress = readSignupDraft().address;
+        if (savedAddress) {
+            ["street", "city", "state", "zip"].forEach(function (field) {
+                document.getElementById(field).value = savedAddress[field] || "";
+            });
+        }
+    } catch (error) {
+        console.error("Could not restore address information:", error);
+        addressMessage.textContent = "Saved address information could not be restored.";
+        addressMessage.hidden = false;
+    }
+
+    addressForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        addressMessage.hidden = true;
+        try {
+            const signupDraft = readSignupDraft();
+            signupDraft.address = {
+                street: document.getElementById("street").value.trim(),
+                city: document.getElementById("city").value.trim(),
+                state: document.getElementById("state").value.trim(),
+                zip: document.getElementById("zip").value.trim()
+            };
+            sessionStorage.setItem(signupDraftKey, JSON.stringify(signupDraft));
+            window.location.href = "Signup_Page.html";
+        } catch (error) {
+            console.error("Could not save address information:", error);
+            addressMessage.textContent = "The address could not be saved in this browser.";
+            addressMessage.hidden = false;
+        }
+    });
+}
+
+const paymentButton = document.getElementById("payment");
+if (paymentButton) {
+    const editPaymentButton = document.getElementById("edit-payment");
+    [paymentButton, editPaymentButton].forEach(function (button) {
+        if (button) {
+            button.addEventListener("click", function () {
+                window.location.href = "Payment_Info_Page.html";
+            });
+        }
+    });
+}
+
+const paymentForm = document.getElementById("payment-form");
+if (paymentForm) {
+    const message = document.getElementById("payment-form-message");
+    const addCardButton = paymentForm.querySelector("button[type='submit']");
+    let currentPayments = [];
+
+    try {
+        const savedPayments = readSignupDraft().payment;
+        currentPayments = Array.isArray(savedPayments)
+            ? savedPayments
+            : savedPayments ? [savedPayments] : [];
+    } catch (error) {
+        console.error("Could not read saved payment cards:", error);
+        message.textContent = "Saved payment information could not be read.";
+        message.hidden = false;
+        addCardButton.disabled = true;
+    }
+
+    if (currentPayments.length >= 3) {
+        message.textContent = "You have reached the maximum of 3 payment cards.";
+        message.hidden = false;
+        addCardButton.disabled = true;
+    }
+
+    paymentForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        message.hidden = true;
+
+        if (currentPayments.length >= 3) {
+            message.textContent = "You can add up to 3 payment cards.";
+            message.hidden = false;
+            return;
+        }
+
+        const cardNumber = document.getElementById("card-num").value.replace(/\s/g, "");
+        if (!/^\d{12,19}$/.test(cardNumber)) {
+            message.textContent = "Enter a card number containing 12 to 19 digits.";
+            message.hidden = false;
+            document.getElementById("card-num").focus();
+            return;
+        }
+
+        try {
+            const signupDraft = readSignupDraft();
+            const payments = Array.isArray(signupDraft.payment)
+                ? signupDraft.payment
+                : signupDraft.payment ? [signupDraft.payment] : [];
+            payments.push({
+                last4: cardNumber.slice(-4),
+                expiration: document.getElementById("expire").value
+            });
+            signupDraft.payment = payments;
+            sessionStorage.setItem(signupDraftKey, JSON.stringify(signupDraft));
+            window.location.href = "Signup_Page.html";
+        } catch (error) {
+            console.error("Could not save payment summary:", error);
+            message.textContent = "Payment information could not be saved in this browser.";
+            message.hidden = false;
+        }
     });
 }

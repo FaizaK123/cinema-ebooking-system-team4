@@ -15,31 +15,40 @@
     <div class="signup-page-content">
         <h1 class="signup-page-title">Sign Up</h1>
         <h4 class="signup-page-descr">Enter information to create account.</h4>
-        <form class="signup-form">
+        <form class="signup-form" id="signup-form">
             <div class="signup-form-section name">
-                <label class="signup-form-label name">Name *</label>
-                <input type="text" id="name" required />
+                <label class="signup-form-label name" for="name">Name *</label>
+                <input type="text" id="name" name="name" required />
             </div>
             <div class="signup-form-section email">
-                <label class="signup-form-label email">Email Address *</label>
-                <input type="text" id="email" required />
+                <label class="signup-form-label email" for="email">Email Address *</label>
+                <input type="email" id="email" name="email" required />
             </div>
             <div class="signup-form-section phone">
-                <label class="signup-form-label phone">Phone Number *</label>
-                <input type="tel" id="phone" required />
+                <label class="signup-form-label phone" for="phone">Phone Number *</label>
+                <input type="tel" id="phone" name="phone" required />
             </div>
             <div class="signup-form-section password">
                 <label class="signup-form-label name" for="password">Password *</label>
                 <div class="signup-password-controls">
-                    <input type="password" id="pswd" required />
-                    <button class="signup-password-toggle" id="toggle-password" type="button" aria-controls="password" aria-pressed="false"><i class="fa-solid fa-eye fa-1x"></i></button>
+                    <input type="password" id="password" name="password" required />
+                    <button class="signup-password-toggle" id="toggle-password" type="button" aria-label="Show password" aria-controls="password" aria-pressed="false"><i class="fa-solid fa-eye fa-1x"></i></button>
                 </div>
             </div>
+            <section class="signup-optional-summary" id="signup-address-summary" hidden aria-live="polite">
+                <h4 class="signup-optional-title">Address added</h4>
+                <p id="signup-address-text"></p>
+            </section>
+            <section class="signup-optional-summary" id="signup-payment-summary" hidden aria-live="polite">
+                <h4 class="signup-optional-title">Payment cards added</h4>
+                <ul id="signup-payment-list"></ul>
+            </section>
             <div class="signup-form-section optional">
-                <button class="signup-form-add-button address">Add Address</button>
-                <button class="signup-form-add-button payment">Add Payment Info</button>
+                <button class="signup-form-add-button address" id="address" type="button">Add Address</button>
+                <button class="signup-form-add-button payment" id="payment" type="button">Add Payment Info</button>
             </div>
-            <button class="signup-form-button">Create Account</button>
+            <p class="signup-form-message" id="signup-form-message" role="status" hidden></p>
+            <button class="signup-form-button" type="submit">Create Account</button>
         </form>
     </div>
 </body>
