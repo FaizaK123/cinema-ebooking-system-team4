@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Usage:
 #   ./run.sh            start the app (seeds the DB first if it has no movies table)
-#   ./run.sh --reset    delete backend/movies.db, re-seed it from dummy_db.py, then start
+#   ./run.sh --reset    delete backend/movies.db, re-seed it from seed_db.py, then start
 set -e
 
 # Always run from the project root (the folder this script lives in)
@@ -22,23 +22,20 @@ if [ -f "requirements.txt" ]; then
     pip install --quiet -r requirements.txt
 fi
 
-# 3. Database: reset on request, otherwise seed only if the table is missing
+# 3. Database: initialize schema and seed if empty
 if [ "$1" = "--reset" ]; then
     echo "Resetting database..."
     rm -f backend/movies.db
 fi
 
-if ! python3 - <<'EOF'
-import sqlite3, sys
-try:
-    conn = sqlite3.connect("backend/movies.db")
-    conn.execute("SELECT 1 FROM movies LIMIT 1")
-except sqlite3.OperationalError:
-    sys.exit(1)
-EOF
-then
-    echo "Seeding database from dummy_db.py..."
-    (cd backend && python3 dummy_db.py)
+# Create missing database tables
+echo "Initializing database schema..."
+python3 backend/init_db.py
+
+# Seed movies only if the movies table is empty
+if [ "$(python3 -c "import sqlite3; c=sqlite3.connect('backend/movies.db'); print(c.execute('SELECT COUNT(*) FROM movies').fetchone()[0]); c.close()")" = "0" ]; then
+    echo "Seeding initial movies..."
+    (cd backend && python3 seed_db.py)
 fi
 
 # 4. Start the server
