@@ -3,52 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cinema E-Booking System</title>
-    <script src="js/script.js" defer></script>
+    <title>Sign Up - Cinema E-Booking System</title>
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="js/api.js" defer></script>
+    <script src="js/script.js" defer></script>
+    <script src="js/account.js" defer></script>
 </head>
 <body>
     <nav class="nav-bar">
         <button class="nav-bar-home-button" id="nav-bar-home-btn">CES</button>
     </nav>
-    <div class="signup-page-content">
+    <main class="signup-page-content">
         <h1 class="signup-page-title">Sign Up</h1>
-        <h4 class="signup-page-descr">Enter information to create account.</h4>
-        <form class="signup-form" id="signup-form">
-            <div class="signup-form-section name">
-                <label class="signup-form-label name" for="name">Name *</label>
-                <input type="text" id="name" name="name" required />
-            </div>
-            <div class="signup-form-section email">
-                <label class="signup-form-label email" for="email">Email Address *</label>
-                <input type="email" id="email" name="email" required />
-            </div>
-            <div class="signup-form-section phone">
-                <label class="signup-form-label phone" for="phone">Phone Number *</label>
-                <input type="tel" id="phone" name="phone" required />
-            </div>
-            <div class="signup-form-section password">
-                <label class="signup-form-label name" for="password">Password *</label>
-                <div class="signup-password-controls">
-                    <input type="password" id="password" name="password" required />
-                    <button class="signup-password-toggle" id="toggle-password" type="button" aria-label="Show password" aria-controls="password" aria-pressed="false"><i class="fa-solid fa-eye fa-1x"></i></button>
+        <h4 class="signup-page-descr">Create an account to book tickets and save your favorite movies.</h4>
+
+        <section class="signup-success account-form" id="signup-success" hidden aria-live="polite">
+            <i class="fa-solid fa-envelope-circle-check fa-3x"></i>
+            <h2>Check your email</h2>
+            <p id="signup-success-text"></p>
+            <a class="login-form-button" href="Login_Page.html">Go to Login</a>
+        </section>
+
+        <form class="signup-form account-form" id="signup-form" novalidate>
+            <p class="required-note"><span class="required">*</span> Required field</p>
+
+            <fieldset class="form-group">
+                <legend>Personal Information</legend>
+                <div class="form-row">
+                    <div class="signup-form-section">
+                        <label class="signup-form-label" for="signup-first-name">First Name <span class="required">*</span></label>
+                        <input class="form-input" type="text" id="signup-first-name" data-field="firstName" autocomplete="given-name" maxlength="50" required />
+                        <p class="field-error" data-error-for="firstName" hidden></p>
+                    </div>
+                    <div class="signup-form-section">
+                        <label class="signup-form-label" for="signup-last-name">Last Name <span class="required">*</span></label>
+                        <input class="form-input" type="text" id="signup-last-name" data-field="lastName" autocomplete="family-name" maxlength="50" required />
+                        <p class="field-error" data-error-for="lastName" hidden></p>
+                    </div>
+                </div>
+                <div class="signup-form-section">
+                    <label class="signup-form-label" for="signup-email">Email Address <span class="required">*</span></label>
+                    <input class="form-input" type="email" id="signup-email" data-field="email" autocomplete="email" required />
+                    <p class="field-hint">We'll send a confirmation link here. Your email can't be changed later.</p>
+                    <p class="field-error" data-error-for="email" hidden></p>
+                </div>
+                <div class="signup-form-section">
+                    <label class="signup-form-label" for="signup-phone">Phone Number <span class="required">*</span></label>
+                    <input class="form-input" type="tel" id="signup-phone" data-field="phone" autocomplete="tel" placeholder="(706) 555-0123" required />
+                    <p class="field-error" data-error-for="phone" hidden></p>
+                </div>
+                <div class="signup-form-section">
+                    <label class="signup-form-label" for="signup-password">Password <span class="required">*</span></label>
+                    <div class="password-controls">
+                        <input class="form-input" type="password" id="signup-password" data-field="password" autocomplete="new-password" required aria-describedby="signup-password-hint" />
+                        <button class="password-toggle" type="button" data-toggle-password aria-controls="signup-password" aria-label="Show password" aria-pressed="false" title="Show password"><i class="fa-solid fa-eye"></i></button>
+                    </div>
+                    <p class="field-hint" id="signup-password-hint">At least 8 characters, with an uppercase letter, a lowercase letter and a number.</p>
+                    <p class="field-error" data-error-for="password" hidden></p>
+                </div>
+                <div class="signup-form-section">
+                    <label class="signup-form-label" for="signup-confirm-password">Confirm Password <span class="required">*</span></label>
+                    <input class="form-input" type="password" id="signup-confirm-password" data-field="confirmPassword" autocomplete="new-password" required />
+                    <p class="field-error" data-error-for="confirmPassword" hidden></p>
+                </div>
+                <label class="form-check" for="signup-promo">
+                    <input type="checkbox" id="signup-promo" /> Email me about promotions and special offers
+                </label>
+            </fieldset>
+
+            <fieldset class="form-group">
+                <legend>Home Address <span class="optional-tag">(optional)</span></legend>
+                <label class="form-check" for="signup-add-address">
+                    <input type="checkbox" id="signup-add-address" /> Add a home address
+                </label>
+                <div id="signup-address-fields" hidden>
+                    <div class="signup-form-section">
+                        <label class="signup-form-label" for="signup-street">Street <span class="required">*</span></label>
+                        <input class="form-input" type="text" id="signup-street" data-field="address.street" autocomplete="street-address" maxlength="100" />
+                        <p class="field-error" data-error-for="address.street" hidden></p>
+                    </div>
+                    <div class="form-row">
+                        <div class="signup-form-section">
+                            <label class="signup-form-label" for="signup-city">City <span class="required">*</span></label>
+                            <input class="form-input" type="text" id="signup-city" data-field="address.city" autocomplete="address-level2" maxlength="50" />
+                            <p class="field-error" data-error-for="address.city" hidden></p>
+                        </div>
+                        <div class="signup-form-section input-short">
+                            <label class="signup-form-label" for="signup-state">State <span class="required">*</span></label>
+                            <input class="form-input" type="text" id="signup-state" data-field="address.state" autocomplete="address-level1" maxlength="2" placeholder="GA" />
+                            <p class="field-error" data-error-for="address.state" hidden></p>
+                        </div>
+                        <div class="signup-form-section input-short">
+                            <label class="signup-form-label" for="signup-zip">Zip Code <span class="required">*</span></label>
+                            <input class="form-input" type="text" id="signup-zip" data-field="address.zip" autocomplete="postal-code" inputmode="numeric" maxlength="10" />
+                            <p class="field-error" data-error-for="address.zip" hidden></p>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset class="form-group">
+                <legend>Payment Cards <span class="optional-tag">(optional, up to 3)</span></legend>
+                <p class="field-hint">Card numbers are encrypted before they're stored. Your security code (CVV) is never stored.</p>
+                <div id="signup-card-list"></div>
+                <p class="field-error" data-error-for="cards" hidden></p>
+                <button class="signup-form-add-button" id="signup-add-card" type="button">Add Payment Card</button>
+            </fieldset>
+
+            <p class="form-message" id="signup-form-message" role="alert" hidden></p>
+            <button class="signup-form-button" type="submit">Create Account</button>
+            <p class="account-switch">Already have an account? <a href="Login_Page.html">Log in</a></p>
+        </form>
+
+        <template id="signup-card-template">
+            <div class="signup-card">
+                <div class="signup-card-header">
+                    <h4 class="signup-card-title">Card</h4>
+                    <button class="btn-secondary btn-small signup-card-remove" type="button">Remove</button>
+                </div>
+                <div class="signup-form-section">
+                    <label class="signup-form-label" data-for-field="cardholderName">Name on Card <span class="required">*</span></label>
+                    <input class="form-input" type="text" data-card-field="cardholderName" autocomplete="cc-name" maxlength="60" required />
+                    <p class="field-error" data-card-field="cardholderName" hidden></p>
+                </div>
+                <div class="signup-form-section">
+                    <label class="signup-form-label" data-for-field="number">Card Number <span class="required">*</span></label>
+                    <input class="form-input" type="text" data-card-field="number" inputmode="numeric" autocomplete="cc-number" maxlength="23" required />
+                    <p class="field-error" data-card-field="number" hidden></p>
+                </div>
+                <div class="form-row">
+                    <div class="signup-form-section">
+                        <label class="signup-form-label" data-for-field="expiration">Expiration <span class="required">*</span></label>
+                        <input class="form-input" type="month" data-card-field="expiration" autocomplete="cc-exp" required />
+                        <p class="field-error" data-card-field="expiration" hidden></p>
+                    </div>
+                    <div class="signup-form-section input-short">
+                        <label class="signup-form-label" data-for-field="cvv">CVV <span class="required">*</span></label>
+                        <input class="form-input" type="password" data-card-field="cvv" inputmode="numeric" autocomplete="off" maxlength="4" required />
+                        <p class="field-error" data-card-field="cvv" hidden></p>
+                    </div>
                 </div>
             </div>
-            <section class="signup-optional-summary" id="signup-address-summary" hidden aria-live="polite">
-                <h4 class="signup-optional-title">Address added</h4>
-                <p id="signup-address-text"></p>
-            </section>
-            <section class="signup-optional-summary" id="signup-payment-summary" hidden aria-live="polite">
-                <h4 class="signup-optional-title">Payment cards added</h4>
-                <ul id="signup-payment-list"></ul>
-            </section>
-            <div class="signup-form-section optional">
-                <button class="signup-form-add-button address" id="address" type="button">Add Address</button>
-                <button class="signup-form-add-button payment" id="payment" type="button">Add Payment Info</button>
-            </div>
-            <p class="signup-form-message" id="signup-form-message" role="status" hidden></p>
-            <button class="signup-form-button" type="submit">Create Account</button>
-        </form>
-    </div>
+        </template>
+    </main>
 </body>
+</html>

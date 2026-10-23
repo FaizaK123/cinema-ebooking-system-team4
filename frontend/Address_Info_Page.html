@@ -4,39 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Address Info Page - Cinema E-Booking System</title>
-    <script src="js/script.js" defer></script>
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="js/api.js" defer></script>
+    <script src="js/script.js" defer></script>
+    <script src="js/account.js" defer></script>
 </head>
 <body>
     <nav class="nav-bar">
         <button class="nav-bar-home-button" id="nav-bar-home-btn">CES</button>
     </nav>
-    <div class="address-info-content">
-        <h1 class="address-page-title">Address Info</h1>
-        <h4 class="address-page-descr">Enter address information to save to account.</h4>
-        <form class="address-form" id="address-form">
+    <main class="address-info-content">
+        <h1 class="address-page-title" id="address-page-title">Add Address</h1>
+        <h4 class="address-page-descr">Your account can have one home address. Saving replaces any address already on file.</h4>
+        <form class="address-form account-form" id="address-form" novalidate>
+            <p class="required-note"><span class="required">*</span> Required field</p>
             <div class="address-form-section street">
-                <label class="address-form-label street" for="street">Street *</label>
-                <input type="text" id="street" name="street" required />
+                <label class="address-form-label street" for="street">Street <span class="required">*</span></label>
+                <input class="form-input" type="text" id="street" name="street" data-field="street" autocomplete="street-address" maxlength="100" required />
+                <p class="field-error" data-error-for="street" hidden></p>
             </div>
             <div class="address-form-section city">
-                <label class="address-form-label city" for="city">City *</label>
-                <input type="text" id="city" name="city" required />
+                <label class="address-form-label city" for="city">City <span class="required">*</span></label>
+                <input class="form-input" type="text" id="city" name="city" data-field="city" autocomplete="address-level2" maxlength="50" required />
+                <p class="field-error" data-error-for="city" hidden></p>
             </div>
             <div class="address-form-state-zip">
                 <div class="address-form-section state">
-                    <label class="address-form-label state" for="state">State *</label>
-                    <input type="text" id="state" name="state" required />
+                    <label class="address-form-label state" for="state">State <span class="required">*</span></label>
+                    <input class="form-input" type="text" id="state" name="state" data-field="state" autocomplete="address-level1" maxlength="2" placeholder="GA" required />
+                    <p class="field-error" data-error-for="state" hidden></p>
                 </div>
                 <div class="address-form-section zip">
-                    <label class="address-form-label zip" for="zip">Zip Code *</label>
-                    <input type="text" id="zip" name="zip" inputmode="numeric" required />
+                    <label class="address-form-label zip" for="zip">Zip Code <span class="required">*</span></label>
+                    <input class="form-input" type="text" id="zip" name="zip" data-field="zip" autocomplete="postal-code" inputmode="numeric" maxlength="10" required />
+                    <p class="field-error" data-error-for="zip" hidden></p>
                 </div>
             </div>
-            <p class="address-form-message" id="address-form-message" role="alert" hidden></p>
+            <p class="form-message" id="address-form-message" role="alert" hidden></p>
             <button class="address-form-button" type="submit">Add Address</button>
-            <a class="address-form-return-btn" href="Signup_Page.html"><i class="fa-solid fa-chevron-left"></i>Return to Signup</a>
+            <a class="address-form-return-btn" href="Profile_Page.html"><i class="fa-solid fa-chevron-left"></i>Return to Profile</a>
         </form>
-    </div>
+    </main>
 </body>
+</html>

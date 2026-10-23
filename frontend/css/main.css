@@ -892,3 +892,391 @@ nav {
 .payment-form-return-btn:hover {
     color: red;
 }
+
+/* ===================================================================
+   Sprint 2: account pages (login, signup, password reset, profile,
+   admin portal), favorites hearts, form messages and toasts
+   =================================================================== */
+
+/* Elements with the hidden attribute stay hidden even if a rule sets display */
+[hidden] { display: none !important; }
+
+/* Shared form layout */
+.account-form {
+    width: min(560px, 92vw);
+    max-width: none;
+    height: auto;
+    box-sizing: border-box;
+    align-items: stretch;
+    text-align: left;
+}
+
+.signup-form.account-form { width: min(680px, 94vw); }
+
+.account-form .login-form-section,
+.account-form .signup-form-section,
+.account-form .address-form-section,
+.account-form .payment-form-section {
+    width: 100%;
+}
+
+.account-form .login-form-button,
+.account-form .signup-form-button,
+.account-form .address-form-button,
+.account-form .payment-form-button {
+    align-self: center;
+    width: auto;
+    min-width: 12em;
+    cursor: pointer;
+}
+
+.account-form .login-form-return-btn,
+.account-form .address-form-return-btn,
+.account-form .payment-form-return-btn { align-self: center; }
+
+.form-input,
+.account-form #fp-email,
+.account-form #new-password,
+.account-form #confirm-password,
+.account-form #street,
+.account-form #city,
+.account-form #state,
+.account-form #zip,
+.account-form #card-num,
+.account-form #expire,
+.account-form #cvv {
+    width: 100%;
+    height: 2.1em;
+    box-sizing: border-box;
+    padding: 0 0.75em;
+    color: black;
+    background-color: white;
+    border: 2px solid red;
+    border-radius: 1em;
+    font-size: 15px;
+}
+
+.form-input:focus {
+    outline: 3px solid white;
+    outline-offset: 1px;
+}
+
+.form-input:disabled {
+    color: #444;
+    background-color: #ccc;
+    border-color: #888;
+    cursor: not-allowed;
+}
+
+.form-input.input-invalid {
+    border-color: #ff6b6b;
+    box-shadow: 0 0 0 2px #ff6b6b;
+}
+
+.form-label {
+    color: red;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25em;
+    width: 100%;
+    margin-bottom: 0.6em;
+}
+
+.form-row {
+    display: flex;
+    gap: 1em;
+    width: 100%;
+}
+
+.form-row > * { flex: 1; min-width: 0; }
+.form-row > .input-short { flex: 0 0 7em; }
+
+.form-group {
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0.5em 0;
+    padding: 0.75em 1em 1em;
+    border: 1px solid #666;
+    border-radius: 0.75em;
+}
+
+.form-group legend {
+    padding: 0 0.4em;
+    color: red;
+    font-weight: bold;
+}
+
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    margin: 0.4em 0;
+    cursor: pointer;
+}
+
+.form-check input { width: 1.1em; height: 1.1em; accent-color: red; }
+
+.required { color: #ff6b6b; font-weight: bold; }
+.required-note { margin: 0 0 0.5em; font-size: 13px; color: #ccc; }
+.optional-tag { color: #ccc; font-weight: normal; font-size: 13px; }
+.field-hint { margin: 0; font-size: 13px; color: #bbb; }
+.field-error { margin: 0; font-size: 13px; color: #ff6b6b; }
+.field-error::before { content: "\26A0  "; }
+
+.form-message {
+    margin: 0.25em 0;
+    padding: 0.6em 0.8em;
+    border-radius: 0.5em;
+    border: 1px solid;
+    font-size: 14px;
+}
+
+.form-message.error { color: #ffb3b3; border-color: #ff6b6b; background-color: #3a0d0d; }
+.form-message.success { color: #b7f0c4; border-color: #75d98b; background-color: #0d2e16; }
+.form-message.info { color: #cfe3ff; border-color: #7aa7e8; background-color: #0e1d33; }
+
+.password-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+}
+
+.password-toggle {
+    flex-shrink: 0;
+    padding: 0.3em 0.5em;
+    color: black;
+    background-color: red;
+    border: 1px solid white;
+    border-radius: 1em;
+    cursor: pointer;
+}
+
+.password-toggle:hover { color: white; }
+
+.login-form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5em;
+}
+
+.login-form-options .login-form-forgot-password { padding: 0; text-decoration: none; }
+.login-form-options .login-form-forgot-password:hover { text-decoration: underline; }
+
+.account-switch { margin: 0.25em 0 0; text-align: center; font-size: 14px; }
+.account-switch a,
+.login-form-forgot-password { color: red; font-weight: bold; }
+
+/* Buttons */
+.btn-primary,
+.btn-secondary {
+    display: inline-block;
+    padding: 0.45em 1em;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 1em;
+    cursor: pointer;
+}
+
+.btn-primary { color: black; background-color: red; border: 2px solid white; }
+.btn-primary:hover { color: white; border-style: dashed; }
+.btn-secondary { color: white; background-color: transparent; border: 2px solid white; }
+.btn-secondary:hover { color: red; border-color: red; }
+.btn-small { padding: 0.2em 0.7em; font-size: 13px; }
+.btn-primary.disabled,
+button:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* Signup page */
+#signup-card-list { display: flex; flex-direction: column; gap: 0.75em; margin: 0.5em 0; }
+
+.signup-card {
+    padding: 0.75em 1em;
+    border: 1px dashed #888;
+    border-radius: 0.75em;
+}
+
+.signup-card-header { display: flex; justify-content: space-between; align-items: center; }
+.signup-card-title { margin: 0 0 0.4em; color: red; }
+.signup-form .signup-form-add-button { cursor: pointer; }
+
+.signup-success {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75em;
+    padding: 2em;
+    text-align: center;
+    border: 2px dashed white;
+    border-radius: 1em;
+}
+
+.signup-success h2 { margin: 0; color: red; }
+
+/* Favorites hearts (tooltip comes from the title attribute) */
+.favorite-heart {
+    padding: 0;
+    font-size: 1.4em;
+    color: white;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.15s;
+}
+
+.favorite-heart:hover,
+.favorite-heart:focus-visible { color: red; transform: scale(1.2); }
+.favorite-heart.is-favorite { color: red; }
+.moviepage-info-favorite-movie.is-favorite i { color: white; }
+
+/* Account button / popup when logged in */
+.nav-bar-login-button.logged-in { color: white; }
+.login-popup-greeting { margin: 0 0 0.25em; font-weight: bold; }
+.login-popup-greeting:empty { display: none; }
+
+/* Toast messages */
+.toast {
+    position: fixed;
+    right: 1.5em;
+    bottom: 1.5em;
+    z-index: 1000;
+    max-width: min(360px, 85vw);
+    padding: 0.8em 1.1em;
+    color: white;
+    background-color: #111;
+    border: 2px solid #75d98b;
+    border-radius: 0.75em;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6);
+    opacity: 0;
+    transform: translateY(1em);
+    transition: opacity 0.25s, transform 0.25s;
+    pointer-events: none;
+}
+
+.toast.visible { opacity: 1; transform: translateY(0); }
+.toast[data-type="error"] { border-color: #ff6b6b; }
+.toast[data-type="info"] { border-color: #7aa7e8; }
+
+/* Profile page */
+.profile-page,
+.admin-portal {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5em;
+}
+
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1em;
+}
+
+.profile-title { margin: 0 0 0.25em; }
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+    gap: 1.25em;
+}
+
+.profile-card {
+    width: auto;
+    padding: 1.25em 1.5em;
+    border: 2px dashed white;
+    border-radius: 1em;
+}
+
+.profile-card h2 { margin: 0 0 0.75em; color: red; font-size: 1.2em; }
+.profile-wide { grid-column: 1 / -1; }
+.profile-actions { display: flex; gap: 0.6em; margin-top: 0.75em; }
+.profile-empty { color: #bbb; }
+
+.profile-card-list { margin: 0; padding: 0; list-style: none; }
+
+.profile-card-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75em;
+    padding: 0.5em 0;
+    border-bottom: 1px solid #333;
+}
+
+.profile-genre-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    margin-bottom: 0.5em;
+}
+
+.profile-favorites {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 1em;
+}
+
+.profile-favorite {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4em;
+    text-align: center;
+}
+
+.profile-favorite a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4em;
+    color: white;
+    font-size: 13px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.profile-favorite img { height: 12em; border: 1px solid white; }
+.profile-favorite a:hover span { color: red; }
+
+/* Admin portal */
+.nav-bar-label { font-weight: bold; color: black; }
+.nav-logout { color: black; border-color: black; }
+.nav-logout:hover { color: white; border-color: white; }
+
+.admin-menu {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25em;
+    margin-top: 1.5em;
+}
+
+.admin-menu-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6em;
+    padding: 2em 1em;
+    color: white;
+    background-color: #111;
+    border: 2px dashed white;
+    border-radius: 1em;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.admin-menu-item i { color: red; }
+.admin-menu-item:hover { border-color: red; background-color: #1d0505; }
+.admin-menu-title { font-size: 1.15em; font-weight: bold; }
+.admin-menu-stat { font-size: 13px; color: #bbb; }
+
+@media (max-width: 700px) {
+    .form-row { flex-direction: column; gap: 0; }
+    .form-row > .input-short { flex: 1; }
+    .profile-grid { grid-template-columns: 1fr; }
+}

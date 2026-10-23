@@ -95,7 +95,8 @@ def register():
         conn.close()
 
     if errors:
-        return _errors_response(errors, 409 if set(errors) <= {"email", "phone"} else 400)
+        duplicate = errors.get("email", "").startswith("An account") or errors.get("phone", "").startswith("This phone")
+        return _errors_response(errors, 409 if duplicate and set(errors) <= {"email", "phone"} else 400)
 
     try:
         with db_transaction() as conn:
@@ -107,9 +108,13 @@ def register():
             for card in cards:
                 CardRepository.add(conn, user_id, card, encrypt_card_number(card["number"]))
             send_email = _send_verification(conn, user_id, first_name, email)
-    except sqlite3.IntegrityError:
+    except sqlite3.IntegrityError as error:
         # Another request registered the same email/phone at the same moment.
-        return _errors_response({"email": "An account with this email or phone already exists."}, 409)
+        if "users.email" in str(error):
+            return _errors_response({"email": "An account with this email already exists. Try logging in instead."}, 409)
+        if "users.phone_num" in str(error):
+            return _errors_response({"phone": "This phone number is already linked to another account."}, 409)
+        raise
 
     email_sent = send_email()
     if email_sent:

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal - Cinema E-Booking System</title>
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="js/api.js" defer></script>
+    <script src="js/script.js" defer></script>
+    <script src="js/account.js" defer></script>
+</head>
+<body>
+    <nav class="nav-bar">
+        <button class="nav-bar-home-button" id="nav-bar-home-btn">CES</button>
+        <span class="nav-bar-label">Admin Portal</span>
+        <button class="btn-secondary nav-logout" id="admin-logout" type="button"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+    </nav>
+    <main class="admin-portal" id="admin-portal">
+        <h1 class="profile-title" id="admin-greeting">Welcome</h1>
+        <p class="field-hint">Choose what you'd like to manage.</p>
+
+        <div class="admin-menu" role="list">
+            <button class="admin-menu-item" type="button" role="listitem" data-section="Manage Movies">
+                <i class="fa-solid fa-film fa-2x"></i>
+                <span class="admin-menu-title">Manage Movies</span>
+                <span class="admin-menu-stat" id="admin-stat-movies"></span>
+            </button>
+            <button class="admin-menu-item" type="button" role="listitem" data-section="Showtimes">
+                <i class="fa-solid fa-clock fa-2x"></i>
+                <span class="admin-menu-title">Showtimes</span>
+                <span class="admin-menu-stat">Schedule movies in showrooms</span>
+            </button>
+            <button class="admin-menu-item" type="button" role="listitem" data-section="Promotions">
+                <i class="fa-solid fa-tags fa-2x"></i>
+                <span class="admin-menu-title">Promotions</span>
+                <span class="admin-menu-stat" id="admin-stat-promotions"></span>
+            </button>
+            <button class="admin-menu-item" type="button" role="listitem" data-section="Users">
+                <i class="fa-solid fa-users fa-2x"></i>
+                <span class="admin-menu-title">Users</span>
+                <span class="admin-menu-stat" id="admin-stat-customers"></span>
+            </button>
+        </div>
+    </main>
+</body>
+</html>
