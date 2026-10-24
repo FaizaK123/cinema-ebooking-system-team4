@@ -3,14 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cinema E-Booking System</title>
+    <title>Movie Page - Cinema E-Booking System</title>
     <link rel="stylesheet" href="css/main.css" />
+    <script src="js/api.js" defer></script>
     <script src="js/script.js" defer></script>
+    <script src="components/Login_Popup.js" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <nav class="nav-bar">
         <button class="nav-bar-home-button" id="nav-bar-home-btn">CES</button>
+        <div class="nav-bar-login">
+            <button class="nav-bar-login-button" id="nav-bar-login-btn" aria-label="Open account menu" aria-expanded="false" title="Account"><i class="fa-solid fa-circle-user"></i></button>
+            <div id="login-popup" class="popup" hidden></div>
+        </div>
     </nav>
     <div class="moviepage-body">
         <div class="moviepage-info-section">
@@ -25,7 +31,7 @@
             </div>
             <div class="moviepage-info-buttons-section">
                 <button class="moviepage-info-movie-trailer" id="trailer-button"><i class="fa-solid fa-play"></i> Trailer</button>
-                <button class="moviepage-info-favorite-movie" id="favorite-button"><i class="fa-regular fa-heart"></i> Favorite</button>
+                <button class="moviepage-info-favorite-movie" id="favorite-button" type="button" title="Add to favorites" aria-label="Add to favorites"><i class="fa-regular fa-heart"></i> Favorite</button>
             </div>
             <div class="moviepage-trailer" id="movie-trailer" hidden></div>
             <img class="moviepage-info-movie-poster" id="moviepage-movie-poster" src="" alt="" />

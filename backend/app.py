@@ -1,98 +1,77 @@
-import os
-from flask import Flask, send_from_directory, jsonify, request
-import sqlite3
-from datetime import date, timedelta
+"""Flask entry point: serves the frontend pages and registers the API routes.
+
+Layers:
+    frontend/            presentation (HTML/CSS/JS)
+    backend/routes/      controllers: HTTP endpoints, input validation, responses
+    backend/security.py, email_service.py, validators.py   services
+    backend/repositories.py, db.py                         data access (all SQL)
+"""
+from datetime import timedelta
+from urllib.parse import quote
+
+from flask import Flask, redirect, request, send_from_directory
+
+import config
+from routes.admin import admin_bp
+from routes.auth import auth_bp
+from routes.movies import movies_bp
+from routes.profile import profile_bp
+from security import current_user
+
+app = Flask(__name__, static_folder=str(config.FRONTEND_DIR), static_url_path="")
+app.config.update(
+    SECRET_KEY=config.SECRET_KEY,
+    SESSION_COOKIE_HTTPONLY=True,      # JavaScript can't read the session cookie
+    SESSION_COOKIE_SAMESITE="Lax",     # other sites can't send requests with it
+    PERMANENT_SESSION_LIFETIME=timedelta(days=config.REMEMBER_ME_DAYS),
+)
+
+app.register_blueprint(movies_bp)
+app.register_blueprint(auth_bp)
+app.register_blueprint(profile_bp)
+app.register_blueprint(admin_bp)
+
+# Pages that need a login, and which role may open them (lowercase, since Windows file names aren't case-sensitive).
+PROTECTED_PAGES = {
+    "/profile_page.html": "CUSTOMER",
+    "/address_info_page.html": "CUSTOMER",
+    "/payment_info_page.html": "CUSTOMER",
+    "/admin_home.html": "ADMIN",
+}
+# Pages a logged-in user doesn't need, so they're sent to their home page instead.
+LOGGED_OUT_ONLY_PAGES = {"/login_page.html", "/signup_page.html"}
 
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-FRONTEND_DIR = os.path.join(BASE_DIR, "..", "frontend")
-DB_PATH = os.path.join(BASE_DIR, "movies.db")
-SHOWTIMES = ["2:00 PM", "5:00 PM", "8:00 PM"]
+def _home_for(user):
+    return "/Admin_Home.html" if user.role == "ADMIN" else "/Home_Page.html"
 
-app = Flask(__name__, static_folder=FRONTEND_DIR, static_url_path="")
 
-def get_db_connection():
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    return conn
+@app.before_request
+def enforce_page_access():
+    path = request.path.lower()
+    if path in PROTECTED_PAGES:
+        user = current_user()
+        if user is None:
+            return redirect(f"/Login_Page.html?next={quote(request.full_path.rstrip('?'))}")
+        if user.role != PROTECTED_PAGES[path]:
+            return redirect("/Access_Denied.html")
+    elif path in LOGGED_OUT_ONLY_PAGES:
+        user = current_user()
+        if user is not None:
+            return redirect(_home_for(user))
 
-def build_showtimes():
-    return {
-        (date.today() + timedelta(days=i)).isoformat(): SHOWTIMES
-        for i in range(14)
-    }
 
-def row_to_movie(row):
-    return {
-        "id": row["id"],
-        "title": row["title"],
-        "releaseDate": row["release_date"],
-        "rating": row["rating"],
-        "runtime": row["runtime"],
-        "isCurrent": row["status"] == "CURRENTLY_RUNNING",
-        "genre": row["genre"],
-        "description": row["description"],
-        "trailer": row["trailer"],
-        "poster": row["poster"],
-        "showtimes": build_showtimes() if row["status"] == "CURRENTLY_RUNNING" else {}
-    }
+@app.after_request
+def no_cache_for_private_data(response):
+    """Stop the browser from showing a cached profile/admin page after logout (Back button)."""
+    if request.path.startswith("/api/") or request.path.lower() in PROTECTED_PAGES:
+        response.headers["Cache-Control"] = "no-store"
+    return response
+
 
 @app.route("/")
 def home():
-    return send_from_directory(FRONTEND_DIR, "Home_Page.html")
-
-@app.route("/api/movies")
-def get_movies_json():
-    conn = get_db_connection()
-    cursor = conn.cursor()
-
-    conditions = []
-    params = []
-
-    title = request.args.get("title")
-    genre = request.args.get("genre")
-
-    if title:
-        conditions.append("title LIKE ?")
-        params.append(f"%{title}%")
-
-    genres = request.args.getlist("genre")
-    if genres:
-        placeholders = ", ".join("?" for _ in genres)
-        conditions.append(f"LOWER(genre) IN ({placeholders})")
-        params.extend(g.lower() for g in genres)
-
-    query = "SELECT * FROM movies"
-    if conditions:
-        query += " WHERE " + " AND ".join(conditions)
-
-    cursor.execute(query, params)
-    rows = cursor.fetchall()
-    movies = [row_to_movie(row) for row in rows]
-    conn.close()
-    return jsonify(movies)                
-
-@app.route("/api/movies/<int:movie_id>")
-def get_movie_by_id(movie_id):
-    conn = get_db_connection()
-    row = conn.execute("SELECT * FROM movies WHERE id = ?", ( movie_id,)).fetchone()
-    conn.close()
-
-    if row is None:
-        return jsonify({"error": f"Movie {movie_id} not found"})
-    
-    return jsonify(row_to_movie(row))
-
-@app.route("/api/genres")
-def get_genres():
-    conn = get_db_connection()
-    rows = conn.execute(
-        "SELECT DISTINCT genre FROM movies "
-        "WHERE genre IS NOT NULL AND genre != '' "
-        "ORDER BY genre"
-    ).fetchall()
-    conn.close()
-    return jsonify([row["genre"] for row in rows])
+    return send_from_directory(config.FRONTEND_DIR, "Home_Page.html")
 
 
 if __name__ == "__main__":

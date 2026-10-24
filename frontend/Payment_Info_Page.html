@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Info Page - Cinema E-Booking System</title>
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="js/api.js" defer></script>
+    <script src="js/script.js" defer></script>
+    <script src="js/account.js" defer></script>
+</head>
+<body>
+    <nav class="nav-bar">
+        <button class="nav-bar-home-button" id="nav-bar-home-btn">CES</button>
+    </nav>
+    <main class="payment-info-content">
+        <h1 class="payment-page-title">Add Payment Card</h1>
+        <h4 class="payment-page-descr">You can save up to 3 payment cards to your account.</h4>
+        <form class="payment-form account-form" id="payment-form" novalidate>
+            <p class="required-note"><span class="required">*</span> Required field</p>
+            <div class="payment-form-section card-name">
+                <label class="payment-form-label card-name" for="card-name">Name on Card <span class="required">*</span></label>
+                <input class="form-input" type="text" id="card-name" name="card-name" data-field="cardholderName" autocomplete="cc-name" maxlength="60" required />
+                <p class="field-error" data-error-for="cardholderName" hidden></p>
+            </div>
+            <div class="payment-form-section card-num">
+                <label class="payment-form-label card-num" for="card-num">Card Number <span class="required">*</span></label>
+                <input class="form-input" type="text" id="card-num" name="card-num" data-field="number" inputmode="numeric" autocomplete="cc-number" maxlength="23" required />
+                <p class="field-error" data-error-for="number" hidden></p>
+            </div>
+            <div class="payment-form-section expire">
+                <label class="payment-form-label expire" for="expire">Expiration Date <span class="required">*</span></label>
+                <input class="form-input" type="month" id="expire" name="expire" data-field="expiration" autocomplete="cc-exp" required />
+                <p class="field-error" data-error-for="expiration" hidden></p>
+            </div>
+            <div class="payment-form-section cvv">
+                <label class="payment-form-label cvv" for="cvv">CVV/CVC <span class="required">*</span></label>
+                <input class="form-input" type="password" id="cvv" name="cvv" data-field="cvv" inputmode="numeric" autocomplete="off" maxlength="4" required />
+                <p class="field-error" data-error-for="cvv" hidden></p>
+            </div>
+            <p class="payment-form-note"><i class="fa-solid fa-lock"></i> Your card number is encrypted before it's stored. The security code (CVV) is only checked and is never stored.</p>
+            <p class="form-message" id="payment-form-message" role="alert" hidden></p>
+            <button class="payment-form-button" type="submit">Add Payment Card</button>
+            <a class="payment-form-return-btn" href="Profile_Page.html"><i class="fa-solid fa-chevron-left"></i>Return to Profile</a>
+        </form>
+    </main>
+</body>
+</html>

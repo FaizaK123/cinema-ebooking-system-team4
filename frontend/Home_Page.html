@@ -3,17 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cinema E-Booking System</title>
+    <title>Home Page - Cinema E-Booking System</title>
     <link rel="stylesheet" href="css/main.css" />
+    <script src="js/api.js" defer></script>
     <script src="js/script.js" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <nav class="nav-bar">
         <button class="nav-bar-home-button" id="nav-bar-home-btn">CES</button>
-        <div class="nav-bar-search-area">
-            <input class="search-input" type="text" placeholder="Search by Title" />
-            <i class="fa-solid fa-magnifying-glass"></i>
+        <div class="nav-bar-search-login">
+            <div class="nav-bar-search-area">
+                <input class="search-input" type="text" placeholder="Search by Title" />
+            </div>
+            <div class="nav-bar-login">
+                <button class="nav-bar-login-button" id="nav-bar-login-btn" aria-label="Open login" aria-expanded="false"><i class="fa-solid fa-circle-user"></i></button>
+                <div id="login-popup" class="popup" hidden></div>
+            </div>
         </div>
     </nav>
     <div class="homepage-body">
@@ -24,6 +30,7 @@
                     <div class="movie-card">
                         <img class="movie-poster" src="" alt="" />
                         <h3 class="movie-title"></h3>
+                        <button class="favorite-heart" type="button" title="Add to favorites" aria-label="Add to favorites"><i class="fa-regular fa-heart"></i></button>
                         <button class="movie-showtimes-button">Showtimes</button>
                     </div>
                 </div>
@@ -34,6 +41,7 @@
                     <div class="movie-card">
                         <img class="movie-poster" src="" alt="" />
                         <h3 class="movie-title"></h3>
+                        <button class="favorite-heart" type="button" title="Add to favorites" aria-label="Add to favorites"><i class="fa-regular fa-heart"></i></button>
                         <button class="movie-trailer-button">Details</button>
                     </div>
                 </div>
@@ -61,5 +69,6 @@
             </div>
         </div>
     </div>
+    <script src="components/Login_Popup.js" defer></script>
 </body>
 </html>
