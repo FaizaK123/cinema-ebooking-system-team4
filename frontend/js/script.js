@@ -29,64 +29,6 @@ function getNextTwoWeekDates() {
 }
 const nextTwoWeekDates = getNextTwoWeekDates();
 
-// /* Shared Movie Catalog - TEMPORARY */
-// const movieCatalog = {
-//     101: {
-//         id: 101,
-//         title: "Jaws",
-//         poster: "images/moviePoster1.jpg",
-//         rating: "PG",
-//         runtime: "2 hr 4 min",
-//         isCurrent: true,
-//         showtimes: {
-//             [nextTwoWeekDates[0].value]: ["6:30 PM", "8:45 PM"],
-//             [nextTwoWeekDates[1].value]: ["2:15 PM"],
-//             [nextTwoWeekDates[3].value]: ["7:00 PM"],
-//             [nextTwoWeekDates[5].value]: ["4:30 PM"]
-//         }
-//     },
-//     102: {
-//         id: 102,
-//         title: "The Silence of the Lambs",
-//         poster: "images/moviePoster2.jpg",
-//         rating: "R",
-//         runtime: "1 hr 58 min",
-//         isCurrent: true,
-//         showtimes: {
-//             [nextTwoWeekDates[0].value]: ["5:00 PM", "9:30 PM"],
-//             [nextTwoWeekDates[1].value]: ["1:45 PM"],
-//             [nextTwoWeekDates[4].value]: ["7:15 PM"]
-//         }
-//     },
-//     103: {
-//         id: 103,
-//         title: "The Odyssey",
-//         poster: "images/moviePoster3.jpg",
-//         rating: "R",
-//         runtime: "2 hr 19 min",
-//         isCurrent: true,
-//         showtimes: {
-//             [nextTwoWeekDates[0].value]: ["1:00 PM"],
-//             [nextTwoWeekDates[1].value]: ["4:45 PM"],
-//             [nextTwoWeekDates[6].value]: ["6:00 PM"]
-//         }
-//     },
-//     201: {
-//         id: 201,
-//         title: "Arrival",
-//         poster: "images/moviePoster2.jpg",
-//         releaseDate: "12/24/26",
-//         isCurrent: false
-//     },
-//     202: {
-//         id: 202,
-//         title: "Dune",
-//         poster: "images/moviePoster3.jpg",
-//         releaseDate: "01/05/27",
-//         isCurrent: false
-//     }
-// };
-
 /* Home_Page Handling */
 
 /* - Movie Poster Section Handling */
@@ -131,6 +73,19 @@ async function loadHomeMovies() {
 
     renderMovieSection(".homepage-posters-section.current", currentMovies, {showShowtimes: true});
     renderMovieSection(".homepage-posters-section.upcoming", upcomingMovies, {showShowtimes: false});
+    markFavoriteHearts();
+}
+
+/* Fill in the hearts of movies the logged-in customer already favorited */
+async function markFavoriteHearts() {
+    const ids = await CES.favoriteIds();
+    document.querySelectorAll(".favorite-heart[data-movie-id]").forEach((heart) => {
+        CES.setHeartState(heart, ids.has(Number(heart.dataset.movieId)));
+    });
+}
+
+if (new URLSearchParams(window.location.search).get("loggedOut") === "1") {
+    CES.toast("You have been logged out.");
 }
 
 loadHomeMovies()
@@ -162,6 +117,16 @@ function createMovieCard(movie, templateCard, options = {}) {
     const releaseDate = card.querySelector(".movie-release-date");
     if (releaseDate && movie.releaseDate) {
         releaseDate.textContent = movie.releaseDate;
+    }
+
+    const heart = card.querySelector(".favorite-heart");
+    if (heart && movie.id) {
+        heart.dataset.movieId = movie.id;
+        CES.setHeartState(heart, false);
+        heart.addEventListener("click", async () => {
+            const isFavorite = await CES.toggleFavorite(movie.id);
+            if (isFavorite !== null) CES.setHeartState(heart, isFavorite);
+        });
     }
 
     const button = card.querySelector(".movie-showtimes-button, .movie-trailer-button");
@@ -372,11 +337,30 @@ async function renderMoviePage() {
         desc.textContent = movie.description;
 
         setUpTrailer(movie);
+        setUpFavoriteButton(movie);
         renderMovieShowtimes(showtimesContainer, movie);
     } catch (err) {
         console.error(err);
         showError("Couldnt load this movie. Try again");
     }
+}
+
+/* - Favorite Button Handling */
+async function setUpFavoriteButton(movie) {
+    const favoriteButton = document.getElementById("favorite-button");
+    if (!favoriteButton) return;
+
+    const showState = (isFavorite) => {
+        CES.setHeartState(favoriteButton, isFavorite);
+        favoriteButton.lastChild.textContent = isFavorite ? " Favorited" : " Favorite";
+    };
+    const ids = await CES.favoriteIds();
+    showState(ids.has(movie.id));
+
+    favoriteButton.addEventListener("click", async () => {
+        const isFavorite = await CES.toggleFavorite(movie.id);
+        if (isFavorite !== null) showState(isFavorite);
+    });
 }
 
 /* - Trailer Handling */

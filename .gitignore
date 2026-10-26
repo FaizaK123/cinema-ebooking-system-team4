@@ -3,3 +3,8 @@ __pycache__/
 *.pyc
 movies.db
 mywork.txt
+
+# Machine-specific secrets and generated files (Sprint 2)
+backend/.env
+backend/instance/
+*.db

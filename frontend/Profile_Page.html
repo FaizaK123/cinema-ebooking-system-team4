@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Cinema E-Booking System</title>
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="js/api.js" defer></script>
+    <script src="js/script.js" defer></script>
+    <script src="js/account.js" defer></script>
+    <script src="components/Login_Popup.js" defer></script>
+</head>
+<body>
+    <nav class="nav-bar">
+        <button class="nav-bar-home-button" id="nav-bar-home-btn">CES</button>
+        <div class="nav-bar-login">
+            <button class="nav-bar-login-button" id="nav-bar-login-btn" aria-label="Open account menu" aria-expanded="false" title="Account"><i class="fa-solid fa-circle-user"></i></button>
+            <div id="login-popup" class="popup" hidden></div>
+        </div>
+    </nav>
+    <main class="profile-page" id="profile-page">
+        <div class="profile-header">
+            <h1 class="profile-title" id="profile-greeting">My Profile</h1>
+            <button class="btn-secondary" type="button" onclick="CES.logout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+        </div>
+        <p class="required-note"><span class="required">*</span> Required field</p>
+
+        <div class="profile-grid">
+            <!-- Personal information -->
+            <section class="profile-card account-form" aria-labelledby="profile-info-heading">
+                <h2 id="profile-info-heading">Personal Information</h2>
+                <form id="profile-info-form" novalidate>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label class="form-label" for="profile-first-name">First Name <span class="required">*</span></label>
+                            <input class="form-input" type="text" id="profile-first-name" data-field="firstName" autocomplete="given-name" maxlength="50" required />
+                            <p class="field-error" data-error-for="firstName" hidden></p>
+                        </div>
+                        <div class="form-field">
+                            <label class="form-label" for="profile-last-name">Last Name <span class="required">*</span></label>
+                            <input class="form-input" type="text" id="profile-last-name" data-field="lastName" autocomplete="family-name" maxlength="50" required />
+                            <p class="field-error" data-error-for="lastName" hidden></p>
+                        </div>
+                    </div>
+                    <div class="form-field">
+                        <label class="form-label" for="profile-email">Email Address <i class="fa-solid fa-lock" title="Email can't be changed"></i></label>
+                        <input class="form-input" type="email" id="profile-email" data-field="email" readonly disabled aria-describedby="profile-email-hint" />
+                        <p class="field-hint" id="profile-email-hint">Your email is your login and can't be changed.</p>
+                        <p class="field-error" data-error-for="email" hidden></p>
+                    </div>
+                    <div class="form-field">
+                        <label class="form-label" for="profile-phone">Phone Number <span class="required">*</span></label>
+                        <input class="form-input" type="tel" id="profile-phone" data-field="phone" autocomplete="tel" required />
+                        <p class="field-error" data-error-for="phone" hidden></p>
+                    </div>
+                    <label class="form-check" for="profile-promo">
+                        <input type="checkbox" id="profile-promo" /> Email me about promotions and special offers
+                    </label>
+                    <p class="form-message" id="profile-info-message" role="status" hidden></p>
+                    <button class="btn-primary" type="submit">Save Changes</button>
+                </form>
+            </section>
+
+            <!-- Change password -->
+            <section class="profile-card account-form" aria-labelledby="profile-password-heading">
+                <h2 id="profile-password-heading">Change Password</h2>
+                <form id="profile-password-form" novalidate>
+                    <div class="form-field">
+                        <label class="form-label" for="profile-current-password">Current Password <span class="required">*</span></label>
+                        <input class="form-input" type="password" id="profile-current-password" data-field="currentPassword" autocomplete="current-password" required />
+                        <p class="field-error" data-error-for="currentPassword" hidden></p>
+                    </div>
+                    <div class="form-field">
+                        <label class="form-label" for="profile-new-password">New Password <span class="required">*</span></label>
+                        <div class="password-controls">
+                            <input class="form-input" type="password" id="profile-new-password" data-field="newPassword" autocomplete="new-password" required aria-describedby="profile-new-password-hint" />
+                            <button class="password-toggle" type="button" data-toggle-password aria-controls="profile-new-password" aria-label="Show password" aria-pressed="false" title="Show password"><i class="fa-solid fa-eye"></i></button>
+                        </div>
+                        <p class="field-hint" id="profile-new-password-hint">At least 8 characters, with an uppercase letter, a lowercase letter and a number.</p>
+                        <p class="field-error" data-error-for="newPassword" hidden></p>
+                    </div>
+                    <div class="form-field">
+                        <label class="form-label" for="profile-confirm-password">Confirm New Password <span class="required">*</span></label>
+                        <input class="form-input" type="password" id="profile-confirm-password" data-field="confirmPassword" autocomplete="new-password" required />
+                        <p class="field-error" data-error-for="confirmPassword" hidden></p>
+                    </div>
+                    <p class="form-message" id="profile-password-message" role="status" hidden></p>
+                    <button class="btn-primary" type="submit">Change Password</button>
+                </form>
+            </section>
+
+            <!-- Address (max 1) -->
+            <section class="profile-card account-form" aria-labelledby="profile-address-heading">
+                <h2 id="profile-address-heading">Home Address</h2>
+                <p id="profile-address-text">Loading...</p>
+                <p class="field-hint">You can save one address.</p>
+                <div class="profile-actions">
+                    <a class="btn-primary" id="profile-address-edit" href="Address_Info_Page.html">Add Address</a>
+                    <button class="btn-secondary" id="profile-address-remove" type="button" hidden>Remove</button>
+                </div>
+            </section>
+
+            <!-- Payment cards (max 3) -->
+            <section class="profile-card account-form" aria-labelledby="profile-cards-heading">
+                <h2 id="profile-cards-heading">Payment Cards</h2>
+                <ul class="profile-card-list" id="profile-card-list"></ul>
+                <p class="field-hint" id="profile-card-note"></p>
+                <div class="profile-actions">
+                    <a class="btn-primary" id="profile-add-card" href="Payment_Info_Page.html">Add Card</a>
+                </div>
+            </section>
+
+            <!-- Movie preferences -->
+            <section class="profile-card account-form" aria-labelledby="profile-genre-heading">
+                <h2 id="profile-genre-heading">Movie Preferences</h2>
+                <p class="field-hint">Pick the genres you enjoy most.</p>
+                <form id="profile-genre-form">
+                    <div class="profile-genre-list" id="profile-genre-list"></div>
+                    <p class="form-message" id="profile-genre-message" role="status" hidden></p>
+                    <button class="btn-primary" type="submit">Save Preferences</button>
+                </form>
+            </section>
+
+            <!-- Favorite movies -->
+            <section class="profile-card account-form profile-wide" aria-labelledby="profile-favorites-heading">
+                <h2 id="profile-favorites-heading"><i class="fa-solid fa-heart"></i> Favorite Movies</h2>
+                <div class="profile-favorites" id="profile-favorites"></div>
+            </section>
+        </div>
+    </main>
+</body>
+</html>

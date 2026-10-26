@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page - Cinema E-Booking System</title>
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="js/api.js" defer></script>
+    <script src="js/script.js" defer></script>
+    <script src="js/account.js" defer></script>
+</head>
+<body>
+    <nav class="nav-bar">
+        <button class="nav-bar-home-button" id="nav-bar-home-btn">CES</button>
+    </nav>
+    <main class="login-page-content">
+        <h1 class="login-page-title">Login</h1>
+        <h4 class="login-page-descr">Log in with your email address or phone number and password.</h4>
+        <form class="login-form account-form" id="login-form" novalidate>
+            <p class="required-note"><span class="required">*</span> Required field</p>
+            <p class="form-message" id="login-message" role="alert" hidden></p>
+
+            <div class="login-form-section">
+                <label class="login-form-label" for="login-identifier">Email or Phone Number <span class="required">*</span></label>
+                <input class="form-input" type="text" id="login-identifier" data-field="identifier" autocomplete="username" required aria-describedby="login-identifier-error" />
+                <p class="field-error" id="login-identifier-error" data-error-for="identifier" hidden></p>
+            </div>
+            <div class="login-form-section">
+                <label class="login-form-label" for="login-password">Password <span class="required">*</span></label>
+                <div class="password-controls">
+                    <input class="form-input" type="password" id="login-password" data-field="password" autocomplete="current-password" required aria-describedby="login-password-error" />
+                    <button class="password-toggle" type="button" data-toggle-password aria-controls="login-password" aria-label="Show password" aria-pressed="false" title="Show password"><i class="fa-solid fa-eye"></i></button>
+                </div>
+                <p class="field-error" id="login-password-error" data-error-for="password" hidden></p>
+            </div>
+
+            <div class="login-form-options">
+                <label class="form-check" for="login-remember">
+                    <input type="checkbox" id="login-remember" /> Remember me
+                </label>
+                <a class="login-form-forgot-password" href="Forgot_Password_Request.html">Forgot Password?</a>
+            </div>
+
+            <button class="login-form-button" type="submit">Login</button>
+            <button class="btn-secondary" id="resend-verification-btn" type="button" hidden>Resend confirmation email</button>
+            <p class="account-switch">Don't have an account? <a href="Signup_Page.html">Sign up</a></p>
+        </form>
+    </main>
+</body>
+</html>
