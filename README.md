@@ -2,27 +2,42 @@
 Cinema E-Booking System for CSCI 4050/6050
 
 
-## Running the app:
-### On Windows:
-- run run.bat
+## Setup
 
-### On MacOS:
-- run run.sh
+### 1. Create the `.env` file
+Registration confirmation, password reset and profile-change notices are sent by email,
+so the app needs the team Gmail account's credentials. From the project root, run:
 
-Then open http://127.0.0.1:5000. Add `--reset` (e.g. `run.bat --reset`) to rebuild the database from scratch.
+```
+# Windows
+copy backend\.env.example backend\.env
 
-The scripts install the packages in `requirements.txt`, create or upgrade the database
-(`backend/init_db.py` adds any missing tables/columns without deleting data), seed the movies, and start Flask.
+# macOS / Linux
+cp backend/.env.example backend/.env
+```
 
-## Email setup (needed for the demo)
-Registration confirmation, password reset and profile-change notices are sent by email.
+Then replace these fields in the new `backend/.env`:
 
-1. Copy `backend/.env.example` to `backend/.env`.
-2. Fill in the Gmail account and App Password as described in that file.
-3. Restart the app.
+```
+SMTP_USERNAME=parkercant12345@gmail.com
+SMTP_PASSWORD=<app password, shared privately - ask Anto>
+MAIL_FROM=parkercant12345@gmail.com
+```
+
+`backend/.env` is git-ignored. Never commit it or paste the password anywhere public.
 
 Without a `.env` file the app still works: each email is saved as a text file in
 `backend/instance/outbox/` and printed in the terminal, so you can open the links from there.
+
+### 2. Run the app
+- **Windows:** run `run.bat`
+- **macOS:** run `run.sh`
+
+Then open http://127.0.0.1:5000. Add `--reset` (e.g. `run.bat --reset`) to rebuild the database from scratch.
+If you change `backend/.env`, restart the app.
+
+The scripts install the packages in `requirements.txt`, create or upgrade the database
+(`backend/init_db.py` adds any missing tables/columns without deleting data), seed the movies, and start Flask.
 
 ## Accounts
 - **Admin:** `admin@ces.local` / `Admin1234!` (created automatically; change it in `backend/.env` before the first run).

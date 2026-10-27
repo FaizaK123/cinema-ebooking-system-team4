@@ -188,7 +188,7 @@ def login():
 
     if user.role == "CUSTOMER" and user.status == "INACTIVE":
         return jsonify({
-            "error": "Please confirm your email address before logging in. Check your inbox for the confirmation link.",
+            "error": "Account is not verified. Please check your email to verify your account.",
             "code": "UNVERIFIED",
             "email": user.email,
         }), 403
