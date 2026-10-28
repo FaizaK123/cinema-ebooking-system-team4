@@ -132,7 +132,7 @@ nav {
 
 .homepage-posters-section {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 1em;
     overflow-x: auto;
     padding-bottom: 1rem;
@@ -146,7 +146,7 @@ nav {
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    min-height: 24em;
+    height: 26em;
     gap: 0.75em;
 }
 
@@ -167,6 +167,10 @@ nav {
     overflow-wrap: anywhere;
 }
 
+.movie-card .favorite-heart {
+    margin-top: auto;
+}
+
 .movie-showtimes-button {
     background-color: red;
     color: black;
@@ -174,7 +178,6 @@ nav {
     border-radius: 10px;
     font-weight: bold;
     padding: 3px 8px;
-    margin-top: auto;
 }
 
 .movie-showtimes-button:hover {
@@ -189,7 +192,6 @@ nav {
     border-radius: 10px;
     font-weight: bold;
     padding: 3px 8px;
-    margin-top: auto;
 }
 
 .movie-trailer-button:hover {
