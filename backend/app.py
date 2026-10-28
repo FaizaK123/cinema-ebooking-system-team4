@@ -6,6 +6,7 @@ Layers:
     backend/security.py, email_service.py, validators.py   services
     backend/repositories.py, db.py                         data access (all SQL)
 """
+import os
 from datetime import timedelta
 from urllib.parse import quote
 
@@ -16,6 +17,7 @@ from routes.admin import admin_bp
 from routes.auth import auth_bp
 from routes.movies import movies_bp
 from routes.profile import profile_bp
+from email_service import EmailService
 from security import current_user
 
 app = Flask(__name__, static_folder=str(config.FRONTEND_DIR), static_url_path="")
@@ -75,4 +77,6 @@ def home():
 
 
 if __name__ == "__main__":
+    if os.environ.get("WERKZEUG_RUN_MAIN") == "true":  # the reloader starts this file twice; check once
+        EmailService.check_connection()
     app.run(debug=True)

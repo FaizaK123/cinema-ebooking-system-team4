@@ -36,6 +36,22 @@ class EmailService:
             return False
 
     @staticmethod
+    def check_connection():
+        """Logs in to the SMTP server once at startup and prints a clear warning if it fails."""
+        if not config.SMTP_HOST:
+            print("[email] SMTP not configured: emails will be saved to backend/instance/outbox/.")
+            return
+        try:
+            with smtplib.SMTP(config.SMTP_HOST, config.SMTP_PORT, timeout=15) as smtp:
+                smtp.starttls(context=ssl.create_default_context())
+                if config.SMTP_USERNAME:
+                    smtp.login(config.SMTP_USERNAME, config.SMTP_PASSWORD)
+            print(f"[email] SMTP login OK ({config.SMTP_USERNAME}).")
+        except (smtplib.SMTPException, OSError) as error:
+            print(f"[email] WARNING: SMTP login failed, so no emails will be sent: {error}\n"
+                  "        Check SMTP_PASSWORD in backend/.env (Gmail needs 2-Step Verification on and a valid app password).")
+
+    @staticmethod
     def _save_to_outbox(to_address, subject, body):
         config.OUTBOX_DIR.mkdir(parents=True, exist_ok=True)
         stamp = datetime.now().strftime("%Y%m%d-%H%M%S-%f")
