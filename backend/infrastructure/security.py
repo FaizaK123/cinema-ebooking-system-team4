@@ -7,9 +7,9 @@ from cryptography.fernet import Fernet
 from flask import g, jsonify, session
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from config import CARD_ENCRYPTION_KEY
-from db import get_db_connection
-from repositories import UserRepository
+from backend.data_access.db import get_db_connection
+from backend.data_access.repositories import UserRepository
+from backend.infrastructure.config import CARD_ENCRYPTION_KEY
 
 _fernet = Fernet(CARD_ENCRYPTION_KEY.encode())
 

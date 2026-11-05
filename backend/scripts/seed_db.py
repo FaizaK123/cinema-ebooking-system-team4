@@ -1,13 +1,6 @@
 import sqlite3
-import os
 
-# TEMPORARY DB for creation of backend. Connection will be replaced with REAL DB.
-
-# define connection and cursor
-
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_PATH = os.path.join(BASE_DIR, "movies.db")
-
+from backend.infrastructure.config import DB_PATH
 
 movies = sqlite3.connect(DB_PATH)
 cursor = movies.cursor()

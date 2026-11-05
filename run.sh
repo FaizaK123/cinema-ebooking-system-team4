@@ -30,14 +30,14 @@ fi
 
 # Create missing database tables
 echo "Initializing database schema..."
-python3 backend/init_db.py
+python3 -m backend.scripts.init_db
 
 # Seed movies only if the movies table is empty
 if [ "$(python3 -c "import sqlite3; c=sqlite3.connect('backend/movies.db'); print(c.execute('SELECT COUNT(*) FROM movies').fetchone()[0]); c.close()")" = "0" ]; then
     echo "Seeding initial movies..."
-    (cd backend && python3 seed_db.py)
+    python3 -m backend.scripts.seed_db
 fi
 
 # 4. Start the server
 echo "Starting app at http://127.0.0.1:5000"
-python3 backend/app.py
+python3 -m backend.presentation.app

@@ -26,7 +26,7 @@ if "%1"=="--reset" (
     if exist backend\movies.db del backend\movies.db
 )
 
-python backend\init_db.py
+python -m backend.scripts.init_db
 if errorlevel 1 exit /b 1
 
 REM Seed movies only when the movies table is empty
@@ -34,15 +34,10 @@ for /f %%A in ('python -c "import sqlite3; c=sqlite3.connect('backend/movies.db'
 
 if "%MOVIE_COUNT%"=="0" (
     echo Seeding initial movies...
-    pushd backend
-    python seed_db.py
-    if errorlevel 1 (
-        popd
-        exit /b 1
-    )
-    popd
+    python -m backend.scripts.seed_db
+    if errorlevel 1 exit /b 1
 )
 
 REM 4. Start the server
 echo Starting app at http://127.0.0.1:5000
-python backend\app.py
+python -m backend.presentation.app

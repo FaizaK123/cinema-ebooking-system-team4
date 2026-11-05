@@ -37,7 +37,7 @@ Then open http://127.0.0.1:5000. Add `--reset` (e.g. `run.bat --reset`) to rebui
 If you change `backend/.env`, restart the app.
 
 The scripts install the packages in `requirements.txt`, create or upgrade the database
-(`backend/init_db.py` adds any missing tables/columns without deleting data), seed the movies, and start Flask.
+(`backend/scripts/init_db.py` adds any missing tables/columns without deleting data), seed the movies, and start Flask.
 
 ## Accounts
 - **Admin:** `admin@ces.local` / `Admin1234!` (created automatically; change it in `backend/.env` before the first run).
@@ -46,10 +46,17 @@ The scripts install the packages in `requirements.txt`, create or upgrade the da
 ## Project structure
 | Layer | Location |
 |---|---|
-| Presentation | `frontend/` (HTML pages, `css/main.css`, `js/`) |
-| Controllers (API routes) | `backend/routes/` (`movies.py`, `auth.py`, `profile.py`, `admin.py`) |
-| Services | `backend/security.py` (hashing, encryption, access control), `email_service.py`, `validators.py` |
-| Data access | `backend/repositories.py`, `backend/db.py`, `backend/schema.sql` |
+| Presentation | `frontend/` (HTML pages, `css/main.css`, `js/`); `backend/presentation/` (Flask app, HTTP routes, response presenters) |
+| Application | `backend/application/services/` (authentication, profile, movie catalog, and admin use cases) |
+| Data access | `backend/data_access/` (repositories, SQLite connections/transactions, schema) |
+| Infrastructure | `backend/infrastructure/` (configuration, security, email, validation) |
+| Operational scripts | `backend/scripts/` (database initialization, movie/user seeding, database inspection) |
+
+The dependency flow is presentation → application services → data access.
+Routes translate HTTP requests and service results; business rules live in application
+services; SQL stays in repositories. Infrastructure helpers support those layers without
+owning application workflows. `backend/app.py` remains a compatibility entry point;
+the launch scripts use `backend.presentation.app`.
 
 ## Security notes
 - Passwords are hashed with scrypt (Werkzeug); they are never stored in plain text.

@@ -2,7 +2,7 @@
 import sqlite3
 from contextlib import contextmanager
 
-from config import DB_PATH
+from backend.infrastructure.config import DB_PATH
 
 
 def get_db_connection():

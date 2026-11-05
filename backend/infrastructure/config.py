@@ -10,7 +10,7 @@ from pathlib import Path
 
 from cryptography.fernet import Fernet
 
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 FRONTEND_DIR = (BASE_DIR / ".." / "frontend").resolve()
 INSTANCE_DIR = BASE_DIR / "instance"  # machine-specific files (keys, dev outbox), git-ignored
 

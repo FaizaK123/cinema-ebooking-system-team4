@@ -2,7 +2,9 @@
 from pathlib import Path
 import sqlite3
 
-path = Path(__file__).resolve().parent / 'movies.db'
+from backend.infrastructure.config import DB_PATH
+
+path = Path(DB_PATH)
 with sqlite3.connect(path) as db:
     db.execute('PRAGMA foreign_keys=ON')
     for name, in db.execute("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name"):
