@@ -492,3 +492,6 @@ function updateBookingSummary() {
 if (document.getElementById("booking-movie-title")) {
     renderBookingPage();
 }
+
+/* ---------------------------------------------------------------- Manage Movies page */
+document.getElementById("add-movie-btn").addEventListener("click", () => { document.getElementById("add-movie-form").classList.remove("hidden"); });

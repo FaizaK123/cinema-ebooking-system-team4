@@ -28,3 +28,34 @@
 .admin-menu-item:hover { border-color: red; background-color: #1d0505; }
 .admin-menu-title { font-size: 1.15em; font-weight: bold; }
 .admin-menu-stat { font-size: 13px; color: #bbb; }
+
+/* Manage Movies Page */
+.manage-movies-page { padding: 0 0 0.5em 0.5em; }
+
+.manage-movies-title { margin-bottom: 2em; }
+
+.manage-movies-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5em;
+    margin-top: 2em;
+}
+
+.manage-movie-add-btn {
+    width: 35%;
+    font-weight: bold;
+    font-size: 1.25em;
+    color: black;
+    background-color: red;
+    padding: 0.5em;
+    border: 3px solid white;
+    border-radius: 1em;
+}
+
+.manage-movie-add-btn:hover {
+    color: white;
+    border: 3px dashed white;
+}
+
+.hidden { display: none !important; }

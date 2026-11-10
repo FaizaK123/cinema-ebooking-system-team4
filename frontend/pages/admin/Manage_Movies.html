@@ -11,3 +11,24 @@
     <script src="/js/script.js" defer></script>
     <script src="/js/account.js" defer></script>
 </head>
+<body>
+    <nav class="nav-bar">
+        <button class="nav-bar-home-button" id="nav-bar-home-btn">CES</button>
+    </nav>
+    <main class="manage-movies-page">
+        <h1 class="manage-movies-title">Add Movies</h1>
+        <div class="manage-movies-content">
+            <form class="hidden" id="add-movie-form">
+                <input type="text" id="movie-title" placeholder="Movie Title" required>
+                <input type="text" id="movie-genre" placeholder="Genre" required>
+                <input type="text" id="movie-duration" placeholder="Duration (in minutes)" required>
+                <input type="text" id="movie-rating" placeholder="Rating" required>
+                <input type="text" id="movie-description" placeholder="Description" required>
+                <input type="date" id="movie-release-date" placeholder="Release Date" required>
+            </form>
+            <button class="manage-movie-add-btn" id="add-movie-btn"><i class="fa-solid fa-plus"></i> Add Movie</button>
+            <div class="manage-movies-list" id="movies-list">
+                <!-- Movie cards will be dynamically added here -->
+            </div>
+        </div>
+</body>

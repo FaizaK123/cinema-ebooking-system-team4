@@ -588,11 +588,5 @@ if (adminPortal) {
     document.getElementById("Promotions").addEventListener("click", () => window.location.href = "/pages/admin/Manage_Promotions.html");
     document.getElementById("Users").addEventListener("click", () => window.location.href = "/pages/admin/Manage_Users.html");
 
-    // document.querySelectorAll(".admin-menu-item").forEach((item) => {
-    //     item.addEventListener("click", () => {
-    //         CES.toast(`${item.dataset.section} will be built in a later sprint.`, "info");
-    //     });
-    // });
-
     document.getElementById("admin-logout").addEventListener("click", () => CES.logout());
 }

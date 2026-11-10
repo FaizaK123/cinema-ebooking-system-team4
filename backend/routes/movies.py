@@ -1,5 +1,6 @@
 """Movie catalog API (Sprint 1): list/search/filter movies, one movie, genres."""
 from datetime import date, timedelta
+from urllib.parse import urlsplit
 
 from flask import Blueprint, jsonify, request
 
@@ -19,6 +20,10 @@ def build_showtimes():
 
 
 def row_to_movie(row):
+    poster = row["poster"]
+    if poster and not poster.startswith("/") and not urlsplit(poster).scheme:
+        poster = f"/{poster}"
+
     return {
         "id": row["id"],
         "title": row["title"],
@@ -29,7 +34,7 @@ def row_to_movie(row):
         "genre": row["genre"],
         "description": row["description"],
         "trailer": row["trailer"],
-        "poster": row["poster"],
+        "poster": poster,
         "showtimes": build_showtimes() if row["status"] == "CURRENTLY_RUNNING" else {}
     }
 
