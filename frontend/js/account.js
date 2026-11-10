@@ -568,7 +568,7 @@ if (paymentForm) {
     });
 }
 
-/* ---------------------------------------------------------------- Admin portal (prototype) */
+/* ---------------------------------------------------------------- Admin portal */
 const adminPortal = document.getElementById("admin-portal");
 if (adminPortal) {
     CES.api("/api/admin/summary").then((result) => {

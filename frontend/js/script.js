@@ -1,11 +1,3 @@
-/* Home Button handling */
-const homeBtn = document.getElementById("nav-bar-home-btn");
-if (homeBtn) {
-    homeBtn.addEventListener("click", function () {
-        window.location.href = "/pages/public/Home_Page.html";
-    });
-}
-
 /* Future Dates Handling */
 function getNextTwoWeekDates() {
     const dates = [];
@@ -29,7 +21,14 @@ function getNextTwoWeekDates() {
 }
 const nextTwoWeekDates = getNextTwoWeekDates();
 
-/* Home_Page Handling */
+/* ---------------------------------------------------------------- Home_Page.html handling */
+/* Home Button handling */
+const homeBtn = document.getElementById("nav-bar-home-btn");
+if (homeBtn) {
+    homeBtn.addEventListener("click", function () {
+        window.location.href = "/pages/public/Home_Page.html";
+    });
+}
 
 /* - Movie Poster Section Handling */
 const cardTemplates = {};
@@ -144,16 +143,6 @@ function getShowtimes(movieId) {
     window.location.href = `/pages/public/Movie_Page.html?id=${movieId}`;
 }
 
-/* - Filter Section Handling */
-// const genres = [
-//     "Comedy",
-//     "Horror",
-//     "Adventure",
-//     "Rom-Com",
-//     "Thriller",
-//     "Sci-Fi"
-// ];
-
 const showtimeOptions = [
     { label: "Today", value: "today" },
     { label: "Tomorrow", value: "tomorrow" },
@@ -212,11 +201,8 @@ if (genreSection) {
     genreSection.addEventListener("change", () => loadHomeMovies());
 }
 
-/* Movie_Page Handling */
-
+/* ---------------------------------------------------------------- Movie_Page.html handling */
 /* - Showtimes Section Handling */
-// const movieDatabase = movieCatalog;
-
 function formatDateLabel(isoDate) {
     // parse as local time; new date("YYYY-MM-DD")
     const [year, month, day] = isoDate.split("-").map(Number);
@@ -250,17 +236,6 @@ function renderMovieShowtimes(showtimesContainer, movie) {
         `)
         .join("");
 
-
-
-    // const initialDate = nextTwoWeekDates.find((option) => movie.showtimes[option.value]) || nextTwoWeekDates[0];
-
-    // dateSelect.innerHTML = nextTwoWeekDates
-    //     .map((option) => `
-    //         <option value="${option.value}" ${option.value === initialDate.value ? "selected" : ""}>
-    //             ${option.label}
-    //         </option>
-    //     `)
-    //     .join("");
 
     function loadTimesForSelectedDate() {
         const selectedDate = dateSelect.value;
@@ -299,18 +274,6 @@ async function renderMoviePage() {
         showError("Movie not found!");
         return;
     }
-
-
-
-//     const params = new URLSearchParams(window.location.search);
-//     const movieId = Number(params.get("id"));
-//     const movie = movieDatabase[movieId];
-
-//     if (!movie) {
-//         title.textContent = "Movie not found";
-//         showtimesContainer.innerHTML = "";
-//         return;
-//     }
 
     try {
         const response = await fetch(`/api/movies/${encodeURIComponent(movieId)}`);
@@ -387,8 +350,7 @@ if (document.getElementById("movie-title")) {
     renderMoviePage();
 }
 
-/* Booking_Page Handling */
-
+/* ---------------------------------------------------------------- Booking_Page.html handling */
 async function renderBookingPage() {
     const title = document.getElementById("booking-movie-title");
 
@@ -493,5 +455,5 @@ if (document.getElementById("booking-movie-title")) {
     renderBookingPage();
 }
 
-/* ---------------------------------------------------------------- Manage Movies page */
+/* ---------------------------------------------------------------- Manage_Movies.html handling */
 document.getElementById("add-movie-btn").addEventListener("click", () => { document.getElementById("add-movie-form").classList.remove("hidden"); });

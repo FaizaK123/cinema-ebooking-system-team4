@@ -32,14 +32,11 @@
 /* Manage Movies Page */
 .manage-movies-page { padding: 0 0 0.5em 0.5em; }
 
-.manage-movies-title { margin-bottom: 2em; }
-
 .manage-movies-content {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0.5em;
-    margin-top: 2em;
 }
 
 .manage-movie-add-btn {
@@ -59,3 +56,41 @@
 }
 
 .hidden { display: none !important; }
+
+#add-movie-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    width: 50%;
+    height: 50vh;
+    color: black;
+    background-color: red;
+    border: 2px dashed white;
+    border-radius: 1em;
+    padding: 1em;
+}
+
+.add-movie-form-title {
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.5em;
+    padding: 0;
+    margin: 0;
+}
+
+#movie-title, 
+#movie-description, 
+#movie-release-date, 
+#movie-duration, 
+#movie-rating, 
+#movie-genre {
+    padding: 0.5em 0.25em 0.5em 0.75em; 
+    border: 2px solid black; 
+    border-radius: 1em; 
+    font-family: inherit;
+}
+
+#movie-description {
+    margin-right: 0;
+    max-width: 100%;
+}
