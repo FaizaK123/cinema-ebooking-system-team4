@@ -1,0 +1,110 @@
+/* Home_Page.html Body Section CSS */
+.homepage-body {
+    display: flex;
+    gap: 2rem;
+    padding: 0 0 0.5em 0.5em;
+}
+
+/* Home_Page.html Movie Section CSS */
+.homepage-movie-section {
+    flex: 1;
+    min-width: 0;
+}
+
+.homepage-posters-section {
+    display: flex;
+    align-items: flex-start;
+    gap: 1em;
+    overflow-x: auto;
+    padding-bottom: 1rem;
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: red black;
+}
+
+.movie-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: 26em;
+    gap: 0.75em;
+}
+
+.movie-poster {
+    flex-shrink: 0;
+    height: 18em;
+    max-width: 12em;
+    border: 1px solid white;
+}
+
+.movie-title {
+    max-width: 10em;
+    margin: 0;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.4;
+    word-wrap: break-word;
+    overflow-wrap: anywhere;
+}
+
+.movie-card .favorite-heart {
+    margin-top: auto;
+}
+
+.movie-showtimes-button {
+    background-color: red;
+    color: black;
+    border: 1px solid white;
+    border-radius: 10px;
+    font-weight: bold;
+    padding: 3px 8px;
+}
+
+.movie-showtimes-button:hover {
+    cursor: pointer;
+    color: white;
+}
+
+.movie-trailer-button {
+    background-color: red;
+    color: black;
+    border: 1px solid white;
+    border-radius: 10px;
+    font-weight: bold;
+    padding: 3px 8px;
+}
+
+.movie-trailer-button:hover {
+    cursor: pointer;
+    color: white;
+}
+
+/* Home_Page.html Filter Section CSS */
+.homepage-filter-section {
+    align-items: top;
+    width: 20%;
+    flex-shrink: 0;
+    padding: 0 0.5em;
+    margin-top: 5%;
+    border-left: 1px solid white;
+}
+
+.homepage-filter-section-title {
+    margin-top: 0px;
+    padding-bottom: 0.25em;
+    border-bottom: 1px solid white;
+}
+
+.filter-section-title {
+    margin: 10px 0 5px 0;
+}
+
+.homepage-filter-genre-section,
+.homepage-filter-date-section {
+    margin-left: 0.5em;
+}
+
+.filter-list {
+    margin-left: 0.75em;
+}

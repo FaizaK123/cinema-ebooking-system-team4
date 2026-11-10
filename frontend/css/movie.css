@@ -1,0 +1,116 @@
+/* Movie_Page.html CSS */
+.moviepage-body {
+    margin: 0 1em;
+}
+
+.moviepage-info-section {
+    width: 70%;
+    padding-bottom: 1.5em;
+    border-bottom: 1px solid white;
+}
+
+.moviepage-info-section-title {
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.moviepage-info-showtimes-rating-section {
+    display: flex;
+    flex-direction: row;
+    gap: 0.25em;
+    height: 2em;
+}
+
+.moviepage-info-movie-description-section {
+    margin: 0 0 0.5em 0.75em;
+    font-size: 14px;
+}
+
+.moviepage-info-movie-trailer, 
+.moviepage-info-favorite-movie {
+    background-color: red;
+    color: black;
+    border: 1px solid white;
+    border-radius: 8px;
+    padding: 0.45em 0.8em;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.moviepage-trailer iframe {
+    display: block;
+    width: 100%;
+    max-width: 800px;
+    aspect-ratio: 16 / 9;
+    margin-top: 1em;
+    border: 0;
+}
+
+.moviepage-info-movie-poster {
+    position: absolute;
+    right: 3%;
+    top: 12%;
+    height: 20em;
+    width: 15em;
+    flex-shrink: 0;
+    border: 1px solid white;
+}
+
+.moviepage-showtimes-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75em;
+    margin-top: 1.5em;
+    max-width: 40em;
+}
+
+.moviepage-showtimes-section-title {
+    margin: 0;
+}
+
+.moviepage-showtimes-picker-section {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75em;
+}
+
+.moviepage-showtime-date-select {
+    min-width: 12em;
+    padding: 0.55em 0.75em;
+    border: 1px solid white;
+    border-radius: 8px;
+    background-color: black;
+    color: white;
+}
+
+.moviepage-showtime-search-button {
+    background-color: red;
+    color: black;
+    border: 1px solid white;
+    border-radius: 8px;
+    padding: 0.55em 0.9em;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.moviepage-showtimes-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em;
+}
+
+.moviepage-showtime-button {
+    background-color: red;
+    color: black;
+    border: 1px solid white;
+    border-radius: 8px;
+    padding: 0.45em 0.8em;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.moviepage-showtimes-empty-state {
+    margin: 0;
+    color: #d0d0d0;
+}

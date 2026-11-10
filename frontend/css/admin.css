@@ -1,0 +1,30 @@
+/* Admin portal */
+.nav-bar-label { font-weight: bold; color: black; }
+.nav-logout { color: black; border-color: black; }
+.nav-logout:hover { color: white; border-color: white; }
+
+.admin-menu {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25em;
+    margin-top: 1.5em;
+}
+
+.admin-menu-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6em;
+    padding: 2em 1em;
+    color: white;
+    background-color: #111;
+    border: 2px dashed white;
+    border-radius: 1em;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.admin-menu-item i { color: red; }
+.admin-menu-item:hover { border-color: red; background-color: #1d0505; }
+.admin-menu-title { font-size: 1.15em; font-weight: bold; }
+.admin-menu-stat { font-size: 13px; color: #bbb; }
