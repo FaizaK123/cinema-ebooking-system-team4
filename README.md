@@ -46,7 +46,7 @@ The scripts install the packages in `requirements.txt`, create or upgrade the da
 ## Project structure
 | Layer | Location |
 |---|---|
-| Presentation | `frontend/` (HTML pages, `css/main.css`, `js/`) |
+| Presentation | `frontend/pages/` (pages grouped under `public/`, `auth/`, `admin/`, `profile/`, and `errors/`); shared assets and components live in `frontend/css/`, `frontend/js/`, `frontend/images/`, and `frontend/components/` |
 | Controllers (API routes) | `backend/routes/` (`movies.py`, `auth.py`, `profile.py`, `admin.py`) |
 | Services | `backend/security.py` (hashing, encryption, access control), `email_service.py`, `validators.py` |
 | Data access | `backend/repositories.py`, `backend/db.py`, `backend/schema.sql` |

@@ -14,8 +14,8 @@ from validators import (validate_address, validate_card, validate_email, validat
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/api/auth")
 
-CUSTOMER_HOME = "/Home_Page.html"
-ADMIN_HOME = "/Admin_Home.html"
+CUSTOMER_HOME = "/pages/public/Home_Page.html"
+ADMIN_HOME = "/pages/admin/Admin_Page.html"
 
 
 def _json_body():
@@ -133,11 +133,11 @@ def verify_email():
     with db_transaction() as conn:
         user_id = TokenRepository.consume(conn, hash_token(token), TokenRepository.VERIFY_EMAIL) if token else None
         if user_id is None:
-            return redirect("/Login_Page.html?verified=invalid")
+            return redirect("/pages/auth/Login_Page.html?verified=invalid")
         user = UserRepository.find_by_id(conn, user_id)
         if user and user.status == "INACTIVE":
             UserRepository.set_status(conn, user_id, "ACTIVE")
-    return redirect("/Login_Page.html?verified=1")
+    return redirect("/pages/auth/Login_Page.html?verified=1")
 
 
 @auth_bp.post("/resend-verification")
@@ -237,7 +237,7 @@ def forgot_password():
             token = new_token()
             TokenRepository.create(conn, user.id, TokenRepository.RESET_PASSWORD, hash_token(token),
                                    expiry(minutes=config.RESET_TOKEN_MINUTES))
-            link = f"{request.host_url}Forgot_Password.html?token={token}"
+            link = f"{request.host_url}pages/auth/Forgot_Password.html?token={token}"
             send_email = lambda: EmailService.send_password_reset(user.first_name, user.email, link)
     if send_email:
         send_email()

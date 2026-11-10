@@ -93,7 +93,7 @@ window.CES = (function () {
     }
 
     function loginUrl() {
-        return "Login_Page.html?next=" + encodeURIComponent(window.location.pathname + window.location.search);
+        return "/pages/auth/Login_Page.html?next=" + encodeURIComponent(window.location.pathname + window.location.search);
     }
 
     /* ---- Favorites (customers only) ---- */
@@ -151,7 +151,7 @@ window.CES = (function () {
 
     async function logout() {
         await api("/api/auth/logout", { method: "POST" });
-        window.location.href = "Home_Page.html?loggedOut=1";
+        window.location.href = "/pages/public/Home_Page.html?loggedOut=1";
     }
 
     return { api, currentUser, showMessage, showFieldErrors, toast, loginUrl, favoriteIds, toggleFavorite, setHeartState, logout };

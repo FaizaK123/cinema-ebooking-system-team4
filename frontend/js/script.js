@@ -2,7 +2,7 @@
 const homeBtn = document.getElementById("nav-bar-home-btn");
 if (homeBtn) {
     homeBtn.addEventListener("click", function () {
-        window.location.href = "Home_Page.html";
+        window.location.href = "/pages/public/Home_Page.html";
     });
 }
 
@@ -141,7 +141,7 @@ function createMovieCard(movie, templateCard, options = {}) {
 }
 
 function getShowtimes(movieId) {
-    window.location.href = `Movie_Page.html?id=${movieId}`;
+    window.location.href = `/pages/public/Movie_Page.html?id=${movieId}`;
 }
 
 /* - Filter Section Handling */
@@ -273,7 +273,7 @@ function renderMovieShowtimes(showtimesContainer, movie) {
         timesList.querySelectorAll(".moviepage-showtime-button").forEach((button) => {
             button.addEventListener("click", () => {
                 const params = new URLSearchParams({ id: movie.id, date: selectedDate, time: button.textContent });
-                window.location.href = `Booking_Page.html?${params}`;
+                window.location.href = `/pages/public/Booking_Page.html?${params}`;
             });
         });
     }
