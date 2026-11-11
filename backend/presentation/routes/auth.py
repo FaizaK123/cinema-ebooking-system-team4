@@ -7,8 +7,8 @@ from backend.presentation.presenters import service_response
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/api/auth")
 
-CUSTOMER_HOME = "/Home_Page.html"
-ADMIN_HOME = "/Admin_Home.html"
+CUSTOMER_HOME = "/pages/public/Home_Page.html"
+ADMIN_HOME = "/pages/admin/Admin_Page.html"
 
 
 def _json_body():
@@ -40,7 +40,8 @@ def register():
 @auth_bp.get("/verify")
 def verify_email():
     result = auth_service.verify_email(request.args.get("token", ""))
-    target = "/Login_Page.html?verified=1" if result.data["verified"] else "/Login_Page.html?verified=invalid"
+    verification_status = "1" if result.data["verified"] else "invalid"
+    target = f"/pages/auth/Login_Page.html?verified={verification_status}"
     return redirect(target)
 
 

@@ -36,17 +36,19 @@ app.register_blueprint(admin_bp)
 
 # Pages that need a login, and which role may open them (lowercase, since Windows file names aren't case-sensitive).
 PROTECTED_PAGES = {
-    "/profile_page.html": "CUSTOMER",
-    "/address_info_page.html": "CUSTOMER",
-    "/payment_info_page.html": "CUSTOMER",
-    "/admin_home.html": "ADMIN",
+    "/pages/profile/profile_page.html": "CUSTOMER",
+    "/pages/profile/address_info_page.html": "CUSTOMER",
+    "/pages/profile/payment_info_page.html": "CUSTOMER",
+    "/pages/admin/admin_page.html": "ADMIN",
 }
 # Pages a logged-in user doesn't need, so they're sent to their home page instead.
-LOGGED_OUT_ONLY_PAGES = {"/login_page.html", "/signup_page.html"}
+LOGGED_OUT_ONLY_PAGES = {"/pages/auth/login_page.html", "/pages/auth/signup_page.html"}
 
 
 def _home_for(user):
-    return "/Admin_Home.html" if user.role == "ADMIN" else "/Home_Page.html"
+    if user.role == "ADMIN":
+        return "/pages/admin/Admin_Page.html"
+    return "/pages/public/Home_Page.html"
 
 
 @app.before_request
@@ -55,9 +57,10 @@ def enforce_page_access():
     if path in PROTECTED_PAGES:
         user = current_user()
         if user is None:
-            return redirect(f"/Login_Page.html?next={quote(request.full_path.rstrip('?'))}")
+            login_url = f"/pages/auth/Login_Page.html?next={quote(request.full_path.rstrip('?'))}"
+            return redirect(login_url)
         if user.role != PROTECTED_PAGES[path]:
-            return redirect("/Access_Denied.html")
+            return redirect("/pages/errors/Access_Denied.html")
     elif path in LOGGED_OUT_ONLY_PAGES:
         user = current_user()
         if user is not None:
@@ -74,7 +77,7 @@ def no_cache_for_private_data(response):
 
 @app.route("/")
 def home():
-    return send_from_directory(config.FRONTEND_DIR, "Home_Page.html")
+    return send_from_directory(config.FRONTEND_DIR / "pages" / "public", "Home_Page.html")
 
 
 if __name__ == "__main__":

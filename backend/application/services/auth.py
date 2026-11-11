@@ -232,7 +232,7 @@ def forgot_password(email, host_url):
                 hash_token(token),
                 expiry(minutes=config.RESET_TOKEN_MINUTES),
             )
-            link = f"{host_url}Forgot_Password.html?token={token}"
+            link = f"{host_url}pages/auth/Forgot_Password.html?token={token}"
             send_email = lambda: EmailService.send_password_reset(user.first_name, user.email, link)
     if send_email:
         send_email()
