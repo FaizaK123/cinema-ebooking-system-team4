@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Showtimes - Cinema E-Booking System</title>
+    <link rel="stylesheet" href="/css/admin.css" />
+    <link rel="stylesheet" href="/css/main.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="/js/api.js" defer></script>
+    <script src="/js/script.js" defer></script>
+    <script src="/js/account.js" defer></script>
+</head>
+<body>
+    <nav class="nav-bar">
+        <button class="nav-bar-home-button" id="nav-bar-home-btn" type="button">CES</button>
+        <span class="nav-bar-label">Manage Showtimes</span>
+    </nav>
+    <main class="manage-showtimes-page">
+        <h1 class="manage-showtimes-title">Schedule a Showtime</h1>
+        <p class="manage-showtimes-description">Choose a movie, date, time, and showroom for the screening.</p>
+
+        <form class="showtime-scheduler" id="showtime-form">
+            <div class="showtime-form-field">
+                <label for="showtime-movie">Movie</label>
+                <select id="showtime-movie" required>
+                    <option value="">Loading movies...</option>
+                </select>
+            </div>
+            <div class="showtime-form-field">
+                <label for="showtime-date">Date</label>
+                <input type="date" id="showtime-date" required>
+            </div>
+            <div class="showtime-form-field">
+                <label for="showtime-time">Time</label>
+                <input type="time" id="showtime-time" required>
+            </div>
+            <div class="showtime-form-field">
+                <label for="showtime-showroom">Showroom</label>
+                <input type="text" id="showtime-showroom" placeholder="e.g. Screen 1" required>
+            </div>
+            <button class="showtime-submit-btn" id="showtime-submit" type="submit" disabled>
+                <i class="fa-solid fa-calendar-plus" aria-hidden="true"></i> Add Showtime
+            </button>
+            <p class="showtime-form-message" id="showtime-form-message" role="status" aria-live="polite"></p>
+        </form>
+
+        <section class="scheduled-showtimes-section" aria-labelledby="scheduled-showtimes-heading">
+            <h2 id="scheduled-showtimes-heading">Scheduled Showtimes</h2>
+            <div class="scheduled-showtimes-list" id="scheduled-showtimes-list">
+                <p class="scheduled-showtimes-empty" id="scheduled-showtimes-empty">No showtimes scheduled yet.</p>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

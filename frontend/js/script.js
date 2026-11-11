@@ -648,3 +648,105 @@ if (moviePosterInput && moviePosterDropzone && moviePosterStatus && moviePosterP
         showSelectedPoster();
     });
 }
+
+/* ---------------------------------------------------------------- Manage_Showtimes.html handling */
+const showtimeForm = document.getElementById("showtime-form");
+if (showtimeForm) {
+    const showtimeMovie = document.getElementById("showtime-movie");
+    const showtimeDate = document.getElementById("showtime-date");
+    const showtimeTime = document.getElementById("showtime-time");
+    const showtimeShowroom = document.getElementById("showtime-showroom");
+    const showtimeSubmit = document.getElementById("showtime-submit");
+    const showtimeMessage = document.getElementById("showtime-form-message");
+    const scheduledShowtimesList = document.getElementById("scheduled-showtimes-list");
+    const scheduledShowtimesEmpty = document.getElementById("scheduled-showtimes-empty");
+
+    function setShowtimeMessage(message, isError = false) {
+        showtimeMessage.textContent = message;
+        showtimeMessage.classList.toggle("is-error", isError);
+    }
+
+    function createShowtimeDetail(label, value) {
+        const detail = document.createElement("span");
+        detail.className = "scheduled-showtime-detail";
+
+        const heading = document.createElement("strong");
+        heading.textContent = label;
+        const text = document.createElement("span");
+        text.textContent = value;
+        detail.append(heading, text);
+        return detail;
+    }
+
+    async function loadShowtimeMovies() {
+        try {
+            const response = await fetch("/api/movies");
+            if (!response.ok) throw new Error(`Movie list request failed (HTTP ${response.status}).`);
+
+            const movies = await response.json();
+            if (!Array.isArray(movies)) throw new Error("The movie list response was not a list.");
+
+            showtimeMovie.replaceChildren(new Option("Select a movie", ""));
+            movies.forEach((movie) => {
+                if (!movie || typeof movie.title !== "string" || !movie.title.trim()) return;
+
+                const option = new Option(movie.title, String(movie.id ?? movie.title));
+                option.dataset.title = movie.title;
+                showtimeMovie.add(option);
+            });
+
+            const hasMovies = showtimeMovie.options.length > 1;
+            showtimeSubmit.disabled = !hasMovies;
+            if (!hasMovies) {
+                setShowtimeMessage("There are no movies available to schedule.");
+            }
+        } catch (error) {
+            console.error("Could not load movies for showtime scheduling:", error);
+            showtimeMovie.replaceChildren(new Option("Movies could not be loaded", ""));
+            showtimeSubmit.disabled = true;
+            setShowtimeMessage("Could not load movies. Please try again later.", true);
+        }
+    }
+
+    const today = new Date();
+    showtimeDate.min = [
+        today.getFullYear(),
+        String(today.getMonth() + 1).padStart(2, "0"),
+        String(today.getDate()).padStart(2, "0")
+    ].join("-");
+
+    showtimeForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        if (!showtimeForm.reportValidity()) return;
+
+        const selectedMovie = showtimeMovie.selectedOptions[0];
+        const selectedDate = new Date(`${showtimeDate.value}T00:00:00`);
+        const dateLabel = selectedDate.toLocaleDateString(undefined, {
+            year: "numeric",
+            month: "long",
+            day: "numeric"
+        });
+        const timeLabel = new Date(`2000-01-01T${showtimeTime.value}`).toLocaleTimeString(undefined, {
+            hour: "numeric",
+            minute: "2-digit"
+        });
+
+        const card = document.createElement("article");
+        card.className = "scheduled-showtime-card";
+        card.append(
+            createShowtimeDetail("Movie", selectedMovie.dataset.title || selectedMovie.textContent),
+            createShowtimeDetail("Date", dateLabel),
+            createShowtimeDetail("Time", timeLabel),
+            createShowtimeDetail("Showroom", showtimeShowroom.value.trim())
+        );
+
+        scheduledShowtimesEmpty?.remove();
+        scheduledShowtimesList.prepend(card);
+        showtimeDate.value = "";
+        showtimeTime.value = "";
+        showtimeShowroom.value = "";
+        setShowtimeMessage("Showtime added to this page.");
+    });
+
+    loadShowtimeMovies();
+}

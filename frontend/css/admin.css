@@ -39,70 +39,9 @@
     gap: 0.5em;
 }
 
-.manage-movies-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
-    width: 40%;
-}
-
-.manage-movie-card {
-    display: flex;
-    align-items: flex-start;
-    gap: 1em;
-    padding: 1em;
-    color: white;
-    background-color: #111;
-    border: 2px solid #444;
-    border-radius: 0.75em;
-}
-
-.manage-movie-card-poster {
-    width: 100px;
-    max-height: 150px;
-    object-fit: cover;
-    border-radius: 0.35em;
-}
-
-.manage-movie-card-details {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    gap: 0.35em;
-}
-
-.manage-movie-card-details h2,
-.manage-movie-card-details p {
-    margin: 0;
-}
-
-.manage-movie-card-genres {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4em;
-}
-
-.manage-movie-card-genre {
-    padding: 0.2em 0.5em;
-    background-color: #333;
-    border-radius: 1em;
-    font-size: 0.9em;
-}
-
-.manage-movie-add-btn {
-    width: 35%;
-    font-weight: bold;
-    font-size: 1.25em;
-    color: black;
-    background-color: red;
-    padding: 0.5em;
-    border: 3px solid white;
-    border-radius: 1em;
-}
-
-.manage-movie-add-btn:hover {
-    color: white;
-    border: 3px dashed white;
+.manage-movies-title, 
+.manage-movies-description {
+    text-align: center;
 }
 
 .hidden { display: none !important; }
@@ -295,6 +234,72 @@
     color: white;
 }
 
+.manage-movies-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    width: 40%;
+}
+
+.manage-movie-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 1em;
+    padding: 1em;
+    color: white;
+    background-color: #111;
+    border: 2px solid #444;
+    border-radius: 0.75em;
+}
+
+.manage-movie-card-poster {
+    width: 100px;
+    max-height: 150px;
+    object-fit: cover;
+    border-radius: 0.35em;
+}
+
+.manage-movie-card-details {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 0.35em;
+}
+
+.manage-movie-card-details h2,
+.manage-movie-card-details p {
+    margin: 0;
+}
+
+.manage-movie-card-genres {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4em;
+}
+
+.manage-movie-card-genre {
+    padding: 0.2em 0.5em;
+    background-color: #333;
+    border-radius: 1em;
+    font-size: 0.9em;
+}
+
+.manage-movie-add-btn {
+    width: 35%;
+    font-weight: bold;
+    font-size: 1.25em;
+    color: black;
+    background-color: red;
+    padding: 0.5em;
+    border: 3px solid white;
+    border-radius: 1em;
+}
+
+.manage-movie-add-btn:hover {
+    color: white;
+    border: 3px dashed white;
+}
+
 @media (max-width: 600px) {
     .manage-movies-list,
     #add-movie-form {
@@ -309,5 +314,133 @@
     .manage-movie-card-poster {
         width: 75px;
         max-height: 115px;
+    }
+}
+
+/* Manage Showtimes Page */
+.manage-showtimes-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75em;
+    padding: 1em;
+}
+
+.manage-showtimes-title,
+.manage-showtimes-description {
+    margin: 0;
+    text-align: center;
+}
+
+.showtime-scheduler {
+    display: grid;
+    gap: 1em;
+    width: min(520px, 95%);
+    margin-top: 0.75em;
+    padding: 1.25em;
+    color: black;
+    background-color: red;
+    border: 2px dashed white;
+    border-radius: 1em;
+    box-sizing: border-box;
+}
+
+.showtime-form-field {
+    display: grid;
+    gap: 0.35em;
+}
+
+.showtime-form-field label {
+    font-weight: bold;
+}
+
+.showtime-form-field input,
+.showtime-form-field select {
+    min-width: 0;
+    padding: 0.6em 0.75em;
+    border: 2px solid black;
+    border-radius: 0.6em;
+    font: inherit;
+}
+
+.showtime-submit-btn {
+    padding: 0.65em 1em;
+    color: black;
+    background-color: transparent;
+    border: 3px solid black;
+    border-radius: 1em;
+    cursor: pointer;
+    font: inherit;
+    font-weight: bold;
+}
+
+.showtime-submit-btn:hover:not(:disabled) {
+    color: white;
+    border-style: dashed;
+    border-color: white;
+}
+
+.showtime-submit-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.showtime-form-message {
+    margin: 0;
+    text-align: center;
+}
+
+.showtime-form-message:empty {
+    display: none;
+}
+
+.showtime-form-message.is-error {
+    color: #5c0000;
+    font-weight: bold;
+}
+
+.scheduled-showtimes-section {
+    width: min(800px, 95%);
+    margin-top: 1em;
+}
+
+.scheduled-showtimes-section h2 {
+    text-align: center;
+}
+
+.scheduled-showtimes-list {
+    display: grid;
+    gap: 0.75em;
+}
+
+.scheduled-showtime-card {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.75em;
+    padding: 1em;
+    color: white;
+    background-color: #111;
+    border: 1px solid #444;
+    border-radius: 0.75em;
+}
+
+.scheduled-showtime-detail {
+    display: grid;
+    gap: 0.25em;
+    overflow-wrap: anywhere;
+}
+
+.scheduled-showtime-detail strong {
+    color: #ff7777;
+}
+
+.scheduled-showtimes-empty {
+    color: #bbb;
+    text-align: center;
+}
+
+@media (max-width: 600px) {
+    .scheduled-showtime-card {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
