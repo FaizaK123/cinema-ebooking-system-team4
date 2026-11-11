@@ -1,0 +1,599 @@
+/* Admin portal */
+.nav-bar-label { font-weight: bold; color: black; }
+.nav-logout { color: black; border-color: black; }
+.nav-logout:hover { color: white; border-color: white; }
+
+.admin-menu {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25em;
+    margin-top: 1.5em;
+}
+
+.admin-menu-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6em;
+    padding: 2em 1em;
+    color: white;
+    background-color: #111;
+    border: 2px dashed white;
+    border-radius: 1em;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.admin-menu-item i { color: red; }
+.admin-menu-item:hover { border-color: red; background-color: #1d0505; }
+.admin-menu-title { font-size: 1.15em; font-weight: bold; }
+.admin-menu-stat { font-size: 13px; color: #bbb; }
+
+/* Manage Movies Page */
+.manage-movies-page { padding: 0 0 0.5em 0.5em; }
+
+.manage-movies-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5em;
+}
+
+.manage-movies-title, 
+.manage-movies-description {
+    text-align: center;
+}
+
+.hidden { display: none !important; }
+
+#add-movie-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    width: 40%;
+    min-height: 50vh;
+    color: black;
+    background-color: red;
+    border: 2px dashed white;
+    border-radius: 1em;
+    padding: 1em;
+    box-sizing: border-box;
+}
+
+.add-movie-form-title {
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.5em;
+    padding: 0;
+    margin: 0;
+}
+
+.add-movie-form-section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.add-movie-form-release-date {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+}
+
+.add-movie-form-label {
+    font-weight: bold;
+}
+
+#movie-title, 
+#movie-description, 
+#movie-release-date, 
+#movie-duration, 
+#movie-rating, 
+#movie-genre {
+    padding: 0.5em 0.25em 0.5em 0.75em; 
+    border: 2px solid black; 
+    border-radius: 1em; 
+    font-family: inherit;
+}
+
+#movie-description {
+    margin-right: 0;
+    max-width: 100%;
+}
+
+.add-movie-form-genres {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em;
+}
+
+.add-movie-form-genre {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    padding: 0.25em 0.5em;
+    color: white;
+    background-color: #111;
+    border-radius: 1em;
+}
+
+.add-movie-form-genre-remove {
+    padding: 0;
+    color: inherit;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    font: inherit;
+}
+
+.movie-poster-dropzone {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5em;
+    padding: 1em;
+    color: white;
+    background-color: #111;
+    border: 2px dashed white;
+    border-radius: 0.75em;
+    text-align: center;
+    transition: background-color 0.2s, border-color 0.2s;
+    cursor: pointer;
+}
+
+.movie-poster-dropzone.is-dragging,
+.movie-poster-dropzone:focus-within {
+    background-color: #1d0505;
+    border-color: #ffb3b3;
+}
+
+.movie-poster-prompt {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4em;
+}
+
+.movie-poster-prompt p {
+    margin: 0;
+}
+
+.movie-poster-selected {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+    max-width: 100%;
+}
+
+.movie-poster-selected > span {
+    overflow-wrap: anywhere;
+}
+
+.movie-poster-remove-btn {
+    flex: none;
+    padding: 0 0.2em;
+    color: white;
+    background-color: red;
+    border: 1px solid white;
+    border-radius: 50%;
+    cursor: pointer;
+    font: inherit;
+    line-height: 1.2;
+}
+
+.movie-poster-remove-btn:hover {
+    background-color: #b90000;
+}
+
+.movie-poster-file-types {
+    color: #ccc;
+    font-size: 0.85em;
+}
+
+.movie-poster-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+.movie-poster-status {
+    overflow-wrap: anywhere;
+}
+
+.movie-poster-status:empty {
+    display: none;
+}
+
+.movie-poster-status.is-error {
+    color: #ffb3b3;
+}
+
+.add-movie-form-add-btn {
+    width: 40%;
+    align-self: center;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0.75em 0 0.5em 0;
+    padding: 0.5em 0.75em;
+    color: black;
+    background-color: transparent;
+    border: 3px solid black;
+    border-radius: 1em;
+}
+
+.add-movie-form-add-btn:hover {
+    border: 3px dashed white;
+    color: white;
+}
+
+.manage-movies-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    width: 40%;
+}
+
+.manage-movie-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 1em;
+    padding: 1em;
+    color: white;
+    background-color: #111;
+    border: 2px solid #444;
+    border-radius: 0.75em;
+}
+
+.manage-movie-card-poster {
+    width: 100px;
+    max-height: 150px;
+    object-fit: cover;
+    border-radius: 0.35em;
+}
+
+.manage-movie-card-details {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 0.35em;
+}
+
+.manage-movie-card-details h2,
+.manage-movie-card-details p {
+    margin: 0;
+}
+
+.manage-movie-card-genres {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4em;
+}
+
+.manage-movie-card-genre {
+    padding: 0.2em 0.5em;
+    background-color: #333;
+    border-radius: 1em;
+    font-size: 0.9em;
+}
+
+.manage-movie-add-btn {
+    width: 35%;
+    font-weight: bold;
+    font-size: 1.25em;
+    color: black;
+    background-color: red;
+    padding: 0.5em;
+    border: 3px solid white;
+    border-radius: 1em;
+}
+
+.manage-movie-add-btn:hover {
+    color: white;
+    border: 3px dashed white;
+}
+
+@media (max-width: 600px) {
+    .manage-movies-list,
+    #add-movie-form {
+        width: 95%;
+    }
+
+    .manage-movie-card {
+        gap: 0.75em;
+        padding: 0.75em;
+    }
+
+    .manage-movie-card-poster {
+        width: 75px;
+        max-height: 115px;
+    }
+}
+
+/* Manage Showtimes Page */
+.manage-showtimes-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75em;
+    padding: 1em;
+}
+
+.manage-showtimes-title,
+.manage-showtimes-description {
+    margin: 0;
+    text-align: center;
+}
+
+.showtime-scheduler {
+    display: grid;
+    gap: 1em;
+    width: min(520px, 95%);
+    margin-top: 0.75em;
+    padding: 1.25em;
+    color: black;
+    background-color: red;
+    border: 2px dashed white;
+    border-radius: 1em;
+    box-sizing: border-box;
+}
+
+.showtime-form-field {
+    display: grid;
+    gap: 0.35em;
+}
+
+.showtime-form-field label {
+    font-weight: bold;
+}
+
+.showtime-form-field input,
+.showtime-form-field select {
+    min-width: 0;
+    padding: 0.6em 0.75em;
+    border: 2px solid black;
+    border-radius: 0.6em;
+    font: inherit;
+}
+
+.showtime-submit-btn {
+    padding: 0.65em 1em;
+    color: black;
+    background-color: transparent;
+    border: 3px solid black;
+    border-radius: 1em;
+    cursor: pointer;
+    font: inherit;
+    font-weight: bold;
+}
+
+.showtime-submit-btn:hover:not(:disabled) {
+    color: white;
+    border-style: dashed;
+    border-color: white;
+}
+
+.showtime-submit-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.showtime-form-message {
+    margin: 0;
+    text-align: center;
+}
+
+.showtime-form-message:empty {
+    display: none;
+}
+
+.showtime-form-message.is-error {
+    color: black;
+    font-weight: bold;
+}
+
+.scheduled-showtimes-section {
+    width: min(800px, 95%);
+    margin-top: 1em;
+}
+
+.scheduled-showtimes-section h2 {
+    text-align: center;
+}
+
+.scheduled-showtimes-list {
+    display: grid;
+    gap: 0.75em;
+}
+
+.scheduled-showtime-card {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.75em;
+    padding: 1em;
+    color: white;
+    background-color: #111;
+    border: 1px solid #444;
+    border-radius: 0.75em;
+}
+
+.scheduled-showtime-detail {
+    display: grid;
+    gap: 0.25em;
+    overflow-wrap: anywhere;
+}
+
+.scheduled-showtime-detail strong {
+    color: #ff7777;
+}
+
+.scheduled-showtimes-empty {
+    color: #bbb;
+    text-align: center;
+}
+
+@media (max-width: 600px) {
+    .scheduled-showtime-card {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* Manage Promotions Page */
+.manage-promotions-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75em;
+    padding: 1em;
+}
+
+.manage-promotions-title,
+.manage-promotions-description {
+    margin: 0;
+    text-align: center;
+}
+
+.promotion-form {
+    display: grid;
+    gap: 1em;
+    width: min(680px, 95%);
+    margin-top: 0.75em;
+    padding: 1.25em;
+    color: black;
+    background-color: red;
+    border: 2px dashed white;
+    border-radius: 1em;
+    box-sizing: border-box;
+}
+
+.promotion-form-section {
+    display: grid;
+    gap: 0.75em;
+}
+
+.promotion-form-section h2 {
+    margin: 0;
+    text-align: center;
+}
+
+.promotion-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75em;
+}
+
+.promotion-form-field {
+    display: grid;
+    align-content: start;
+    gap: 0.35em;
+}
+
+.promotion-form-field label { font-weight: bold; margin: 0; padding: 0; }
+
+.promotion-form-field input,
+.promotion-form-field textarea {
+    width: 100%;
+    min-width: 0;
+    padding: 0.6em 0.75em;
+    border: 2px solid black;
+    border-radius: 0.6em;
+    box-sizing: border-box;
+    font: inherit;
+}
+
+.promotion-form-field input { height: 2.5em; }
+.promotion-form-field textarea { resize: vertical; }
+.promotion-form-field small { font-size: 0.8em; }
+.promotion-form-field-wide { grid-column: 1 / -1; }
+.promotion-form-section > .promotion-form-field { width: 100%; }
+
+.promotion-email-note {
+    margin: 0;
+    padding: 0.7em;
+    color: black;
+    background-color: #ffd8d8;
+    border-radius: 0.5em;
+    font-size: 0.9em;
+}
+
+.promotion-submit-btn {
+    justify-self: center;
+    padding: 0.65em 1em;
+    color: black;
+    background-color: transparent;
+    border: 3px solid black;
+    border-radius: 1em;
+    cursor: pointer;
+    font: inherit;
+    font-weight: bold;
+}
+
+.promotion-submit-btn:hover:not(:disabled) {
+    color: white;
+    border-style: dashed;
+    border-color: white;
+}
+
+.promotion-form-message {
+    margin: 0;
+    text-align: center;
+}
+
+.promotion-form-message:empty { display: none; }
+.promotion-form-message.is-error { color: black; font-weight: bold; }
+.promotion-form-message.is-success { color: black; font-weight: bold; }
+
+.promotion-campaigns-section {
+    width: min(800px, 95%);
+    margin-top: 1em;
+}
+
+.promotion-campaigns-section h2 { text-align: center; }
+
+.promotion-campaigns-list {
+    display: grid;
+    gap: 0.75em;
+}
+
+.promotion-campaign-card {
+    display: grid;
+    gap: 0.65em;
+    padding: 1em;
+    color: white;
+    background-color: #111;
+    border: 1px solid #444;
+    border-radius: 0.75em;
+}
+
+.promotion-campaign-card h3,
+.promotion-campaign-description { margin: 0; }
+.promotion-campaign-card h3 { color: #ff7777; }
+.promotion-campaign-details {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75em;
+}
+
+.promotion-campaign-detail {
+    display: grid;
+    gap: 0.2em;
+    overflow-wrap: anywhere;
+}
+
+.promotion-campaign-detail strong { color: #ff7777; }
+.promotion-campaigns-empty { color: #bbb; text-align: center; }
+.promotion-campaigns-empty.is-error { color: #ffb3b3; }
+
+@media (max-width: 600px) {
+    .promotion-form-grid,
+    .promotion-campaign-details {
+        grid-template-columns: 1fr;
+    }
+}

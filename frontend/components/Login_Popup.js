@@ -33,17 +33,17 @@ async function wireLoginPopup() {
             <button class="login-popup-button login" id="login-popup-account-btn">${isAdmin ? 'Admin Portal' : 'My Profile'}</button>
             <button class="login-popup-button sign-up" id="login-popup-logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>`;
         popup.querySelector('#login-popup-account-btn').addEventListener('click', () => {
-            window.location.href = isAdmin ? 'Admin_Home.html' : 'Profile_Page.html';
+            window.location.href = isAdmin ? '/pages/admin/Admin_Page.html' : '/pages/profile/Profile_Page.html';
         });
         popup.querySelector('#login-popup-logout-btn').addEventListener('click', () => CES.logout());
         return;
     }
 
     popup.querySelector('#login-popup-login-btn').addEventListener('click',  () => {
-        window.location.href = window.CES ? CES.loginUrl() : 'Login_Page.html';
+        window.location.href = window.CES ? CES.loginUrl() : '/pages/auth/Login_Page.html';
     });
     popup.querySelector('#login-popup-signup-btn').addEventListener('click',  () => {
-        window.location.href = 'Signup_Page.html';
+        window.location.href = '/pages/auth/Signup_Page.html';
     });
 }
 

@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page - Cinema E-Booking System</title>
-    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="/css/auth.css" />
+    <link rel="stylesheet" href="/css/main.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="js/api.js" defer></script>
-    <script src="js/script.js" defer></script>
-    <script src="js/account.js" defer></script>
+    <script src="/js/api.js" defer></script>
+    <script src="/js/script.js" defer></script>
+    <script src="/js/account.js" defer></script>
 </head>
 <body>
     <nav class="nav-bar">
@@ -39,12 +40,12 @@
                 <label class="form-check" for="login-remember">
                     <input type="checkbox" id="login-remember" /> Remember me
                 </label>
-                <a class="login-form-forgot-password" href="Forgot_Password_Request.html">Forgot Password?</a>
+                <a class="login-form-forgot-password" href="/pages/auth/Forgot_Password_Request.html">Forgot Password?</a>
             </div>
 
             <button class="login-form-button" type="submit">Login</button>
             <button class="btn-secondary" id="resend-verification-btn" type="button" hidden>Resend confirmation email</button>
-            <p class="account-switch">Don't have an account? <a href="Signup_Page.html">Sign up</a></p>
+            <p class="account-switch">Don't have an account? <a href="/pages/auth/Signup_Page.html">Sign up</a></p>
         </form>
     </main>
 </body>

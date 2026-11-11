@@ -270,7 +270,7 @@ if (resetPasswordForm) {
         });
         setBusy(submitButton, false);
         if (result.ok) {
-            window.location.href = "Login_Page.html?reset=1";
+            window.location.href = "/pages/auth/Login_Page.html?reset=1";
             return;
         }
         if (result.data.errors) CES.showFieldErrors(resetPasswordForm, result.data.errors);
@@ -434,7 +434,7 @@ if (profilePage) {
             const card = document.createElement("div");
             card.className = "profile-favorite";
             const link = document.createElement("a");
-            link.href = `Movie_Page.html?id=${movie.id}`;
+            link.href = `/pages/public/Movie_Page.html?id=${movie.id}`;
             const poster = document.createElement("img");
             poster.src = movie.poster;
             poster.alt = movie.title;
@@ -521,7 +521,7 @@ if (addressForm) {
         });
         setBusy(submitButton, false);
         if (result.ok) {
-            window.location.href = "Profile_Page.html?saved=address";
+            window.location.href = "/pages/profile/Profile_Page.html?saved=address";
             return;
         }
         if (result.data.errors) CES.showFieldErrors(addressForm, result.data.errors);
@@ -560,7 +560,7 @@ if (paymentForm) {
         });
         setBusy(submitButton, false);
         if (result.ok) {
-            window.location.href = "Profile_Page.html?saved=card";
+            window.location.href = "/pages/profile/Profile_Page.html?saved=card";
             return;
         }
         if (result.data.errors) CES.showFieldErrors(paymentForm, result.data.errors);
@@ -568,7 +568,7 @@ if (paymentForm) {
     });
 }
 
-/* ---------------------------------------------------------------- Admin portal (prototype) */
+/* ---------------------------------------------------------------- Admin portal */
 const adminPortal = document.getElementById("admin-portal");
 if (adminPortal) {
     CES.api("/api/admin/summary").then((result) => {
@@ -583,11 +583,10 @@ if (adminPortal) {
         document.getElementById("admin-stat-promotions").textContent = `${s.promotions} promotions`;
     });
 
-    document.querySelectorAll(".admin-menu-item").forEach((item) => {
-        item.addEventListener("click", () => {
-            CES.toast(`${item.dataset.section} will be built in a later sprint.`, "info");
-        });
-    });
+    document.getElementById("Movies").addEventListener("click", () => window.location.href = "/pages/admin/Manage_Movies.html");
+    document.getElementById("Showtimes").addEventListener("click", () => window.location.href = "/pages/admin/Manage_Showtimes.html");
+    document.getElementById("Promotions").addEventListener("click", () => window.location.href = "/pages/admin/Manage_Promotions.html");
+    document.getElementById("Users").addEventListener("click", () => window.location.href = "/pages/admin/Manage_Users.html");
 
     document.getElementById("admin-logout").addEventListener("click", () => CES.logout());
 }

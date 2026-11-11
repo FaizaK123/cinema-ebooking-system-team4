@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Portal - Cinema E-Booking System</title>
-    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="/css/admin.css" />
+    <link rel="stylesheet" href="/css/main.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="js/api.js" defer></script>
-    <script src="js/script.js" defer></script>
-    <script src="js/account.js" defer></script>
+    <script src="/js/api.js" defer></script>
+    <script src="/js/script.js" defer></script>
+    <script src="/js/account.js" defer></script>
 </head>
 <body>
     <nav class="nav-bar">
@@ -21,22 +22,22 @@
         <p class="field-hint">Choose what you'd like to manage.</p>
 
         <div class="admin-menu" role="list">
-            <button class="admin-menu-item" type="button" role="listitem" data-section="Manage Movies">
+            <button class="admin-menu-item" type="button" role="listitem" data-section="Movies" id="Movies">
                 <i class="fa-solid fa-film fa-2x"></i>
-                <span class="admin-menu-title">Manage Movies</span>
+                <span class="admin-menu-title">Movies</span>
                 <span class="admin-menu-stat" id="admin-stat-movies"></span>
             </button>
-            <button class="admin-menu-item" type="button" role="listitem" data-section="Showtimes">
+            <button class="admin-menu-item" type="button" role="listitem" data-section="Showtimes" id="Showtimes">
                 <i class="fa-solid fa-clock fa-2x"></i>
                 <span class="admin-menu-title">Showtimes</span>
                 <span class="admin-menu-stat">Schedule movies in showrooms</span>
             </button>
-            <button class="admin-menu-item" type="button" role="listitem" data-section="Promotions">
+            <button class="admin-menu-item" type="button" role="listitem" data-section="Promotions" id="Promotions">
                 <i class="fa-solid fa-tags fa-2x"></i>
                 <span class="admin-menu-title">Promotions</span>
                 <span class="admin-menu-stat" id="admin-stat-promotions"></span>
             </button>
-            <button class="admin-menu-item" type="button" role="listitem" data-section="Users">
+            <button class="admin-menu-item" type="button" role="listitem" data-section="Users" id="Users">
                 <i class="fa-solid fa-users fa-2x"></i>
                 <span class="admin-menu-title">Users</span>
                 <span class="admin-menu-stat" id="admin-stat-customers"></span>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Promotions - Cinema E-Booking System</title>
+    <link rel="stylesheet" href="/css/admin.css" />
+    <link rel="stylesheet" href="/css/main.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="/js/api.js" defer></script>
+    <script src="/js/script.js" defer></script>
+    <script src="/js/account.js" defer></script>
+    <script src="/js/promotions.js" defer></script>
+</head>
+<body>
+    <nav class="nav-bar">
+        <button class="nav-bar-home-button" id="nav-bar-home-btn" type="button">CES</button>
+        <span class="nav-bar-label">Manage Promotions</span>
+    </nav>
+    <main class="manage-promotions-page">
+        <h1 class="manage-promotions-title">Create a Promotion</h1>
+        <p class="manage-promotions-description">Create a discount and preview a promotion email campaign.</p>
+
+        <form class="promotion-form" id="promotion-form">
+            <section class="promotion-form-section" aria-labelledby="promotion-details-heading">
+                <h2 id="promotion-details-heading">Promotion details</h2>
+                <div class="promotion-form-grid">
+                    <div class="promotion-form-field">
+                        <label for="promotion-code">Promotion code</label>
+                        <input id="promotion-code" name="promoCode" type="text" minlength="3" maxlength="20" pattern="[A-Za-z0-9_-]+" autocomplete="off" required>
+                        <small>3-20 letters, numbers, hyphens, or underscores.</small>
+                    </div>
+                    <div class="promotion-form-field">
+                        <label for="promotion-discount">Discount (%)</label>
+                        <input id="promotion-discount" name="discountPercent" type="number" min="1" max="100" step="1" required>
+                    </div>
+                    <div class="promotion-form-field promotion-form-field-wide">
+                        <label for="promotion-description">Description</label>
+                        <textarea id="promotion-description" name="description" rows="3" maxlength="500" required></textarea>
+                    </div>
+                    <div class="promotion-form-field">
+                        <label for="promotion-start-date">Starts</label>
+                        <input id="promotion-start-date" name="startDate" type="date" required>
+                    </div>
+                    <div class="promotion-form-field">
+                        <label for="promotion-end-date">Ends</label>
+                        <input id="promotion-end-date" name="endDate" type="date" required>
+                    </div>
+                </div>
+            </section>
+
+            <section class="promotion-form-section" aria-labelledby="promotion-email-heading">
+                <h2 id="promotion-email-heading">Promotion email</h2>
+                <div class="promotion-form-field">
+                    <label for="promotion-email-subject">Email subject</label>
+                    <input id="promotion-email-subject" name="emailSubject" type="text" maxlength="150" required>
+                </div>
+                <div class="promotion-form-field">
+                    <label for="promotion-email-body">Email message</label>
+                    <textarea id="promotion-email-body" name="emailBody" rows="6" maxlength="5000" required></textarea>
+                </div>
+                <p class="promotion-email-note"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> This frontend preview does not save promotions or send email. Backend integration can be added later.</p>
+            </section>
+
+            <button class="promotion-submit-btn" id="promotion-submit" type="submit">
+                <i class="fa-solid fa-eye" aria-hidden="true"></i> Preview Promotion
+            </button>
+            <p class="promotion-form-message" id="promotion-form-message" role="status" aria-live="polite"></p>
+        </form>
+
+        <section class="promotion-campaigns-section" aria-labelledby="promotion-campaigns-heading">
+            <h2 id="promotion-campaigns-heading">Promotion previews</h2>
+            <div class="promotion-campaigns-list" id="promotion-campaigns-list">
+                <p class="promotion-campaigns-empty">Promotion previews will appear here.</p>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

@@ -46,7 +46,7 @@ The scripts install the packages in `requirements.txt`, create or upgrade the da
 ## Project structure
 | Layer | Location |
 |---|---|
-| Presentation | `frontend/` (HTML pages, `css/main.css`, `js/`); `backend/presentation/` (Flask app, HTTP routes, response presenters) |
+| Presentation | `frontend/pages/` (pages grouped under `public/`, `auth/`, `admin/`, `profile/`, and `errors/`); shared assets and components live in `frontend/css/`, `frontend/js/`, `frontend/images/`, and `frontend/components/`; `backend/presentation/` (Flask app, HTTP routes, response presenters) |
 | Application | `backend/application/services/` (authentication, profile, movie catalog, and admin use cases) |
 | Data access | `backend/data_access/` (repositories, SQLite connections/transactions, schema) |
 | Infrastructure | `backend/infrastructure/` (configuration, security, email, validation) |

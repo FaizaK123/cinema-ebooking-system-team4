@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Movies - Cinema E-Booking System</title>
+    <link rel="stylesheet" href="/css/admin.css" />
+    <link rel="stylesheet" href="/css/main.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="/js/api.js" defer></script>
+    <script src="/js/script.js" defer></script>
+    <script src="/js/manage.js" defer></script>
+    <script src="/js/account.js" defer></script>
+</head>
+<body>
+    <nav class="nav-bar">
+        <button class="nav-bar-home-button" id="nav-bar-home-btn">CES</button>
+        <span class="nav-bar-label">Manage Movies</span>
+    </nav>
+    <main class="manage-movies-page">
+        <h1 class="manage-movies-title">Add Movies</h1>
+        <p class="manage-movies-description">Set the information for the movie to be added to the system.</p>
+        <div class="manage-movies-content">
+            <form class="hidden" id="add-movie-form">
+                <h3 class="add-movie-form-title">Movie Info</h3>
+                <input type="text" id="movie-title" placeholder="Movie Title" required>
+                <textarea type="text" id="movie-description" placeholder="Description" required></textarea>
+                <div class="add-movie-form-section">
+                    <div class="add-movie-form-release-date">
+                        <label class="add-movie-form-label">Release Date: </label>
+                        <input type="date" id="movie-release-date" required>
+                    </div>
+                    <input type="number" id="movie-duration" placeholder="Duration (in minutes)" required>
+                    <select name="ratings" id="movie-rating">
+                        <option value="" disabled selected>Rating</option>
+                        <option value="g">G</option>
+                        <option value="pg">PG</option>
+                        <option value="pg-13">PG-13</option>
+                        <option value="r">R</option>
+                        <option value="nc-17">NC-17</option>
+                    </select>
+                </div>
+                <input type="text" id="movie-genre" placeholder="Genre (press Enter to add)" aria-label="Genre">
+                <div class="add-movie-form-genres" id="movie-genres" role="list" aria-label="Added genres"></div>
+                <label class="add-movie-form-label" id="movie-poster-label">Movie Poster</label>
+                <div class="movie-poster-dropzone" id="movie-poster-dropzone" role="group" tabindex="0" aria-label="Upload movie poster" aria-describedby="movie-poster-status">
+                    <div class="movie-poster-prompt" id="movie-poster-prompt">
+                        <p>Drag and drop an image here or click to choose a file</p>
+                        <span class="movie-poster-file-types">JPG or PNG</span>
+                    </div>
+                    <div class="movie-poster-selected hidden" id="movie-poster-selected">
+                        <span id="movie-poster-filename"></span>
+                        <button class="movie-poster-remove-btn" id="movie-poster-remove-btn" type="button" aria-label="Remove selected image">×</button>
+                    </div>
+                    <input type="file" class="movie-poster-input" id="movie-poster" name="movie-poster" accept=".jpg, .jpeg, .png" aria-label="Movie poster file" required>
+                    <p class="movie-poster-status" id="movie-poster-status" role="status" aria-live="polite"></p>
+                </div>
+                <button class="add-movie-form-add-btn" type="submit">Save Movie</button>
+            </form>
+            <div class="manage-movies-list" id="movies-list"></div>
+            <button class="manage-movie-add-btn" id="add-movie-btn"><i class="fa-solid fa-plus"></i> Add Movie</button>
+        </div>
+    </main>
+</body>
