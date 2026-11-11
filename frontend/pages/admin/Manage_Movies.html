@@ -23,10 +23,10 @@
                 <input type="text" id="movie-title" placeholder="Movie Title" required>
                 <textarea type="text" id="movie-description" placeholder="Description" required></textarea>
                 <div class="add-movie-form-section">
-                    <label class="movie-release-date-label">Release Date: </label>
-                    <input type="date" id="movie-release-date" required>
-                </div>
-                <div class="add-movie-form-section">
+                    <div class="add-movie-form-release-date">
+                        <label class="add-movie-form-label">Release Date: </label>
+                        <input type="date" id="movie-release-date" required>
+                    </div>
                     <input type="number" id="movie-duration" placeholder="Duration (in minutes)" required>
                     <select name="ratings" id="movie-rating">
                         <option value="" disabled selected>Rating</option>
@@ -37,16 +37,25 @@
                         <option value="nc-17">NC-17</option>
                     </select>
                 </div>
-                <input type="text" id="movie-genre" placeholder="Genre" required>
-                <div class="add-movie-form-section">
-                    <div class="add-movie-form-genre">Comedy</div>
+                <input type="text" id="movie-genre" placeholder="Genre (press Enter to add)" aria-label="Genre">
+                <div class="add-movie-form-genres" id="movie-genres" role="list" aria-label="Added genres"></div>
+                <label class="add-movie-form-label" id="movie-poster-label">Movie Poster</label>
+                <div class="movie-poster-dropzone" id="movie-poster-dropzone" role="group" tabindex="0" aria-label="Upload movie poster" aria-describedby="movie-poster-status">
+                    <div class="movie-poster-prompt" id="movie-poster-prompt">
+                        <p>Drag and drop an image here or click to choose a file</p>
+                        <span class="movie-poster-file-types">JPG or PNG</span>
+                    </div>
+                    <div class="movie-poster-selected hidden" id="movie-poster-selected">
+                        <span id="movie-poster-filename"></span>
+                        <button class="movie-poster-remove-btn" id="movie-poster-remove-btn" type="button" aria-label="Remove selected image">×</button>
+                    </div>
+                    <input type="file" class="movie-poster-input" id="movie-poster" name="movie-poster" accept=".jpg, .jpeg, .png" aria-label="Movie poster file" required>
+                    <p class="movie-poster-status" id="movie-poster-status" role="status" aria-live="polite"></p>
                 </div>
-                <input type="file" class="add-movie-poster-area" id="movie-poster" name="movie-poster" accept=".jpg, .jpeg, .png" required>
+                <button class="add-movie-form-add-btn" type="submit">Save Movie</button>
             </form>
+            <div class="manage-movies-list" id="movies-list"></div>
             <button class="manage-movie-add-btn" id="add-movie-btn"><i class="fa-solid fa-plus"></i> Add Movie</button>
-            <div class="manage-movies-list" id="movies-list">
-                <!-- Movie cards will be dynamically added here -->
-            </div>
         </div>
     </main>
 </body>
