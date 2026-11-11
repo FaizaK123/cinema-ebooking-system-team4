@@ -49,14 +49,21 @@ The scripts install the packages in `requirements.txt`, create or upgrade the da
 | Presentation | `frontend/pages/` (pages grouped under `public/`, `auth/`, `admin/`, `profile/`, and `errors/`); shared assets and components live in `frontend/css/`, `frontend/js/`, `frontend/images/`, and `frontend/components/`; `backend/presentation/` (Flask app, HTTP routes, response presenters) |
 | Application | `backend/application/services/` (authentication, profile, movie catalog, and admin use cases) |
 | Data access | `backend/data_access/` (repositories, SQLite connections/transactions, schema) |
-| Infrastructure | `backend/infrastructure/` (configuration, security, email, validation) |
+| Infrastructure | `backend/infrastructure/` (configuration, security/session helpers, email, validation) |
 | Operational scripts | `backend/scripts/` (database initialization, movie/user seeding, database inspection) |
 
-The dependency flow is presentation → application services → data access.
-Routes translate HTTP requests and service results; business rules live in application
-services; SQL stays in repositories. Infrastructure helpers support those layers without
-owning application workflows. `backend/app.py` remains a compatibility entry point;
-the launch scripts use `backend.presentation.app`.
+For normal HTTP requests, the primary flow is presentation → application services →
+data access. Routes translate HTTP requests and service results; application services
+coordinate use cases; repositories contain the SQL for runtime features. Schema and
+setup, seeding, and inspection SQL live in `backend/data_access/schema.sql` and
+`backend/scripts/`.
+
+Infrastructure is shared by presentation and application code. In particular,
+`infrastructure/security.py` provides session/access-control helpers and currently loads
+the signed-in user through data access, so dependencies are not strictly one-way.
+`backend/routes/` contains older route modules and is not used by the current app, which
+registers routes from `backend/presentation/routes/`. `backend/app.py` remains a
+compatibility entry point; the launch scripts use `backend.presentation.app`.
 
 ## Security notes
 - Passwords are hashed with scrypt (Werkzeug); they are never stored in plain text.
