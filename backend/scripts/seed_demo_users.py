@@ -1,15 +1,20 @@
 """Create the verified demo accounts needed for the Sprint 2 demo.
 
 Run from project root (after run.bat / run.sh has created the database once):
-    python backend/seed_demo_users.py
+    python -m backend.scripts.seed_demo_users
 
 Safe to run again: accounts that already exist are left alone.
 The emails are Gmail "+" aliases of the team account, so every notice lands in that inbox.
 """
-import config
-from db import db_transaction
-from repositories import AddressRepository, CardRepository, FavoriteRepository, UserRepository
-from security import encrypt_card_number, hash_password
+from backend.data_access.db import db_transaction
+from backend.data_access.repositories import (
+    AddressRepository,
+    CardRepository,
+    FavoriteRepository,
+    UserRepository,
+)
+from backend.infrastructure import config
+from backend.infrastructure.security import encrypt_card_number, hash_password
 
 DEMO_PASSWORD = "DemoPass1!"
 

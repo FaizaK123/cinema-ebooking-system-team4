@@ -9,7 +9,7 @@ import ssl
 from datetime import datetime
 from email.message import EmailMessage
 
-import config
+from backend.infrastructure import config
 
 
 class EmailService:

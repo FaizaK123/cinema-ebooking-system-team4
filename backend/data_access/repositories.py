@@ -205,6 +205,18 @@ class TokenRepository:
         conn.execute("UPDATE auth_tokens SET used_at = ? WHERE token_id = ?", (_utc_now().isoformat(), row["token_id"]))
         return row["user_id"]
 
+    @staticmethod
+    def is_valid(conn, token_hash, purpose, now):
+        row = conn.execute(
+            "SELECT expires_at, used_at FROM auth_tokens WHERE token_hash = ? AND purpose = ?",
+            (token_hash, purpose),
+        ).fetchone()
+        return bool(
+            row
+            and row["used_at"] is None
+            and datetime.fromisoformat(row["expires_at"]) > now
+        )
+
 
 class FavoriteRepository:
     @staticmethod
@@ -251,6 +263,23 @@ class FavoriteRepository:
 
 class MovieRepository:
     @staticmethod
+    def search(conn, title=None, genres=None):
+        conditions = []
+        params = []
+        if title:
+            conditions.append("title LIKE ?")
+            params.append(f"%{title}%")
+        if genres:
+            placeholders = ", ".join("?" for _ in genres)
+            conditions.append(f"LOWER(genre) IN ({placeholders})")
+            params.extend(genre.lower() for genre in genres)
+
+        query = "SELECT * FROM movies"
+        if conditions:
+            query += " WHERE " + " AND ".join(conditions)
+        return conn.execute(query, params).fetchall()
+
+    @staticmethod
     def find(conn, movie_id):
         return conn.execute("SELECT * FROM movies WHERE id = ?", (movie_id,)).fetchone()
 
@@ -260,6 +289,22 @@ class MovieRepository:
             "SELECT DISTINCT genre FROM movies WHERE genre IS NOT NULL AND genre != '' ORDER BY genre"
         ).fetchall()
         return [row["genre"] for row in rows]
+
+
+class AdminRepository:
+    @staticmethod
+    def summary(conn):
+        return {
+            "movies": conn.execute("SELECT COUNT(*) FROM movies").fetchone()[0],
+            "currentlyRunning": conn.execute(
+                "SELECT COUNT(*) FROM movies WHERE status = 'CURRENTLY_RUNNING'"
+            ).fetchone()[0],
+            "customers": conn.execute("SELECT COUNT(*) FROM customers").fetchone()[0],
+            "activeCustomers": conn.execute(
+                "SELECT COUNT(*) FROM customers WHERE status = 'ACTIVE'"
+            ).fetchone()[0],
+            "promotions": conn.execute("SELECT COUNT(*) FROM promotions").fetchone()[0],
+        }
 
 
 def expiry(minutes=0, hours=0):

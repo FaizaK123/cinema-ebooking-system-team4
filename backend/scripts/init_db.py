@@ -1,6 +1,6 @@
 """Safely add the CES relational schema to the existing SQLite database.
 
-Run from project root: python backend/init_db.py
+Run from project root: python -m backend.scripts.init_db
 Does not drop tables, replace movies, or alter frontend routes. Safe to run
 again: it only adds what's missing (tables, columns, indexes, the admin account).
 """
@@ -8,11 +8,11 @@ import sqlite3
 
 from werkzeug.security import generate_password_hash
 
-import config
+from backend.infrastructure import config
 
 BASE_DIR = config.BASE_DIR
 DB_PATH = config.DB_PATH
-SCHEMA_PATH = BASE_DIR / 'schema.sql'
+SCHEMA_PATH = BASE_DIR / 'data_access' / 'schema.sql'
 
 # Columns added in Sprint 2. CREATE TABLE IF NOT EXISTS skips tables that already
 # exist, so databases created before Sprint 2 get these columns added here instead.
