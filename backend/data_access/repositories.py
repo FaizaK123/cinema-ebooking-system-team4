@@ -7,6 +7,8 @@ route group several calls into one transaction.
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 
+from backend.infrastructure.timeutil import time_label
+
 
 @dataclass
 class User:
@@ -262,22 +264,27 @@ class FavoriteRepository:
 
 
 class MovieRepository:
+    """A movie's `genre` column holds one or more genres separated by commas ("Action, Sci-Fi")."""
+
+    @staticmethod
+    def _split_genres(value):
+        return [part.strip() for part in (value or "").split(",") if part.strip()]
+
     @staticmethod
     def search(conn, title=None, genres=None):
-        conditions = []
+        query = "SELECT * FROM movies"
         params = []
         if title:
-            conditions.append("title LIKE ?")
+            query += " WHERE title LIKE ?"
             params.append(f"%{title}%")
+        rows = conn.execute(query, params).fetchall()
         if genres:
-            placeholders = ", ".join("?" for _ in genres)
-            conditions.append(f"LOWER(genre) IN ({placeholders})")
-            params.extend(genre.lower() for genre in genres)
-
-        query = "SELECT * FROM movies"
-        if conditions:
-            query += " WHERE " + " AND ".join(conditions)
-        return conn.execute(query, params).fetchall()
+            wanted = {genre.lower() for genre in genres}
+            rows = [
+                row for row in rows
+                if wanted & {g.lower() for g in MovieRepository._split_genres(row["genre"])}
+            ]
+        return rows
 
     @staticmethod
     def find(conn, movie_id):
@@ -285,10 +292,27 @@ class MovieRepository:
 
     @staticmethod
     def genres(conn):
-        rows = conn.execute(
-            "SELECT DISTINCT genre FROM movies WHERE genre IS NOT NULL AND genre != '' ORDER BY genre"
-        ).fetchall()
-        return [row["genre"] for row in rows]
+        names = {}
+        for row in conn.execute("SELECT genre FROM movies WHERE genre IS NOT NULL AND genre != ''"):
+            for genre in MovieRepository._split_genres(row["genre"]):
+                names.setdefault(genre.lower(), genre)
+        return sorted(names.values(), key=str.lower)
+
+    @staticmethod
+    def title_exists(conn, title):
+        return conn.execute("SELECT 1 FROM movies WHERE LOWER(title) = LOWER(?)", (title,)).fetchone() is not None
+
+    @staticmethod
+    def create(conn, movie):
+        cursor = conn.execute(
+            "INSERT INTO movies (title, genre, rating, description, poster, trailer, status, release_date, runtime) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (
+                movie["title"], movie["genre"], movie["rating"], movie["description"], movie["poster"],
+                movie["trailer"], movie["status"], movie["releaseDate"], movie["runtime"],
+            ),
+        )
+        return cursor.lastrowid
 
 
 class AdminRepository:
@@ -305,6 +329,263 @@ class AdminRepository:
             ).fetchone()[0],
             "promotions": conn.execute("SELECT COUNT(*) FROM promotions").fetchone()[0],
         }
+
+
+class ShowroomRepository:
+    @staticmethod
+    def list_all(conn):
+        rows = conn.execute(
+            "SELECT r.room_id, r.room_number, t.name AS theater, COUNT(se.seat_id) AS capacity, "
+            "COUNT(DISTINCT se.row_label) AS seat_rows, MAX(se.seat_number) AS seats_per_row "
+            "FROM showrooms r JOIN theaters t ON t.theater_id = r.theater_id "
+            "LEFT JOIN seats se ON se.room_id = r.room_id "
+            "GROUP BY r.room_id ORDER BY r.room_number"
+        ).fetchall()
+        return [
+            {
+                "id": row["room_id"],
+                "name": f"Showroom {row['room_number']}",
+                "theater": row["theater"],
+                "capacity": row["capacity"],
+                "rows": row["seat_rows"],
+                "seatsPerRow": row["seats_per_row"],
+            }
+            for row in rows
+        ]
+
+    @staticmethod
+    def find(conn, room_id):
+        return conn.execute("SELECT room_id, room_number FROM showrooms WHERE room_id = ?", (room_id,)).fetchone()
+
+    @staticmethod
+    def busy_room_ids(conn, show_date, show_time):
+        rows = conn.execute(
+            "SELECT room_id FROM shows WHERE show_date = ? AND show_time = ?", (show_date, show_time)
+        ).fetchall()
+        return {row["room_id"] for row in rows}
+
+
+_SHOW_SELECT = (
+    "SELECT s.show_id, s.movie_id, m.title, s.show_date, s.show_time, s.room_id, r.room_number "
+    "FROM shows s JOIN movies m ON m.id = s.movie_id JOIN showrooms r ON r.room_id = s.room_id"
+)
+_UPCOMING = "(s.show_date > ? OR (s.show_date = ? AND s.show_time > ?))"
+
+
+def _show_dict(row):
+    return {
+        "showId": row["show_id"],
+        "movieId": row["movie_id"],
+        "movieTitle": row["title"],
+        "date": row["show_date"],
+        "time": row["show_time"],
+        "timeLabel": time_label(row["show_time"]),
+        "showroomId": row["room_id"],
+        "showroom": f"Showroom {row['room_number']}",
+    }
+
+
+def _upcoming_params(now):
+    return (now.date().isoformat(), now.date().isoformat(), now.strftime("%H:%M"))
+
+
+class ShowRepository:
+    @staticmethod
+    def find(conn, show_id):
+        row = conn.execute(_SHOW_SELECT + " WHERE s.show_id = ?", (show_id,)).fetchone()
+        return _show_dict(row) if row else None
+
+    @staticmethod
+    def list_upcoming_for_movie(conn, movie_id, now):
+        rows = conn.execute(
+            _SHOW_SELECT + f" WHERE s.movie_id = ? AND {_UPCOMING} ORDER BY s.show_date, s.show_time, r.room_number",
+            (movie_id, *_upcoming_params(now)),
+        ).fetchall()
+        return [_show_dict(row) for row in rows]
+
+    @staticmethod
+    def upcoming_by_movie(conn, now):
+        """{movie_id: [show, ...]} for every movie that has upcoming showtimes."""
+        rows = conn.execute(
+            _SHOW_SELECT + f" WHERE {_UPCOMING} ORDER BY s.show_date, s.show_time, r.room_number",
+            _upcoming_params(now),
+        ).fetchall()
+        grouped = {}
+        for row in rows:
+            grouped.setdefault(row["movie_id"], []).append(_show_dict(row))
+        return grouped
+
+    @staticmethod
+    def list_all(conn, movie_id=None):
+        query = _SHOW_SELECT
+        params = ()
+        if movie_id is not None:
+            query += " WHERE s.movie_id = ?"
+            params = (movie_id,)
+        rows = conn.execute(query + " ORDER BY s.show_date, s.show_time, r.room_number", params).fetchall()
+        return [_show_dict(row) for row in rows]
+
+    @staticmethod
+    def find_in_room_at(conn, room_id, show_date, show_time):
+        return conn.execute(
+            "SELECT show_id FROM shows WHERE room_id = ? AND show_date = ? AND show_time = ?",
+            (room_id, show_date, show_time),
+        ).fetchone()
+
+    @staticmethod
+    def create(conn, movie_id, room_id, show_date, show_time):
+        """Adds the showtime and one AVAILABLE show_seat for every seat in the showroom."""
+        cursor = conn.execute(
+            "INSERT INTO shows (movie_id, room_id, show_date, show_time) VALUES (?, ?, ?, ?)",
+            (movie_id, room_id, show_date, show_time),
+        )
+        show_id = cursor.lastrowid
+        conn.execute(
+            "INSERT INTO show_seats (show_id, room_id, seat_id, status) "
+            "SELECT ?, room_id, seat_id, 'AVAILABLE' FROM seats WHERE room_id = ?",
+            (show_id, room_id),
+        )
+        return show_id
+
+
+def _placeholders(items):
+    return ", ".join("?" for _ in items)
+
+
+class SeatRepository:
+    """Seats of one showtime. A seat is AVAILABLE, HELD (picked by someone who hasn't paid yet) or BOOKED.
+
+    A HELD seat whose held_until has passed counts as AVAILABLE again, so abandoned
+    selections release themselves without a background job.
+    """
+
+    @staticmethod
+    def seat_map(conn, show_id, token, now_iso):
+        rows = conn.execute(
+            "SELECT se.seat_id, se.row_label, se.seat_number, ss.status, ss.held_by, ss.held_until "
+            "FROM show_seats ss JOIN seats se ON se.seat_id = ss.seat_id "
+            "WHERE ss.show_id = ? ORDER BY se.row_label, se.seat_number",
+            (show_id,),
+        ).fetchall()
+        seats = []
+        for row in rows:
+            status = row["status"]
+            if status == "HELD":
+                if row["held_until"] is None or row["held_until"] <= now_iso:
+                    status = "AVAILABLE"
+                elif token and row["held_by"] == token:
+                    status = "SELECTED"
+            seats.append({
+                "seatId": row["seat_id"],
+                "row": row["row_label"],
+                "number": row["seat_number"],
+                "label": f"{row['row_label']}{row['seat_number']}",
+                "status": status,
+            })
+        return seats
+
+    @staticmethod
+    def labels(conn, show_id, seat_ids):
+        """{seat_id: 'A5'} for those seat ids that belong to this showtime."""
+        if not seat_ids:
+            return {}
+        rows = conn.execute(
+            "SELECT se.seat_id, se.row_label, se.seat_number FROM show_seats ss "
+            f"JOIN seats se ON se.seat_id = ss.seat_id WHERE ss.show_id = ? AND ss.seat_id IN ({_placeholders(seat_ids)})",
+            (show_id, *seat_ids),
+        ).fetchall()
+        return {row["seat_id"]: f"{row['row_label']}{row['seat_number']}" for row in rows}
+
+    @staticmethod
+    def release_for_token(conn, token):
+        conn.execute(
+            "UPDATE show_seats SET status = 'AVAILABLE', held_by = NULL, held_until = NULL "
+            "WHERE held_by = ? AND status = 'HELD'",
+            (token,),
+        )
+
+    @staticmethod
+    def hold(conn, show_id, seat_ids, token, until_iso, now_iso):
+        """Reserve the seats for this token. Returns False if any of them is taken.
+
+        The UPDATE only touches seats that are free right now, so two people choosing the same
+        seat at the same moment can't both get it. The caller rolls back when this returns False.
+        """
+        cursor = conn.execute(
+            "UPDATE show_seats SET status = 'HELD', held_by = ?, held_until = ? "
+            f"WHERE show_id = ? AND seat_id IN ({_placeholders(seat_ids)}) "
+            "AND (status = 'AVAILABLE' OR (status = 'HELD' AND held_until <= ?))",
+            (token, until_iso, show_id, *seat_ids, now_iso),
+        )
+        return cursor.rowcount == len(seat_ids)
+
+    @staticmethod
+    def still_held(conn, show_id, seat_ids, token, now_iso):
+        """True if every one of these seats is still held by this token and the hold hasn't expired."""
+        count = conn.execute(
+            f"SELECT COUNT(*) FROM show_seats WHERE show_id = ? AND seat_id IN ({_placeholders(seat_ids)}) "
+            "AND status = 'HELD' AND held_by = ? AND held_until > ?",
+            (show_id, *seat_ids, token, now_iso),
+        ).fetchone()[0]
+        return count == len(seat_ids)
+
+    @staticmethod
+    def renew(conn, show_id, token, until_iso, now_iso):
+        conn.execute(
+            "UPDATE show_seats SET held_until = ? WHERE show_id = ? AND held_by = ? "
+            "AND status = 'HELD' AND held_until > ?",
+            (until_iso, show_id, token, now_iso),
+        )
+
+
+class TicketTypeRepository:
+    @staticmethod
+    def all(conn):
+        """{'ADULT': {'id': 1, 'price': 12.0}, 'CHILD': ..., 'SENIOR': ...}"""
+        rows = conn.execute("SELECT ticket_type_id, category, price FROM ticket_types ORDER BY ticket_type_id").fetchall()
+        return {row["category"]: {"id": row["ticket_type_id"], "price": row["price"]} for row in rows}
+
+
+class PromotionRepository:
+    @staticmethod
+    def exists(conn, promo_code):
+        return conn.execute("SELECT 1 FROM promotions WHERE promo_code = ?", (promo_code,)).fetchone() is not None
+
+    @staticmethod
+    def create(conn, promotion):
+        conn.execute(
+            "INSERT INTO promotions (promo_code, description, discount_rate, start_date, end_date) VALUES (?, ?, ?, ?, ?)",
+            (
+                promotion["promoCode"], promotion["description"], promotion["discountPercent"] / 100,
+                promotion["startDate"], promotion["endDate"],
+            ),
+        )
+
+    @staticmethod
+    def list_all(conn):
+        rows = conn.execute(
+            "SELECT promo_code, description, discount_rate, start_date, end_date FROM promotions "
+            "ORDER BY start_date DESC, promo_code"
+        ).fetchall()
+        return [
+            {
+                "promoCode": row["promo_code"],
+                "description": row["description"],
+                "discountPercent": round(row["discount_rate"] * 100),
+                "startDate": row["start_date"],
+                "endDate": row["end_date"],
+            }
+            for row in rows
+        ]
+
+    @staticmethod
+    def subscribers(conn):
+        """Active customers who opted in to promotion emails. Nobody else is ever emailed a promotion."""
+        rows = conn.execute(
+            "SELECT u.first_name, u.email FROM users u JOIN customers c ON c.customer_id = u.user_id "
+            "WHERE u.role = 'CUSTOMER' AND u.promo_opt_in = 1 AND c.status = 'ACTIVE' ORDER BY u.user_id"
+        ).fetchall()
+        return [{"firstName": row["first_name"], "email": row["email"]} for row in rows]
 
 
 def expiry(minutes=0, hours=0):

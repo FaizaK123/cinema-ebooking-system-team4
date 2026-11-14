@@ -2,6 +2,8 @@
 from flask import Blueprint, jsonify, redirect, request, session
 
 from backend.application.services import auth as auth_service
+from backend.application.services import booking as booking_service
+from backend.infrastructure import booking_session
 from backend.infrastructure.security import current_user
 from backend.presentation.presenters import service_response
 
@@ -63,7 +65,9 @@ def login():
         return service_response(result)
 
     user = result.data["user"]
+    kept_booking = booking_session.preserved_values()  # seats picked before logging in stay reserved
     session.clear()
+    session.update(kept_booking)
     session["user_id"] = user.id
     session.permanent = result.data["remember"]
     return jsonify({
@@ -75,6 +79,7 @@ def login():
 
 @auth_bp.post("/logout")
 def logout():
+    booking_service.release_holds()  # don't leave seats reserved for someone who has left
     session.clear()
     return jsonify({"message": "You have been logged out."})
 

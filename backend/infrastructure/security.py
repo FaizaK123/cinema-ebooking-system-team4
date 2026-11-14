@@ -77,7 +77,7 @@ def login_required(role=None):
         def wrapped(*args, **kwargs):
             user = current_user()
             if user is None:
-                return jsonify({"error": "Please log in to continue."}), 401
+                return jsonify({"error": "Please log in to continue.", "loginRequired": True}), 401
             if role and user.role != role:
                 return jsonify({"error": "You don't have permission to do that."}), 403
             return view(*args, **kwargs)

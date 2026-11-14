@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Usage:
-#   ./run.sh            start the app (seeds the DB first if it has no movies table)
+#   ./run.sh            start the app (creates/updates the DB and seeds demo data first)
 #   ./run.sh --reset    delete backend/movies.db, re-seed it from seed_db.py, then start
 set -e
 
@@ -32,11 +32,9 @@ fi
 echo "Initializing database schema..."
 python3 -m backend.scripts.init_db
 
-# Seed movies only if the movies table is empty
-if [ "$(python3 -c "import sqlite3; c=sqlite3.connect('backend/movies.db'); print(c.execute('SELECT COUNT(*) FROM movies').fetchone()[0]); c.close()")" = "0" ]; then
-    echo "Seeding initial movies..."
-    python3 -m backend.scripts.seed_db
-fi
+# Seed movies, showtimes and pre-booked seats (safe to repeat: it only adds what is missing)
+echo "Seeding demo data..."
+python3 -m backend.scripts.seed_db
 
 # 4. Start the server
 echo "Starting app at http://127.0.0.1:5000"
