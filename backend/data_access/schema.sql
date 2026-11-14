@@ -54,10 +54,13 @@ CREATE TABLE IF NOT EXISTS show_seats (
  show_seat_id INTEGER PRIMARY KEY, show_id INTEGER NOT NULL, room_id INTEGER NOT NULL,
  seat_id INTEGER NOT NULL, status TEXT NOT NULL DEFAULT 'AVAILABLE'
  CHECK(status IN ('AVAILABLE','HELD','BOOKED')),
+ held_by TEXT, held_until TEXT,
  FOREIGN KEY(show_id,room_id) REFERENCES shows(show_id,room_id),
  FOREIGN KEY(seat_id,room_id) REFERENCES seats(seat_id,room_id),
  UNIQUE(show_id,seat_id)
 );
+-- held_by is a random token that identifies the browser session holding the seat (no login needed to pick seats);
+-- held_until is when an unconfirmed hold is released again. Both are NULL unless status = 'HELD'.
 CREATE TABLE IF NOT EXISTS promotions (
  promo_code TEXT PRIMARY KEY, description TEXT, discount_rate REAL NOT NULL
  CHECK(discount_rate BETWEEN 0 AND 1), start_date TEXT, end_date TEXT,

@@ -7,3 +7,4 @@ from typing import Any
 class ServiceResult:
     data: Any = None
     status: int = 200
+    meta: Any = None  # extra data for the presenter (e.g. showtimes to attach to movies)

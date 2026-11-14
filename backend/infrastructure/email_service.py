@@ -85,6 +85,19 @@ class EmailService:
         return EmailService.send(to_address, "Reset your Cinema E-Booking password", body)
 
     @staticmethod
+    def send_promotion(user_first_name, to_address, promotion):
+        """Marketing email. Only ever sent to customers who opted in to promotions."""
+        body = (
+            f"Hi {user_first_name},\n\n"
+            f"{promotion['emailBody']}\n\n"
+            f"Promo code: {promotion['promoCode']} ({promotion['discountPercent']}% off)\n"
+            f"Valid {promotion['startDate']} to {promotion['endDate']}\n\n"
+            "You're receiving this because you subscribed to promotions from Cinema E-Booking. "
+            "You can turn promotion emails off any time on your profile page.\n"
+        )
+        return EmailService.send(to_address, promotion["emailSubject"], body)
+
+    @staticmethod
     def send_account_change(user_first_name, to_address, changes):
         """Security notice sent whenever profile, address, card or password details change."""
         change_lines = "\n".join(f"  - {change}" for change in changes)

@@ -37,7 +37,12 @@ Then open http://127.0.0.1:5000. Add `--reset` (e.g. `run.bat --reset`) to rebui
 If you change `backend/.env`, restart the app.
 
 The scripts install the packages in `requirements.txt`, create or upgrade the database
-(`backend/scripts/init_db.py` adds any missing tables/columns without deleting data), seed the movies, and start Flask.
+(`backend/scripts/init_db.py` adds any missing tables/columns, the 3 showrooms and their seats without deleting data),
+seed the demo data (`backend/scripts/seed_db.py`: movies, a week of showtimes in all 3 showrooms, and some already-booked
+seats; it only adds what is missing), and start Flask.
+
+Sprint 3 endpoints are described in `backend/API_SPRINT3.md`. Run the test cases with
+`python -m unittest discover -s backend/tests -t .` (they use a throwaway database and send no email).
 
 ## Accounts
 - **Admin:** `admin@ces.local` / `Admin1234!` (created automatically; change it in `backend/.env` before the first run).
