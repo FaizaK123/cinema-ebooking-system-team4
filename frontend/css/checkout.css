@@ -1,0 +1,59 @@
+.checkout-input {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+    margin: 8px 0 20px;
+    background: #111;
+    color: white;
+    border: 1px solid white;
+    border-radius: 6px;
+    font-family: Tahoma, Verdana, sans-serif;
+    font-size: 16px;
+}
+.checkout-input:focus {
+    outline: 2px solid #e50914;
+}
+.checkout-input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+.checkout-back-button {
+    background: transparent;
+    color: white;
+    border: 1px solid white;
+    border-radius: 6px;
+    padding: 12px 20px;
+    margin-top: 20px;
+    font-size: 15px;
+    cursor: pointer;
+}
+.checkout-back-button:hover {
+    background: white;
+    color: black;
+}
+.checkout-ticket-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid #444;
+}
+.checkout-error {
+    color: #ff7070;
+    margin-bottom: 16px;
+}
+.checkout-note {
+    color: #bbb;
+    font-size: 14px;
+    line-height: 1.5;
+}
+.booking-continue-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+@media (max-width: 600px) {
+    .checkout-ticket-row {
+        flex-wrap: wrap;
+    }
+}
