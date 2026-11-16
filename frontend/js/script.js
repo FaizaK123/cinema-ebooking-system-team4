@@ -89,6 +89,12 @@ if (new URLSearchParams(window.location.search).get("loggedOut") === "1") {
 
 loadHomeMovies()
 
+window.addEventListener("pageshow", (event) => {
+    if (event.persisted && document.querySelector(".homepage-posters-section")) {
+        loadHomeMovies().catch((error) => console.error("Could not refresh movies:", error));
+    }
+});
+
 const searchInput = document.querySelector(".search-input");
 if (searchInput) {
     searchInput.addEventListener("keydown", (event) => {
@@ -220,7 +226,8 @@ function renderMovieShowtimes(showtimesContainer, movie) {
 
     if (!dateSelect || !searchButton || !timesList) return;
 
-    const dates = Object.keys(movie.showtimes || {}).sort();
+    const showings = Array.isArray(movie.showings) ? movie.showings : [];
+    const dates = [...new Set(showings.map((showing) => showing.date).filter(Boolean))].sort();
 
     if (dates.length === 0){
         showtimesContainer.innerHTML =
@@ -228,28 +235,40 @@ function renderMovieShowtimes(showtimesContainer, movie) {
         return;
     }
 
-    dateSelect.innerHTML = dates
-        .map((date, i) => `
-            <option value="${date}" ${i === 0 ? "selected" : ""}>
-                ${formatDateLabel(date)}
-            </option>
-        `)
-        .join("");
-
+    dateSelect.replaceChildren();
+    dates.forEach((date, index) => {
+        const option = new Option(formatDateLabel(date), date);
+        option.selected = index === 0;
+        dateSelect.add(option);
+    });
 
     function loadTimesForSelectedDate() {
         const selectedDate = dateSelect.value;
-        const times = movie.showtimes[selectedDate] || [];
+        const selectedShowings = showings.filter((showing) => showing.date === selectedDate);
+        timesList.replaceChildren();
 
-        timesList.innerHTML = times.length
-            ? times.map((time) => `<button type="button" class="moviepage-showtime-button">${time}</button>`).join("")
-            : '<p class="moviepage-showtimes-empty-state">No showtimes available for this date.</p>';
+        if (selectedShowings.length === 0) {
+            const empty = document.createElement("p");
+            empty.className = "moviepage-showtimes-empty-state";
+            empty.textContent = "No showtimes available for this date.";
+            timesList.appendChild(empty);
+            return;
+        }
 
-        timesList.querySelectorAll(".moviepage-showtime-button").forEach((button) => {
+        selectedShowings.forEach((showing) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "moviepage-showtime-button";
+            button.textContent = `${showing.timeLabel} · ${showing.showroom}`;
+            button.setAttribute("aria-label", `Select ${showing.timeLabel} in ${showing.showroom}`);
             button.addEventListener("click", () => {
-                const params = new URLSearchParams({ id: movie.id, date: selectedDate, time: button.textContent });
+                const params = new URLSearchParams({
+                    id: String(movie.id),
+                    showId: String(showing.showId)
+                });
                 window.location.href = `/pages/public/Booking_Page.html?${params}`;
             });
+            timesList.appendChild(button);
         });
     }
 
@@ -357,28 +376,45 @@ async function renderBookingPage() {
     if (!title) return;
 
     const params = new URLSearchParams(window.location.search);
+    const showId = Number(params.get("showId"));
+    const continueButton = document.getElementById("proceed-to-checkout");
+    const showtimeError = document.getElementById("booking-showtime-error");
 
-    const movieId = Number(params.get("id"));
-    const selectedDate = params.get("date");
-    const selectedTime = params.get("time");
+    function showError(message) {
+        showtimeError.textContent = message;
+        showtimeError.hidden = false;
+        continueButton.disabled = true;
+    }
 
-    const response = await fetch("/api/movies");
-    const movies = await response.json();
-
-    const movie = movies.find(movie => movie.id === movieId);
-
-    if (!movie) {
-        title.textContent = "Movie not found";
+    if (!Number.isSafeInteger(showId) || showId <= 0) {
+        showError("Select a showtime from the movie page to continue.");
         return;
     }
 
-    title.textContent = movie.title;
+    try {
+        const response = await fetch(`/api/shows/${showId}`);
+        if (!response.ok) {
+            showError("That showtime could not be found. Please choose another one.");
+            return;
+        }
 
-    document.getElementById("booking-date").textContent =
-        selectedDate || "Not selected";
+        const data = await response.json();
+        const show = data.show;
+        title.textContent = data.movie.title;
+        document.getElementById("booking-date").textContent = show.date;
+        document.getElementById("booking-showtime").textContent = show.timeLabel;
+        document.getElementById("booking-showroom").textContent = show.showroom;
 
-    document.getElementById("booking-showtime").textContent =
-        selectedTime || "Not selected";
+        if (!data.bookable) {
+            showError("This showtime is no longer available. Please choose another one.");
+            return;
+        }
+        continueButton.disabled = false;
+    } catch (error) {
+        console.error("Could not load the selected showtime:", error);
+        showError("Could not load the selected showtime. Please try again.");
+        return;
+    }
 
     const seatLayout = document.getElementById("seat-layout");
     const rows = ["A", "B", "C", "D", "E"];

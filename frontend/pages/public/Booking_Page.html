@@ -32,6 +32,11 @@
                 <strong>Showtime:</strong>
                 <span id="booking-showtime"></span>
             </p>
+            <p>
+                <strong>Showroom:</strong>
+                <span id="booking-showroom"></span>
+            </p>
+            <p id="booking-showtime-error" role="alert" hidden></p>
         </div>
         <div class="booking-ticket-section">
             <h2>Ticket Selection</h2>
@@ -80,7 +85,7 @@
                     Total: $<span id="booking-total">0.00</span>
                 </strong>
             </p>
-            <button type="button" class="booking-continue-button" id="proceed-to-checkout">
+            <button type="button" class="booking-continue-button" id="proceed-to-checkout" disabled>
                 Continue
             </button>
         </div>

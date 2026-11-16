@@ -19,58 +19,112 @@ if (addMovieButton && addMovieForm) {
     const moviePosterFilename = document.getElementById("movie-poster-filename");
     const moviePosterStatus = document.getElementById("movie-poster-status");
 
+    function createMovieCard(movie) {
+        const card = document.createElement("article");
+        card.className = "manage-movie-card";
+
+        const poster = document.createElement("img");
+        poster.className = "manage-movie-card-poster";
+        poster.src = movie.poster;
+        poster.alt = `${movie.title} poster`;
+
+        const details = document.createElement("div");
+        details.className = "manage-movie-card-details";
+
+        const title = document.createElement("h2");
+        title.textContent = movie.title;
+
+        const info = document.createElement("p");
+        info.textContent = `${movie.releaseDate} · ${movie.runtime} · ${movie.rating}`;
+
+        const description = document.createElement("p");
+        description.textContent = movie.description;
+
+        const genres = document.createElement("div");
+        genres.className = "manage-movie-card-genres";
+        String(movie.genre || "").split(",").map((genre) => genre.trim()).filter(Boolean).forEach((genreName) => {
+            const genre = document.createElement("span");
+            genre.className = "manage-movie-card-genre";
+            genre.textContent = genreName;
+            genres.appendChild(genre);
+        });
+
+        details.append(title, info, description, genres);
+        card.append(poster, details);
+        return card;
+    }
+
+    async function loadAdminMovies() {
+        const result = await CES.api("/api/movies");
+        if (!result.ok || !Array.isArray(result.data)) {
+            throw new Error(result.data?.error || "Could not load saved movies.");
+        }
+
+        moviesList.replaceChildren();
+        if (result.data.length === 0) {
+            const empty = document.createElement("p");
+            empty.className = "manage-movies-empty";
+            empty.textContent = "No movies have been added yet.";
+            moviesList.appendChild(empty);
+            return;
+        }
+        result.data.forEach((movie) => moviesList.appendChild(createMovieCard(movie)));
+    }
+
     if (
         moviesList && movieTitleInput && movieDescriptionInput && movieReleaseDateInput &&
         movieDurationInput && movieRatingInput && movieGenres && moviePosterInput &&
         moviePosterPrompt && moviePosterSelected && moviePosterFilename && moviePosterStatus
     ) {
-        addMovieForm.addEventListener("submit", (event) => {
+        loadAdminMovies().catch((error) => {
+            console.error("Could not load saved movies:", error);
+            CES.toast(error.message, "error");
+        });
+
+        addMovieForm.addEventListener("submit", async (event) => {
             event.preventDefault();
 
             const posterFile = moviePosterInput.files[0];
             if (!posterFile) return;
 
-            const card = document.createElement("article");
-            card.className = "manage-movie-card";
-
-            const poster = document.createElement("img");
-            poster.className = "manage-movie-card-poster";
-            poster.src = URL.createObjectURL(posterFile);
-            poster.alt = `${movieTitleInput.value.trim()} poster`;
-
-            const details = document.createElement("div");
-            details.className = "manage-movie-card-details";
-
-            const title = document.createElement("h2");
-            title.textContent = movieTitleInput.value.trim();
-
-            const info = document.createElement("p");
-            info.textContent = `${movieReleaseDateInput.value} · ${movieDurationInput.value} min · ${movieRatingInput.value.toUpperCase()}`;
-
-            const description = document.createElement("p");
-            description.textContent = movieDescriptionInput.value.trim();
-
-            const genres = document.createElement("div");
-            genres.className = "manage-movie-card-genres";
-            Array.from(movieGenres.children).forEach((genreTag) => {
-                const genre = document.createElement("span");
-                genre.className = "manage-movie-card-genre";
-                genre.textContent = genreTag.dataset.genre;
-                genres.appendChild(genre);
+            const submitButton = addMovieForm.querySelector('[type="submit"]');
+            const formData = new FormData();
+            formData.append("title", movieTitleInput.value.trim());
+            formData.append("description", movieDescriptionInput.value.trim());
+            formData.append("releaseDate", movieReleaseDateInput.value);
+            formData.append("duration", movieDurationInput.value);
+            formData.append("rating", movieRatingInput.value);
+            movieGenres.querySelectorAll("[data-genre]").forEach((genreTag) => {
+                formData.append("genres", genreTag.dataset.genre);
             });
+            formData.append("poster", posterFile);
+            submitButton.disabled = true;
 
-            details.append(title, info, description, genres);
-            card.append(poster, details);
-            moviesList.prepend(card);
+            try {
+                const result = await CES.api("/api/admin/movies", { method: "POST", body: formData });
+                if (!result.ok || !result.data?.movie) {
+                    const fieldErrors = Object.values(result.data?.errors || {}).join(" ");
+                    CES.toast(fieldErrors || result.data?.error || "Could not save the movie.", "error");
+                    return;
+                }
 
-            addMovieForm.reset();
-            movieGenres.replaceChildren();
-            moviePosterPrompt.classList.remove("hidden");
-            moviePosterSelected.classList.add("hidden");
-            moviePosterFilename.textContent = "";
-            moviePosterStatus.textContent = "";
-            moviePosterStatus.classList.remove("is-error");
-            addMovieForm.classList.add("hidden");
+                moviesList.querySelector(".manage-movies-empty")?.remove();
+                moviesList.prepend(createMovieCard(result.data.movie));
+                addMovieForm.reset();
+                movieGenres.replaceChildren();
+                moviePosterPrompt.classList.remove("hidden");
+                moviePosterSelected.classList.add("hidden");
+                moviePosterFilename.textContent = "";
+                moviePosterStatus.textContent = "";
+                moviePosterStatus.classList.remove("is-error");
+                addMovieForm.classList.add("hidden");
+                CES.toast(result.data.message || "Movie saved.", "success");
+            } catch (error) {
+                console.error("Could not save movie:", error);
+                CES.toast(error.message || "Could not save the movie.", "error");
+            } finally {
+                submitButton.disabled = false;
+            }
         });
     }
 }
@@ -202,11 +256,29 @@ if (showtimeForm) {
     const showtimeSubmit = document.getElementById("showtime-submit");
     const showtimeMessage = document.getElementById("showtime-form-message");
     const scheduledShowtimesList = document.getElementById("scheduled-showtimes-list");
-    const scheduledShowtimesEmpty = document.getElementById("scheduled-showtimes-empty");
+    let showtimeMoviesLoaded = false;
+    let showroomsLoaded = false;
 
     function setShowtimeMessage(message, isError = false) {
         showtimeMessage.textContent = message;
         showtimeMessage.classList.toggle("is-error", isError);
+    }
+
+    function setShowtimeSuccess(showtime) {
+        const movieTitle = document.createElement("strong");
+        movieTitle.textContent = `Showtime added: ${showtime.movieTitle}`;
+
+        const details = document.createElement("span");
+        details.textContent = `${showtime.showroom} · ${showtime.date} · ${showtime.timeLabel}`;
+
+        showtimeMessage.replaceChildren(movieTitle, details);
+        showtimeMessage.classList.remove("is-error");
+    }
+
+    function updateShowtimeSubmit() {
+        showtimeSubmit.disabled =
+            !showtimeMoviesLoaded || !showroomsLoaded ||
+            showtimeMovie.options.length < 2 || showtimeShowroom.options.length < 2;
     }
 
     function createShowtimeDetail(label, value) {
@@ -221,34 +293,71 @@ if (showtimeForm) {
         return detail;
     }
 
+    function createShowtimeCard(showtime) {
+        const selectedDate = new Date(`${showtime.date}T00:00:00`);
+        const dateLabel = selectedDate.toLocaleDateString(undefined, {
+            year: "numeric",
+            month: "long",
+            day: "numeric"
+        });
+        const card = document.createElement("article");
+        card.className = "scheduled-showtime-card";
+        card.append(
+            createShowtimeDetail("Movie", showtime.movieTitle),
+            createShowtimeDetail("Date", dateLabel),
+            createShowtimeDetail("Time", showtime.timeLabel),
+            createShowtimeDetail("Showroom", showtime.showroom)
+        );
+        return card;
+    }
+
     async function loadShowtimeMovies() {
-        try {
-            const response = await fetch("/api/movies");
-            if (!response.ok) throw new Error(`Movie list request failed (HTTP ${response.status}).`);
-
-            const movies = await response.json();
-            if (!Array.isArray(movies)) throw new Error("The movie list response was not a list.");
-
-            showtimeMovie.replaceChildren(new Option("Select a movie", ""));
-            movies.forEach((movie) => {
-                if (!movie || typeof movie.title !== "string" || !movie.title.trim()) return;
-
-                const option = new Option(movie.title, String(movie.id ?? movie.title));
-                option.dataset.title = movie.title;
-                showtimeMovie.add(option);
-            });
-
-            const hasMovies = showtimeMovie.options.length > 1;
-            showtimeSubmit.disabled = !hasMovies;
-            if (!hasMovies) {
-                setShowtimeMessage("There are no movies available to schedule.");
-            }
-        } catch (error) {
-            console.error("Could not load movies for showtime scheduling:", error);
-            showtimeMovie.replaceChildren(new Option("Movies could not be loaded", ""));
-            showtimeSubmit.disabled = true;
-            setShowtimeMessage("Could not load movies. Please try again later.", true);
+        const result = await CES.api("/api/movies");
+        if (!result.ok || !Array.isArray(result.data)) {
+            throw new Error(result.data?.error || "Could not load movies for showtime scheduling.");
         }
+
+        showtimeMovie.replaceChildren(new Option("Select a movie", ""));
+        result.data.forEach((movie) => {
+            if (!movie || typeof movie.title !== "string" || !movie.title.trim()) return;
+            showtimeMovie.add(new Option(movie.title, String(movie.id)));
+        });
+        showtimeMoviesLoaded = true;
+        updateShowtimeSubmit();
+    }
+
+    async function loadShowrooms() {
+        const result = await CES.api("/api/admin/showrooms");
+        if (!result.ok || !Array.isArray(result.data)) {
+            throw new Error(result.data?.error || "Could not load showrooms.");
+        }
+
+        showtimeShowroom.replaceChildren(new Option("Select a showroom", ""));
+        result.data.forEach((room) => {
+            showtimeShowroom.add(new Option(room.name, String(room.id)));
+        });
+        showroomsLoaded = true;
+        updateShowtimeSubmit();
+    }
+
+    async function loadScheduledShowtimes() {
+        const result = await CES.api("/api/admin/showtimes");
+        if (!result.ok || !Array.isArray(result.data)) {
+            throw new Error(result.data?.error || "Could not load scheduled showtimes.");
+        }
+
+        scheduledShowtimesList.replaceChildren();
+        if (result.data.length === 0) {
+            const empty = document.createElement("p");
+            empty.className = "scheduled-showtimes-empty";
+            empty.id = "scheduled-showtimes-empty";
+            empty.textContent = "No showtimes scheduled yet.";
+            scheduledShowtimesList.appendChild(empty);
+            return;
+        }
+        result.data.forEach((showtime) => {
+            scheduledShowtimesList.appendChild(createShowtimeCard(showtime));
+        });
     }
 
     const today = new Date();
@@ -258,58 +367,49 @@ if (showtimeForm) {
         String(today.getDate()).padStart(2, "0")
     ].join("-");
 
-    showtimeForm.addEventListener("submit", (event) => {
+    showtimeForm.addEventListener("submit", async (event) => {
         event.preventDefault();
         if (!showtimeForm.reportValidity()) return;
 
-        const selectedMovie = showtimeMovie.selectedOptions[0];
-        const showroom = showtimeShowroom.value.trim();
-        const showtimeAlreadyScheduled = Array.from(
-            scheduledShowtimesList.querySelectorAll(".scheduled-showtime-card")
-        ).some((card) =>
-            card.dataset.date === showtimeDate.value &&
-            card.dataset.time === showtimeTime.value &&
-            card.dataset.showroom === showroom.toLowerCase()
-        );
+        showtimeSubmit.disabled = true;
+        try {
+            const result = await CES.api("/api/admin/showtimes", {
+                method: "POST",
+                body: {
+                    movieId: Number(showtimeMovie.value),
+                    showroomId: Number(showtimeShowroom.value),
+                    date: showtimeDate.value,
+                    time: showtimeTime.value
+                }
+            });
+            if (!result.ok || !result.data?.showtime) {
+                const fieldErrors = Object.values(result.data?.errors || {}).join(" ");
+                setShowtimeMessage(fieldErrors || result.data?.error || "Could not save the showtime.", true);
+                return;
+            }
 
-        if (showtimeAlreadyScheduled) {
-            setShowtimeMessage(
-                `A showtime is already scheduled in ${showroom} at this date and time. Choose another time or screen.`,
-                true
-            );
-            return;
+            scheduledShowtimesList.querySelector(".scheduled-showtimes-empty")?.remove();
+            scheduledShowtimesList.prepend(createShowtimeCard(result.data.showtime));
+            showtimeForm.reset();
+            setShowtimeSuccess(result.data.showtime);
+        } catch (error) {
+            console.error("Could not save showtime:", error);
+            setShowtimeMessage(error.message || "Could not save the showtime.", true);
+        } finally {
+            updateShowtimeSubmit();
         }
-
-        const selectedDate = new Date(`${showtimeDate.value}T00:00:00`);
-        const dateLabel = selectedDate.toLocaleDateString(undefined, {
-            year: "numeric",
-            month: "long",
-            day: "numeric"
-        });
-        const timeLabel = new Date(`2000-01-01T${showtimeTime.value}`).toLocaleTimeString(undefined, {
-            hour: "numeric",
-            minute: "2-digit"
-        });
-
-        const card = document.createElement("article");
-        card.className = "scheduled-showtime-card";
-        card.dataset.date = showtimeDate.value;
-        card.dataset.time = showtimeTime.value;
-        card.dataset.showroom = showroom.toLowerCase();
-        card.append(
-            createShowtimeDetail("Movie", selectedMovie.dataset.title || selectedMovie.textContent),
-            createShowtimeDetail("Date", dateLabel),
-            createShowtimeDetail("Time", timeLabel),
-            createShowtimeDetail("Showroom", showroom)
-        );
-
-        scheduledShowtimesEmpty?.remove();
-        scheduledShowtimesList.prepend(card);
-        showtimeDate.value = "";
-        showtimeTime.value = "";
-        showtimeShowroom.value = "";
-        setShowtimeMessage("Showtime added to this page.");
     });
 
-    loadShowtimeMovies();
+    loadShowtimeMovies().catch((error) => {
+        console.error("Could not load movies for showtime scheduling:", error);
+        setShowtimeMessage(error.message, true);
+    });
+    loadShowrooms().catch((error) => {
+        console.error("Could not load showrooms:", error);
+        setShowtimeMessage(error.message, true);
+    });
+    loadScheduledShowtimes().catch((error) => {
+        console.error("Could not load scheduled showtimes:", error);
+        setShowtimeMessage(error.message, true);
+    });
 }

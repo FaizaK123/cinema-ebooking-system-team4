@@ -8,8 +8,12 @@ window.CES = (function () {
             credentials: "same-origin"
         };
         if (options.body !== undefined) {
-            init.headers["Content-Type"] = "application/json";
-            init.body = JSON.stringify(options.body);
+            if (typeof FormData !== "undefined" && options.body instanceof FormData) {
+                init.body = options.body;
+            } else {
+                init.headers["Content-Type"] = "application/json";
+                init.body = JSON.stringify(options.body);
+            }
         }
         let response;
         try {

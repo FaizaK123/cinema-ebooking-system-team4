@@ -390,6 +390,15 @@
     text-align: center;
 }
 
+.showtime-form-message strong,
+.showtime-form-message span {
+    display: block;
+}
+
+.showtime-form-message strong {
+    font-size: 1.1em;
+}
+
 .showtime-form-message:empty {
     display: none;
 }

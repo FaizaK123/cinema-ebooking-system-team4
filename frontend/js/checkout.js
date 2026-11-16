@@ -26,6 +26,8 @@ function orderTotal(order) {
 function validOrder(order) {
     if (!order || typeof order.movie !== "string" ||
         !order.movie.trim() || !order.date || !order.time ||
+        !Number.isSafeInteger(order.showId) || order.showId <= 0 ||
+        typeof order.showroom !== "string" || !order.showroom.trim() ||
         !Array.isArray(order.seats)) {
         return false;
     }
@@ -118,6 +120,8 @@ function setupBooking() {
             movie: readText("booking-movie-title"),
             date: readText("booking-date") || params.get("date"),
             time: readText("booking-showtime") || params.get("time"),
+            showId: Number(params.get("showId")),
+            showroom: readText("booking-showroom"),
             seats: seats,
             adult: quantities.adult,
             child: quantities.child,
@@ -199,6 +203,7 @@ async function setupCheckout() {
     setText("order-movie", order.movie);
     setText("order-date", order.date);
     setText("order-time", order.time);
+    setText("order-showroom", order.showroom);
     setText("order-seats", order.seats.join(", "));
     setText("order-count", ticketCount(order));
     setText("order-total", orderTotal(order).toFixed(2));
@@ -255,6 +260,7 @@ async function setupPayment() {
     setText("payment-movie", order.movie);
     setText("payment-date", order.date);
     setText("payment-time", order.time);
+    setText("payment-showroom", order.showroom);
     setText("payment-seats", order.seats.join(", "));
     setText("payment-email", order.email);
     setText("payment-total", orderTotal(order).toFixed(2));
