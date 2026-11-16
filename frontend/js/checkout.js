@@ -110,7 +110,9 @@ function setupBooking() {
         });
 
         if (seats.length !== count) {
-            alert("Select exactly " + count + " seats.");
+            alert(seats.length > count
+                ? "You can select only " + count + " seats for your tickets."
+                : "Select all " + count + " seats before continuing.");
             return;
         }
 

@@ -417,6 +417,11 @@ async function renderBookingPage() {
     }
 
     const seatLayout = document.getElementById("seat-layout");
+    const ticketInputs = [
+        document.getElementById("adult-ticket"),
+        document.getElementById("child-ticket"),
+        document.getElementById("senior-ticket")
+    ];
     const rows = ["A", "B", "C", "D", "E"];
 
     rows.forEach(function (row) {
@@ -428,6 +433,27 @@ async function renderBookingPage() {
             seat.textContent = row + number;
 
             seat.addEventListener("click", function () {
+                if (!seat.classList.contains("selected")) {
+                    const ticketCount = ticketInputs.reduce(
+                        function (count, input) {
+                            return count + (Number(input.value) || 0);
+                        },
+                        0
+                    );
+                    const selectedSeatCount =
+                        seatLayout.querySelectorAll(".booking-seat.selected").length;
+
+                    if (ticketCount === 0) {
+                        alert("Select your tickets before choosing seats.");
+                        return;
+                    }
+
+                    if (selectedSeatCount >= ticketCount) {
+                        alert("You can select only one seat per ticket.");
+                        return;
+                    }
+                }
+
                 seat.classList.toggle("selected");
                 updateBookingSummary();
             });
@@ -435,12 +461,6 @@ async function renderBookingPage() {
             seatLayout.appendChild(seat);
         }
     });
-
-    const ticketInputs = [
-        document.getElementById("adult-ticket"),
-        document.getElementById("child-ticket"),
-        document.getElementById("senior-ticket")
-    ];
 
     ticketInputs.forEach(function (input) {
         input.addEventListener("input", updateBookingSummary);

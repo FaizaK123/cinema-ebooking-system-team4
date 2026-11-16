@@ -50,7 +50,7 @@
     display: flex;
     flex-direction: column;
     gap: 0.5em;
-    width: 40%;
+    width: min(680px, 95%);
     min-height: 50vh;
     color: black;
     background-color: red;
@@ -69,22 +69,37 @@
 }
 
 .add-movie-form-section {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75em;
 }
 
 .add-movie-form-release-date {
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5em;
+    flex-direction: column;
+    gap: 0.35em;
+    grid-column: 1 / -1;
+    min-width: 0;
 }
 
 .add-movie-form-label {
     font-weight: bold;
+}
+
+#add-movie-form .required {
+    color: #111;
+}
+
+#add-movie-form .required-note {
+    color: #111;
+}
+
+.add-movie-form-duration,
+.add-movie-form-rating {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35em;
+    min-width: 0;
 }
 
 #movie-title, 
@@ -93,10 +108,18 @@
 #movie-duration, 
 #movie-rating, 
 #movie-genre {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
     padding: 0.5em 0.25em 0.5em 0.75em; 
     border: 2px solid black; 
     border-radius: 1em; 
     font-family: inherit;
+}
+
+#movie-duration,
+#movie-rating {
+    height: 2.75rem;
 }
 
 #movie-description {
@@ -304,6 +327,10 @@
     .manage-movies-list,
     #add-movie-form {
         width: 95%;
+    }
+
+    .add-movie-form-section {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .manage-movie-card {
