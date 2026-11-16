@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Cinema E-Booking System</title>
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/booking.css">
+    <link rel="stylesheet" href="/css/checkout.css">
+
+    <script src="/js/api.js" defer></script>
+    <script src="/js/checkout.js" defer></script>
+</head>
+<body>
+    <nav class="nav-bar">
+        <button class="nav-bar-home-button" onclick="window.location.href='/'">
+            CES
+        </button>
+    </nav>
+
+    <main class="booking-page-body">
+        <h1>Checkout</h1>
+
+        <section class="booking-summary-section">
+            <h2>Order Summary</h2>
+
+            <p><strong>Movie:</strong> <span id="order-movie"></span></p>
+            <p><strong>Date:</strong> <span id="order-date"></span></p>
+            <p><strong>Showtime:</strong> <span id="order-time"></span></p>
+            <p><strong>Seats:</strong> <span id="order-seats"></span></p>
+
+            <h3>Ticket Details</h3>
+            <div id="order-tickets"></div>
+
+            <hr>
+
+            <p>Number of Tickets: <span id="order-count"></span></p>
+            <p><strong>Total Before Tax: $<span id="order-total"></span></strong></p>
+        </section>
+
+        <section class="booking-summary-section">
+            <h2>Confirm Email</h2>
+            <p>Confirm your email address or enter a new one.</p>
+
+            <form id="checkout-form">
+                <label for="checkout-email">Email Address *</label>
+
+                <input
+                    type="email"
+                    id="checkout-email"
+                    class="checkout-input"
+                    autocomplete="email"
+                    maxlength="254"
+                    required
+                >
+
+                <p id="checkout-error"
+                   class="checkout-error"
+                   role="alert"
+                   hidden></p>
+
+                <button type="submit" class="booking-continue-button">
+                    Continue to Payment
+                </button>
+            </form>
+        </section>
+
+        <button id="back-to-booking"
+                class="checkout-back-button"
+                type="button">
+            Back to Booking
+        </button>
+    </main>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - Cinema E-Booking System</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/booking.css">
+    <link rel="stylesheet" href="/css/checkout.css">
+    <script src="/js/api.js" defer></script>
+    <script src="/js/checkout.js" defer></script>
+</head>
+<body>
+    <nav class="nav-bar">
+        <button class="nav-bar-home-button" onclick="window.location.href='/pages/public/Home_Page.html'">
+            CES
+        </button>
+    </nav>
+
+    <main class="booking-page-body">
+        <h1>Payment Processing</h1>
+
+        <section class="booking-summary-section">
+            <h2>Payment Summary</h2>
+
+            <p><strong>Movie:</strong> <span id="payment-movie"></span></p>
+            <p><strong>Date:</strong> <span id="payment-date"></span></p>
+            <p><strong>Showtime:</strong> <span id="payment-time"></span></p>
+            <p><strong>Seats:</strong> <span id="payment-seats"></span></p>
+            <p><strong>Email:</strong> <span id="payment-email"></span></p>
+            <p><strong>Subtotal: $<span id="payment-total"></span></strong></p>
+        </section>
+
+        <section class="booking-summary-section">
+            <h2>Payment Method</h2>
+
+            <p class="checkout-note">
+                Payment processing will be available in the final sprint.
+            </p>
+
+            <label for="card-number">Card Number</label>
+            <input id="card-number" class="checkout-input" placeholder="Payment unavailable" disabled>
+
+            <label for="card-expiry">Expiration Date</label>
+            <input id="card-expiry" class="checkout-input" placeholder="MM/YY" disabled>
+
+            <label for="card-cvv">CVV</label>
+            <input id="card-cvv" class="checkout-input" placeholder="CVV" disabled>
+
+            <button type="button" class="booking-continue-button" disabled>
+                Complete Payment
+            </button>
+
+            <p class="checkout-note">
+                Demo only. No payment has been processed or booking confirmed.
+            </p>
+        </section>
+
+        <button id="back-to-checkout" class="checkout-back-button" type="button">
+            Back to Checkout
+        </button>
+    </main>
+</body>
+</html>
