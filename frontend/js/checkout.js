@@ -101,7 +101,7 @@ function setupBooking() {
         if (selected.some(function (seat) {
             return seat.disabled || seat.classList.contains("taken");
         })) {
-            alert("A selected seat is unavailable.");
+            CES.toast("A selected seat is unavailable.", "error");
             return;
         }
 
@@ -110,9 +110,9 @@ function setupBooking() {
         });
 
         if (seats.length !== count) {
-            alert(seats.length > count
+            CES.toast(seats.length > count
                 ? "You can select only " + count + " seats for your tickets."
-                : "Select all " + count + " seats before continuing.");
+                : "Select all " + count + " seats before continuing.", "error");
             return;
         }
 
@@ -132,7 +132,7 @@ function setupBooking() {
         };
 
         if (!validOrder(order)) {
-            alert("Please select a valid movie and showtime.");
+            CES.toast("Please select a valid movie and showtime.", "error");
             return;
         }
 
