@@ -1,20 +1,16 @@
 """Convert application and repository results into HTTP response bodies."""
-from datetime import date, timedelta
-
 from flask import jsonify
 
 
-SHOWTIMES = ["2:00 PM", "5:00 PM", "8:00 PM"]
+def group_showtimes_by_date(showings):
+    """[{date, timeLabel, ...}] -> {"2026-11-20": ["2:00 PM", "5:00 PM"]} (the shape the movie page reads)."""
+    grouped = {}
+    for showing in showings:
+        grouped.setdefault(showing["date"], []).append(showing["timeLabel"])
+    return grouped
 
 
-def build_showtimes():
-    return {
-        (date.today() + timedelta(days=index)).isoformat(): SHOWTIMES
-        for index in range(14)
-    }
-
-
-def movie_to_dict(row):
+def movie_to_dict(row, showings=()):
     return {
         "id": row["id"],
         "title": row["title"],
@@ -26,7 +22,10 @@ def movie_to_dict(row):
         "description": row["description"],
         "trailer": row["trailer"],
         "poster": row["poster"],
-        "showtimes": build_showtimes() if row["status"] == "CURRENTLY_RUNNING" else {},
+        # Real showtimes from the database. `showtimes` groups the times by date; `showings` lists each
+        # one with its showId and showroom (use showId to start a booking).
+        "showtimes": group_showtimes_by_date(showings),
+        "showings": list(showings),
     }
 
 
@@ -37,6 +36,8 @@ def service_response(result):
 def movies_response(result, single=False):
     if result.status != 200:
         return service_response(result)
+    showings = (result.meta or {}).get("showings", {})
     if single:
-        return jsonify(movie_to_dict(result.data)), result.status
-    return jsonify([movie_to_dict(row) for row in result.data]), result.status
+        row = result.data
+        return jsonify(movie_to_dict(row, showings.get(row["id"], ()))), result.status
+    return jsonify([movie_to_dict(row, showings.get(row["id"], ())) for row in result.data]), result.status

@@ -8,3 +8,4 @@ mywork.txt
 backend/.env
 backend/instance/
 *.db
+frontend/images/uploads/

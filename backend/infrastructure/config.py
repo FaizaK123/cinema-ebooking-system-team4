@@ -66,3 +66,11 @@ VERIFY_TOKEN_HOURS = 24
 RESET_TOKEN_MINUTES = 30
 REMEMBER_ME_DAYS = 30
 MAX_PAYMENT_CARDS = 3
+
+# Seat holds: seats a customer picks stay reserved for them (and show as unavailable to everyone
+# else) for this many minutes. Every checkout step renews the hold; an idle hold is released.
+SEAT_HOLD_MINUTES = 5
+
+# Movie posters uploaded by the admin are saved here (served at /images/uploads/...).
+POSTER_UPLOAD_DIR = FRONTEND_DIR / "images" / "uploads"
+MAX_POSTER_BYTES = 5 * 1024 * 1024

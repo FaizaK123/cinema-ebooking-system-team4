@@ -11,13 +11,14 @@ import os
 from datetime import timedelta
 from urllib.parse import quote
 
-from flask import Flask, redirect, request, send_from_directory
+from flask import Flask, jsonify, redirect, request, send_from_directory
 
 from backend.infrastructure import config
 from backend.infrastructure.email_service import EmailService
 from backend.infrastructure.security import current_user
 from backend.presentation.routes.admin import admin_bp
 from backend.presentation.routes.auth import auth_bp
+from backend.presentation.routes.booking import booking_bp
 from backend.presentation.routes.movies import movies_bp
 from backend.presentation.routes.profile import profile_bp
 
@@ -27,12 +28,22 @@ app.config.update(
     SESSION_COOKIE_HTTPONLY=True,      # JavaScript can't read the session cookie
     SESSION_COOKIE_SAMESITE="Lax",     # other sites can't send requests with it
     PERMANENT_SESSION_LIFETIME=timedelta(days=config.REMEMBER_ME_DAYS),
+    MAX_CONTENT_LENGTH=config.MAX_POSTER_BYTES + 512 * 1024,  # poster upload + the other form fields
 )
 
 app.register_blueprint(movies_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(profile_bp)
 app.register_blueprint(admin_bp)
+app.register_blueprint(booking_bp)
+
+
+@app.errorhandler(413)
+def request_too_large(_error):
+    limit = f"{config.MAX_POSTER_BYTES // (1024 * 1024)} MB"
+    message = f"The upload is too large. Posters must be {limit} or smaller."
+    return jsonify({"error": message, "errors": {"poster": message}}), 413
+
 
 # Pages that need a login, and which role may open them (lowercase, since Windows file names aren't case-sensitive).
 PROTECTED_PAGES = {
@@ -40,6 +51,10 @@ PROTECTED_PAGES = {
     "/pages/profile/address_info_page.html": "CUSTOMER",
     "/pages/profile/payment_info_page.html": "CUSTOMER",
     "/pages/admin/admin_page.html": "ADMIN",
+    "/pages/admin/manage_movies.html": "ADMIN",
+    "/pages/admin/manage_showtimes.html": "ADMIN",
+    "/pages/admin/manage_promotions.html": "ADMIN",
+    "/pages/admin/manage_users.html": "ADMIN",
 }
 # Pages a logged-in user doesn't need, so they're sent to their home page instead.
 LOGGED_OUT_ONLY_PAGES = {"/pages/auth/login_page.html", "/pages/auth/signup_page.html"}
