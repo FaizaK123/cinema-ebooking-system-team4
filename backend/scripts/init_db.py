@@ -40,7 +40,7 @@ def ensure_admin_account(connection):
         ('Site', 'Admin', config.ADMIN_EMAIL.lower(), generate_password_hash(config.ADMIN_PASSWORD)),
     )
     connection.execute('INSERT INTO admins (admin_id) VALUES (?)', (cursor.lastrowid,))
-    print(f'Created admin account: {config.ADMIN_EMAIL} / {config.ADMIN_PASSWORD}')
+    print(f'Created admin account: {config.ADMIN_EMAIL} (password not displayed)')
 
 
 def main():
