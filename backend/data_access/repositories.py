@@ -360,7 +360,11 @@ class ShowroomRepository:
     @staticmethod
     def busy_room_ids(conn, show_date, show_time):
         rows = conn.execute(
-            "SELECT room_id FROM shows WHERE show_date = ? AND show_time = ?", (show_date, show_time)
+            "SELECT DISTINCT s.room_id FROM shows s "
+            "WHERE s.show_date BETWEEN date(?, '-1 day') AND date(?, '+1 day') "
+            "AND ABS(strftime('%s', s.show_date || ' ' || s.show_time) "
+            "- strftime('%s', ? || ' ' || ?)) < ?",
+            (show_date, show_date, show_date, show_time, ShowRepository.MINIMUM_GAP_SECONDS),
         ).fetchall()
         return {row["room_id"] for row in rows}
 
@@ -390,6 +394,8 @@ def _upcoming_params(now):
 
 
 class ShowRepository:
+    MINIMUM_GAP_SECONDS = 3 * 60 * 60
+
     @staticmethod
     def find(conn, show_id):
         row = conn.execute(_SHOW_SELECT + " WHERE s.show_id = ?", (show_id,)).fetchone()
@@ -430,6 +436,22 @@ class ShowRepository:
         return conn.execute(
             "SELECT show_id FROM shows WHERE room_id = ? AND show_date = ? AND show_time = ?",
             (room_id, show_date, show_time),
+        ).fetchone()
+
+    @staticmethod
+    def find_in_room_within_minimum_gap(conn, room_id, show_date, show_time):
+        return conn.execute(
+            "SELECT s.show_id FROM shows s "
+            "WHERE s.room_id = ? "
+            "AND s.show_date BETWEEN date(?, '-1 day') AND date(?, '+1 day') "
+            "AND ABS(strftime('%s', s.show_date || ' ' || s.show_time) "
+            "- strftime('%s', ? || ' ' || ?)) < ? "
+            "ORDER BY ABS(strftime('%s', s.show_date || ' ' || s.show_time) "
+            "- strftime('%s', ? || ' ' || ?)) LIMIT 1",
+            (
+                room_id, show_date, show_date, show_date, show_time, ShowRepository.MINIMUM_GAP_SECONDS,
+                show_date, show_time,
+            ),
         ).fetchone()
 
     @staticmethod

@@ -101,7 +101,7 @@ def _rooms_with_availability(conn, show_date, show_time):
 
 
 def list_showrooms(date_text, time_text):
-    """All showrooms. With a date AND time, each one says whether it is free at that moment."""
+    """All showrooms. With a date AND time, each says whether it allows a three-hour gap around that start."""
     show_date = show_time = None
     if date_text or time_text:
         errors = {}
@@ -132,7 +132,7 @@ def list_showtimes(movie_id):
 
 
 def add_showtime(data):
-    """Schedule a movie in a showroom at a date and time. One showroom can't show two movies at the same time."""
+    """Schedule a movie with at least three hours between starts in the same showroom."""
     showtime, errors = validate_showtime(data, local_now())
     if errors:
         return _errors_result(errors)
@@ -142,7 +142,7 @@ def add_showtime(data):
         room = existing["showroom"]
         message = (
             f"{room} already has {existing['movieTitle']} at {existing['timeLabel']} on {existing['date']}. "
-            "Choose another time or showroom."
+            "Choose a time at least three hours apart or another showroom."
         )
         body = {
             "error": message,
@@ -157,7 +157,9 @@ def add_showtime(data):
             return _errors_result({"movieId": "That movie doesn't exist."}, 404)
         if ShowroomRepository.find(conn, showtime["showroomId"]) is None:
             return _errors_result({"showroomId": "That showroom doesn't exist."}, 404)
-        clash = ShowRepository.find_in_room_at(conn, showtime["showroomId"], showtime["date"], showtime["time"])
+        clash = ShowRepository.find_in_room_within_minimum_gap(
+            conn, showtime["showroomId"], showtime["date"], showtime["time"]
+        )
         if clash:
             return conflict(conn, clash["show_id"])
         try:
@@ -165,7 +167,9 @@ def add_showtime(data):
                 conn, showtime["movieId"], showtime["showroomId"], showtime["date"], showtime["time"]
             )
         except sqlite3.IntegrityError:  # the database's own UNIQUE rule is the last line of defense
-            clash = ShowRepository.find_in_room_at(conn, showtime["showroomId"], showtime["date"], showtime["time"])
+            clash = ShowRepository.find_in_room_within_minimum_gap(
+                conn, showtime["showroomId"], showtime["date"], showtime["time"]
+            )
             if clash:
                 return conflict(conn, clash["show_id"])
             raise

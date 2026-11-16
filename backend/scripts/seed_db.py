@@ -8,7 +8,8 @@ showtime's pre-booked seats are only created together with the showtime itself.
 """
 import secrets
 import sqlite3
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
+from itertools import combinations
 
 from backend.data_access.db import db_transaction
 from backend.data_access.repositories import ShowRepository, UserRepository
@@ -31,10 +32,59 @@ MOVIE_ROWS = [
 ]
 
 SHOWTIME_DAYS = 7  # today and the next 6 days
-# Start times are deliberately not round numbers, so an admin demoing the scheduler can pick
-# 2:00 PM, 5:00 PM or 8:00 PM in any showroom without running into the seeded showtimes.
-SLOTS = ["12:15", "14:45", "17:20", "19:50", "22:25"]
+SLOTS = ["09:00", "12:00", "15:00", "18:00", "21:00"]
 SEED_BOOKER_EMAIL = "seed-bookings@ces.local"  # owns the pre-booked seats; suspended, so nobody can log in as it
+
+
+def normalize_showtime_spacing(conn):
+    """Move legacy conflicting starts to three-hour slots without changing show or booking IDs."""
+    rows = conn.execute(
+        "SELECT show_id, room_id, show_date, show_time FROM shows "
+        "ORDER BY room_id, show_date, show_time, show_id"
+    ).fetchall()
+    by_room = {}
+    for row in rows:
+        by_room.setdefault(row["room_id"], {}).setdefault(row["show_date"], []).append(row)
+
+    gap = timedelta(seconds=ShowRepository.MINIMUM_GAP_SECONDS)
+    dates_to_adjust = set()
+    for room_id, days in by_room.items():
+        shows = [show for day in days.values() for show in day]
+        shows.sort(key=lambda show: (
+            datetime.fromisoformat(f"{show['show_date']}T{show['show_time']}"), show["show_id"]
+        ))
+        for earlier, later in zip(shows, shows[1:]):
+            earlier_start = datetime.fromisoformat(f"{earlier['show_date']}T{earlier['show_time']}")
+            later_start = datetime.fromisoformat(f"{later['show_date']}T{later['show_time']}")
+            if later_start - earlier_start < gap:
+                dates_to_adjust.add((room_id, earlier["show_date"]))
+                dates_to_adjust.add((room_id, later["show_date"]))
+
+    adjusted = 0
+    available_minutes = tuple(range(0, 24 * 60, ShowRepository.MINIMUM_GAP_SECONDS // 60))
+    for room_id, show_date in sorted(dates_to_adjust):
+        day_shows = by_room[room_id][show_date]
+        if len(day_shows) > len(available_minutes):
+            raise RuntimeError(
+                f"Showroom {room_id} has more than {len(available_minutes)} showtimes on {show_date}; "
+                "they cannot be spaced three hours apart."
+            )
+        current_minutes = []
+        for show in day_shows:
+            time_format = "%H:%M:%S" if len(show["show_time"]) == 8 else "%H:%M"
+            current_time = datetime.strptime(show["show_time"], time_format)
+            current_minutes.append(current_time.hour * 60 + current_time.minute)
+        best_slots = min(
+            combinations(available_minutes, len(day_shows)),
+            key=lambda slots: sum(abs(slot - current) for slot, current in zip(slots, current_minutes)),
+        )
+        for show in day_shows:
+            conn.execute("UPDATE shows SET show_time = ? WHERE show_id = ?", (f"reschedule-{show['show_id']}", show["show_id"]))
+        for show, slot in zip(day_shows, best_slots):
+            new_time = f"{slot // 60:02d}:{slot % 60:02d}"
+            conn.execute("UPDATE shows SET show_time = ? WHERE show_id = ?", (new_time, show["show_id"]))
+            adjusted += 1
+    return adjusted
 
 
 def seed_movies(conn):
@@ -96,18 +146,21 @@ def seed_showtimes(conn):
         print("Skipping showtimes: run backend.scripts.init_db first (it creates the showrooms and ticket types).")
         return 0, 0
 
+    adjusted = normalize_showtime_spacing(conn)
+    if adjusted:
+        print(f"Showtimes adjusted to maintain three-hour spacing: {adjusted}")
+
     booker_id = None
     created = booked = 0
     for offset in range(SHOWTIME_DAYS):
         day = date.today() + timedelta(days=offset)
-        # 12 showings a day (2 per movie). Showings are spread over the 3 showrooms and each showroom gets
-        # distinct start times (rotating with the date), so seeded showtimes never conflict with each other.
+        # Showings are spread over the 3 showrooms at slots at least three hours apart.
         for number in range(2 * len(movies)):
             movie_id = movies[number % len(movies)]["id"]
             # a movie's second showing of the day is in the next showroom over
             room_id = rooms[(number % 3 + number // len(movies)) % 3]["room_id"]
             slot = SLOTS[(number // 3 + day.toordinal()) % len(SLOTS)]
-            if ShowRepository.find_in_room_at(conn, room_id, day.isoformat(), slot):
+            if ShowRepository.find_in_room_within_minimum_gap(conn, room_id, day.isoformat(), slot):
                 continue
             try:
                 show_id = ShowRepository.create(conn, movie_id, room_id, day.isoformat(), slot)

@@ -40,7 +40,7 @@ def add_movie():
 @admin_bp.get("/showrooms")
 @login_required(role="ADMIN")
 def list_showrooms():
-    """All showrooms. Add ?date=YYYY-MM-DD&time=HH:MM to see which ones are free at that moment."""
+    """Add ?date=YYYY-MM-DD&time=HH:MM to see which showrooms allow a three-hour gap around that start."""
     return service_response(admin_service.list_showrooms(request.args.get("date"), request.args.get("time")))
 
 
