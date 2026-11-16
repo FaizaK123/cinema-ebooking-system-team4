@@ -590,3 +590,103 @@ class PromotionRepository:
 
 def expiry(minutes=0, hours=0):
     return timedelta(minutes=minutes, hours=hours)
+
+
+class ShowtimeRepository:
+    """Only database operations. Business validation belongs in the service."""
+
+    @staticmethod
+    def rooms(conn):
+        return [dict(r) for r in conn.execute('SELECT room_id, room_number, theater_id FROM showrooms ORDER BY room_id')]
+
+    @staticmethod
+    def list(conn, movie_id=None):
+        query = """SELECT s.show_id, s.movie_id, m.title AS movie_title, s.room_id,
+                          r.room_number, s.show_date, s.show_time
+                   FROM shows s JOIN movies m ON m.id=s.movie_id
+                   JOIN showrooms r ON r.room_id=s.room_id"""
+        if movie_id is not None:
+            query += ' WHERE s.movie_id=?'
+            args = (movie_id,)
+        else:
+            args = ()
+        query += ' ORDER BY s.show_date, s.show_time, s.room_id'
+        return [dict(r) for r in conn.execute(query, args)]
+
+    @staticmethod
+    def create(conn, movie_id, room_id, show_date, show_time):
+        cursor = conn.execute('INSERT INTO shows(movie_id,room_id,show_date,show_time) VALUES (?,?,?,?)',
+                              (movie_id, room_id, show_date, show_time))
+        show_id = cursor.lastrowid
+        conn.execute('''INSERT INTO show_seats(show_id,room_id,seat_id)
+                        SELECT ?, ?, seat_id FROM seats WHERE room_id=?''', (show_id, room_id, room_id))
+        return show_id
+
+    @staticmethod
+    def seat_map(conn, show_id):
+        show = conn.execute('SELECT show_id, movie_id, room_id, show_date, show_time FROM shows WHERE show_id=?', (show_id,)).fetchone()
+        if show is None:
+            return None
+        seats = conn.execute('''SELECT ss.show_seat_id, s.row_label, s.seat_number, ss.status
+                                FROM show_seats ss JOIN seats s ON s.seat_id=ss.seat_id
+                                WHERE ss.show_id=? ORDER BY s.row_label, s.seat_number''', (show_id,)).fetchall()
+        return {'show': dict(show), 'seats': [dict(r) for r in seats]}
+
+    @staticmethod
+    def conflicts(conn, room_id, show_date, start_time, duration_minutes, buffer_minutes=15):
+        """Uses movie runtime to guard overlapping performances in one showroom."""
+        from datetime import datetime, timedelta
+        start = datetime.fromisoformat(show_date + 'T' + start_time)
+        finish = start + timedelta(minutes=duration_minutes + buffer_minutes)
+        existing = conn.execute('''SELECT s.show_time, m.runtime FROM shows s
+                                   JOIN movies m ON m.id=s.movie_id
+                                   WHERE s.room_id=? AND s.show_date=?''', (room_id, show_date)).fetchall()
+        for row in existing:
+            mins = parse_runtime_minutes(row['runtime'])
+            if mins is None:
+                return True  # don't permit unsafe overlap if runtime unknown
+            other_start = datetime.fromisoformat(show_date + 'T' + row['show_time'])
+            other_finish = other_start + timedelta(minutes=mins + buffer_minutes)
+            if start < other_finish and other_start < finish:
+                return True
+        return False
+
+
+
+def parse_runtime_minutes(value):
+    """Accept '2 hr 4 min', '3 hr', or integer-minute runtimes."""
+    import re
+    if value is None:
+        return None
+    text = str(value).strip().lower()
+    if text.isdigit():
+        return int(text) if int(text)>0 else None
+    match = re.fullmatch(r'(?:(\d+)\s*(?:hr|hour|hours|h))?\s*(?:(\d+)\s*(?:min|minutes|m))?', text)
+    if not match or not any(match.groups()):
+        return None
+    result = int(match.group(1) or 0)*60+int(match.group(2) or 0)
+    return result if result>0 else None
+
+
+class BookingRepository:
+    @staticmethod
+    def types(conn):
+        return [dict(r) for r in conn.execute('SELECT ticket_type_id, category, price FROM ticket_types ORDER BY ticket_type_id')]
+
+    @staticmethod
+    def save_draft(conn, draft_id, show_id, selected_seats, types, customer_id=None, email=None):
+        import json
+        from datetime import datetime, timedelta, timezone
+        expires = (datetime.now(timezone.utc)+timedelta(minutes=30)).strftime('%Y-%m-%d %H:%M:%S')
+        conn.execute('''INSERT INTO booking_drafts(draft_id,show_id,seats_json,types_json,customer_id,email,expires_at)
+                        VALUES(?,?,?,?,?,?,?)''', (draft_id,show_id,json.dumps(selected_seats),json.dumps(types),customer_id,email,expires))
+
+    @staticmethod
+    def get_draft(conn, draft_id):
+        import json
+        row = conn.execute("SELECT * FROM booking_drafts WHERE draft_id=? AND expires_at > datetime('now')", (draft_id,)).fetchone()
+        if row is None: return None
+        result = dict(row)
+        result['seats'] = json.loads(result.pop('seats_json'))
+        result['types'] = json.loads(result.pop('types_json'))
+        return result

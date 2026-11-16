@@ -122,3 +122,18 @@ CREATE INDEX IF NOT EXISTS idx_auth_tokens_user ON auth_tokens(user_id, purpose)
 CREATE INDEX IF NOT EXISTS idx_shows_movie_date ON shows(movie_id,show_date);
 CREATE INDEX IF NOT EXISTS idx_bookings_customer ON bookings(customer_id);
 CREATE INDEX IF NOT EXISTS idx_show_seats_show ON show_seats(show_id,status);
+
+
+-- Sprint 3: selected seats can be retained while a user signs in and reviews an order.
+-- HELD status is not applied globally: no real-time locks required this sprint.
+CREATE TABLE IF NOT EXISTS booking_drafts (
+ draft_id TEXT PRIMARY KEY,
+ customer_id INTEGER REFERENCES customers(customer_id),
+ show_id INTEGER NOT NULL REFERENCES shows(show_id),
+ seats_json TEXT NOT NULL,
+ types_json TEXT NOT NULL,
+ email TEXT,
+ created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ expires_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_booking_drafts_expiry ON booking_drafts(expires_at);
